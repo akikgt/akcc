@@ -1,4 +1,4 @@
+*~
 *.o
-*.s
-tmp
+tmp*
 xcc
