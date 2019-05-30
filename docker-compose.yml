@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  xcc:
+    build: .
+    working_dir: /usr/src
+    volumes:
+      - .:/usr/src
+    command:
+      - /bin/bash
