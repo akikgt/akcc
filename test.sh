@@ -16,12 +16,18 @@ try() {
     fi
 }
 
+# simple number
 try 0 0
 try 42 42
+# add and sub
 try 21 '5+20-4'
 try 41 ' 12 + 34 - 5 '
+# mul and div
 try 47 '5+6*7'
 try 15 '5*(9-6)'
 try 4 '(3+5)/2'
+# unary operator
+try 5 '-10+15'
+try 5 '-(-5)'
 
 echo OK

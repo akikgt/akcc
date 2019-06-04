@@ -39,6 +39,7 @@ Node *new_node_num(int val);
 int consume(int ty);
 Node *expr();
 Node *mul();
+Node *unary();
 Node *term();
 void error(char *fmt, ...);
 void error_at(char *loc, char *msg);
@@ -139,16 +140,24 @@ Node *expr() {
 }
 
 Node *mul() {
-    Node *node = term();
+    Node *node = unary();
 
     for (;;) {
         if (consume('*'))
-            node = new_node('*', node, term());
+            node = new_node('*', node, unary());
         else if (consume('/'))
-            node = new_node('/', node, term());
+            node = new_node('/', node, unary());
         else
             return node;
     }
+}
+
+Node *unary() {
+    if (consume('+'))
+        return term();
+    if (consume('-'))
+        return new_node('-', new_node_num(0), term());
+    return term();
 }
 
 Node *term() {
@@ -162,7 +171,7 @@ Node *term() {
     if (tokens[pos].ty == TK_NUM) 
         return new_node_num(tokens[pos++].val);
 
-    error_at(tokens[pos].input, "non-number or opening parentheses TOken found");
+    error_at(tokens[pos].input, "non-number or opening parentheses Token found");
 }
 
 // ---------------------------------------
