@@ -29,5 +29,6 @@ try 4 '(3+5)/2'
 # unary operator
 try 5 '-10+15'
 try 5 '-(-5)'
+try 0 '-(-(-(-0)))'
 
 echo OK
