@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 // token value
 enum {
     TK_NUM = 256,   // integers
@@ -17,7 +18,35 @@ typedef struct {
     char *input;    // token strings for error message
 } Token;
 
+// Token *tokens;
+
+/* 
+AST node
+*/
+enum {
+    ND_NUM = 256
+};
+
+typedef struct Node {
+    int ty;
+    struct Node *lhs;
+    struct Node *rhs;
+    int val;
+} Node;
+
+Node *new_node(int ty, Node *lhs, Node *rhs);
+Node *new_node_num(int val);
+int consume(int ty);
+Node *expr();
+Node *mul();
+Node *term();
+void error(char *fmt, ...);
+void error_at(char *loc, char *msg);
+
+// ---------------------------------------
+
 char *user_input;
+int pos;
 
 Token tokens[100];
 
@@ -38,8 +67,8 @@ void error_at(char *loc, char *msg) {
     exit(1);
 }
 
-void tokenize() {
-    char *p = user_input;
+void tokenize(char *p) {
+    user_input = p; // save original input
 
     int i = 0;
     while (*p) {
@@ -49,7 +78,7 @@ void tokenize() {
             continue;
         }
 
-        if (*p == '+' || *p == '-') {
+        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')') {
             tokens[i].ty = *p;
             tokens[i].input = p;
             i++;
@@ -72,6 +101,103 @@ void tokenize() {
     tokens[i].input = p;
 }
 
+// ---------------------------------------
+
+Node *new_node(int ty, Node *lhs, Node *rhs) {
+    Node *node = malloc(sizeof(Node));
+    node->ty = ty;
+    node->lhs = lhs;
+    node->rhs = rhs;
+    return node;
+}
+
+Node *new_node_num(int val) {
+    Node *node = malloc(sizeof(Node));
+    node->ty = ND_NUM;
+    node->val = val;
+    return node;
+}
+
+int consume(int ty) {
+    if (tokens[pos].ty != ty)
+        return 0;
+    pos++;
+    return 1;
+}
+
+Node *expr() {
+    Node *node = mul();
+
+    for (;;) {
+        if (consume('+'))
+            node = new_node('+', node, mul());
+        else if (consume('-'))
+            node = new_node('-', node, mul());
+        else
+            return node;
+    }
+}
+
+Node *mul() {
+    Node *node = term();
+
+    for (;;) {
+        if (consume('*'))
+            node = new_node('*', node, term());
+        else if (consume('/'))
+            node = new_node('/', node, term());
+        else
+            return node;
+    }
+}
+
+Node *term() {
+    if (consume('(')) {
+        Node *node = expr();
+        if (!consume(')'))
+            error_at(tokens[pos].input, "missing closing parentheses");
+        return node;
+    }
+
+    if (tokens[pos].ty == TK_NUM) 
+        return new_node_num(tokens[pos++].val);
+
+    error_at(tokens[pos].input, "non-number or opening parentheses TOken found");
+}
+
+// ---------------------------------------
+
+void gen(Node *node) {
+    if (node->ty == ND_NUM) {
+        printf(" push %d\n", node->val);
+        return;
+    }
+
+    gen(node->lhs);
+    gen(node->rhs);
+
+    printf(" pop rdi\n");
+    printf(" pop rax\n");
+
+    switch (node->ty) {
+        case '+':
+            printf(" add rax, rdi\n");
+            break;
+        case '-':
+            printf(" sub rax, rdi\n");
+            break;
+        case '*':
+            printf(" imul rdi\n");
+            break;
+        case '/':
+            printf(" cqo\n");
+            printf(" idiv rdi\n");
+    }
+
+    printf(" push rax\n");
+}
+
+// ---------------------------------------
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -79,41 +205,17 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    user_input = argv[1];
-    tokenize();
+    tokenize(argv[1]);
+    Node *node = expr();
 
     // print assembly
     printf(".intel_syntax noprefix\n");
     printf(".global main\n");
     printf("main:\n");
 
-    if (tokens[0].ty != TK_NUM)
-        error_at(tokens[0].input, "is not number");
-    printf(" mov rax, %d\n", tokens[0].val);
+    gen(node);
 
-    int i = 1;
-    while (tokens[i].ty != TK_EOF) {
-        if (tokens[i].ty == '+') {
-            i++;
-            if (tokens[i].ty != TK_NUM)
-                error_at(tokens[i].input, "not number");
-            printf(" add rax, %d\n", tokens[i].val);
-            i++;
-            continue;
-        }
-
-        if (tokens[i].ty == '-') {
-            i++;
-            if (tokens[i].ty != TK_NUM)
-                error_at(tokens[i].input, "not number");
-            printf(" sub rax, %d\n", tokens[i].val);
-            i++;
-            continue;
-        }
-
-        error_at(tokens[i].input, "unexpected token");
-    }
-
+    printf(" pop rax\n");
     printf(" ret\n");
     return 0;
 }
