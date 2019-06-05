@@ -30,5 +30,8 @@ try 4 '(3+5)/2'
 try 5 '-10+15'
 try 5 '-(-5)'
 try 0 '-(-(-(-0)))'
+#equality
+try 1 '1 == 1'
+try 0 '1 == 2'
 
 echo OK

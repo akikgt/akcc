@@ -280,6 +280,11 @@ void gen(Node *node) {
         case '/':
             printf(" cqo\n");
             printf(" idiv rdi\n");
+            break;
+        case ND_EQ:
+            printf(" cmp rax, rdi\n");
+            printf(" sete al\n");
+            printf(" movzb rax, al\n");
     }
 
     printf(" push rax\n");
