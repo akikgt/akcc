@@ -287,6 +287,26 @@ void gen(Node *node) {
 
 // ---------------------------------------
 
+// char *nodeNames[] = {
+//     [256] = "NUMBER",
+//     [257] = "EQ",
+//     [258] = "NE",
+//     [259] = "LE",
+//     [260] = "GE",
+// };
+
+void printNodes(Node *node, int depth) {
+    if (node == NULL) {
+        return;
+    }
+    printNodes(node->lhs, depth + 1);
+    printf("%*s", depth, "");
+    // printf("%s\n", nodeNames[node->ty]);
+    printf("%d\n", node->ty);
+    printNodes(node->rhs, depth + 1);
+}
+// ---------------------------------------
+
 int main(int argc, char **argv) {
     if (argc != 2) {
         fprintf(stderr, "The number of arguments is invalid \n");
@@ -300,6 +320,8 @@ int main(int argc, char **argv) {
     // }
     // return 0;
     Node *node = expr();
+    // printNodes(node, 0);
+
 
     // print assembly
     printf(".intel_syntax noprefix\n");
