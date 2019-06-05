@@ -1,6 +1,7 @@
 xcc: xcc.c
 
 test: xcc
+		./xcc -test
 		./test.sh
 
 clean:
