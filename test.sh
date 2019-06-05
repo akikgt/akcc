@@ -33,5 +33,13 @@ try 0 '-(-(-(-0)))'
 #equality
 try 1 '1 == 1'
 try 0 '1 == 2'
+try 1 '1 != 2'
+try 0 '1 == 2'
+#relational
+try 1 '1 < 2'
+try 0 '10 < 2'
+try 1 '-1 <= 2'
+try 1 '2 <= 2'
+try 0 '5 <= 2'
 
 echo OK
