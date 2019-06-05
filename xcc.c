@@ -8,6 +8,10 @@
 // token value
 enum {
     TK_NUM = 256,   // integers
+    TK_EQ,          // ==
+    TK_NE,          // !=
+    TK_LE,          // <=
+    TK_GE,          // >=
     TK_EOF,         // EOF
 };
 
@@ -38,6 +42,9 @@ Node *new_node(int ty, Node *lhs, Node *rhs);
 Node *new_node_num(int val);
 int consume(int ty);
 Node *expr();
+Node *equality();
+Node *relational();
+Node *add();
 Node *mul();
 Node *unary();
 Node *term();
@@ -79,7 +86,40 @@ void tokenize(char *p) {
             continue;
         }
 
-        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p == ')') {
+        if (strncmp(p, "==", 2) == 0) {
+            tokens[i].ty = TK_EQ;
+            tokens[i].input = p;
+            i++;
+            p += 2;
+            continue;
+        }
+        if (strncmp(p, "!=", 2) == 0) {
+            tokens[i].ty = TK_NE;
+            tokens[i].input = p;
+            i++;
+            p += 2;
+            continue;
+        }
+        if (strncmp(p, "<=", 2) == 0) {
+            tokens[i].ty = TK_LE;
+            tokens[i].input = p;
+            i++;
+            p += 2;
+            continue;
+        }
+        if (strncmp(p, ">=", 2) == 0) {
+            tokens[i].ty = TK_GE;
+            tokens[i].input = p;
+            i++;
+            p += 2;
+            continue;
+        }
+
+        if (
+            *p == '+' || *p == '-' || *p == '*' || *p == '/' 
+            || *p == '(' || *p == ')'
+            ||  *p == '<' || *p == '>'
+            ) {
             tokens[i].ty = *p;
             tokens[i].input = p;
             i++;
@@ -127,6 +167,41 @@ int consume(int ty) {
 }
 
 Node *expr() {
+    Node *node = equality();
+    return node;
+}
+
+Node *equality() {
+    Node *node = relational();
+    
+    for (;;) {
+        if (consume(TK_EQ))
+            node = new_node(TK_EQ, node, relational());
+        else if (consume(TK_NE))
+            node = new_node(TK_NE, node, relational());
+        else
+            return node;        
+    }
+}
+
+Node *relational() {
+    Node *node = add();
+    
+    for (;;) {
+        if (consume(TK_LE))
+            node = new_node(TK_LE, node, add());
+        else if (consume(TK_GE))
+            node = new_node(TK_GE, node, add());
+        else if (consume('<'))
+            node = new_node('<', node, add());
+        else if (consume('>'))
+            node = new_node('>', node, add());
+        else
+            return node;        
+    }
+}
+
+Node *add() {
     Node *node = mul();
 
     for (;;) {
@@ -215,6 +290,11 @@ int main(int argc, char **argv) {
     }
 
     tokenize(argv[1]);
+    // printf("%d\n", TK_GE);
+    // for (int i = 0; i < 10; i++) {
+    //     printf("%d\n",tokens[i].ty);
+    // }
+    // return 0;
     Node *node = expr();
 
     // print assembly
