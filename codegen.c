@@ -1,5 +1,15 @@
 #include "xcc.h"
 
+void gen_lval(Node *node) {
+    if (node->ty != ND_IDENT) 
+        error("lval is not valid variable");
+
+    int offset = ('z' - node->name + 1) * 8;
+    printf(" mov rax, rbp\n");
+    printf(" sub rax, %d\n", offset);
+    printf(" push rax\n");
+}
+
 void gen(Node *node) {
     if (node->ty == ND_NUM) {
         printf(" push %d\n", node->val);

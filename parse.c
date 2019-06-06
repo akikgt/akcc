@@ -20,6 +20,13 @@ Node *new_node_num(int val) {
     return node;
 }
 
+Node *new_node_ident(int name) {
+    Node *node = malloc(sizeof(Node));
+    node->ty = ND_NUM;
+    node->name = name;
+    return node;
+}
+
 int consume(int ty) {
     Token *t = tokens->data[pos];
     if (t->ty != ty)
@@ -128,6 +135,11 @@ Node *term() {
     if (t->ty == TK_NUM) {
         pos++;
         return new_node_num(t->val);
+    }
+
+    if (t->ty == TK_IDENT) {
+        pos++;
+        return new_node_ident(t->val);
     }
 
     error_at(t->input, "non-number or opening parentheses Token found");
