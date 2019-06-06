@@ -22,6 +22,7 @@ void runtest();
 /// token.c
 enum {
     TK_NUM = 256,   // integers
+    TK_IDENT,       // identifier
     TK_EQ,          // ==
     TK_NE,          // !=
     TK_LE,          // <=

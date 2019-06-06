@@ -63,6 +63,13 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        if ('a' <= *p && *p <= 'z') {
+            add_token(v, TK_IDENT, p);
+            i++;
+            p++;
+            continue;
+        }
+
         error_at(p, "Cannot tokenize");
     }
 
