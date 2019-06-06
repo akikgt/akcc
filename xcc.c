@@ -112,7 +112,8 @@ char *user_input;
 int pos;
 
 // Vector *tokens;
-Token tokens[100];
+// Token tokens[100];
+Vector *tokens;
 
 // error functions
 void error(char *fmt, ...) {
@@ -225,7 +226,8 @@ Node *new_node_num(int val) {
 }
 
 int consume(int ty) {
-    if (tokens[pos].ty != ty)
+    Token *t = tokens->data[pos];
+    if (t->ty != ty)
         return 0;
     pos++;
     return 1;
@@ -301,17 +303,20 @@ Node *unary() {
 }
 
 Node *term() {
+    Token *t = tokens->data[pos];
     if (consume('(')) {
         Node *node = expr();
         if (!consume(')'))
-            error_at(tokens[pos].input, "missing closing parentheses");
+            error_at(t->input, "missing closing parentheses");
         return node;
     }
 
-    if (tokens[pos].ty == TK_NUM) 
-        return new_node_num(tokens[pos++].val);
+    if (t->ty == TK_NUM) {
+        pos++;
+        return new_node_num(t->val);
+    }
 
-    error_at(tokens[pos].input, "non-number or opening parentheses Token found");
+    error_at(t->input, "non-number or opening parentheses Token found");
 }
 
 // ---------------------------------------
@@ -400,12 +405,12 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    Vector *tokens_vector = tokenize(argv[1]);
+    tokens = tokenize(argv[1]);
     // printf("%d\n", TK_GE);
-    for (int i = 0; i < tokens_vector->len; i++) {
-        printf("%d\n",((Token *)tokens_vector->data[i])->val);
-    }
-    return 0;
+    // for (int i = 0; i < tokens_vector->len; i++) {
+    //     printf("%d\n",((Token *)tokens_vector->data[i])->val);
+    // }
+    // return 0;
     Node *node = expr();
 
     // print assembly
