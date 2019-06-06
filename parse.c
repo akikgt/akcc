@@ -3,7 +3,7 @@
 static Vector *tokens;
 static int pos;
 
-static Vector *code;
+Vector *code;
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
@@ -131,15 +131,18 @@ Node *term() {
     }
 
     error_at(t->input, "non-number or opening parentheses Token found");
+
+    return NULL;
 }
 
 
-Node *parse(Vector *v) {
+Vector *parse(Vector *v) {
     tokens = v;
     pos = 0;
     code = new_vector();
 
     program();
-    return code->data[0];
+    return code;
+    // return code->data[0];
     // return expr();
 }

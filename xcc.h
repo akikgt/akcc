@@ -43,6 +43,7 @@ Vector *tokenize(char *p);
 /// parse.c
 enum {
     ND_NUM = 256,
+    ND_IDENT,
     ND_EQ,          // ==
     ND_NE,          // !=
     ND_LE,          // <=
@@ -54,6 +55,7 @@ typedef struct Node {
     struct Node *lhs;
     struct Node *rhs;
     int val;
+    char name;
 } Node;
 
 
@@ -67,7 +69,7 @@ Node *add();
 Node *mul();
 Node *unary();
 Node *term();
-Node *parse(Vector *v);
+Vector *parse(Vector *v);
 
 /// codegen.c
 void gen(Node *node);
