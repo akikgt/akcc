@@ -48,4 +48,9 @@ try 0 '-128 >= 127;'
 #multi statements
 try 1 '5;4;3;2;1;'
 try 2 '5;4;3;2;'
+#variable
+try 3 'a=3;'
+#assignment
+try 10 'z=2; z + 8;'
+try 10 'a=3; z=2; a + z + 5;'
 echo OK
