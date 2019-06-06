@@ -20,7 +20,7 @@ Node *new_node_num(int val) {
     return node;
 }
 
-Node *new_node_ident(int name) {
+Node *new_node_ident(char name) {
     Node *node = malloc(sizeof(Node));
     node->ty = ND_NUM;
     node->name = name;
@@ -139,7 +139,7 @@ Node *term() {
 
     if (t->ty == TK_IDENT) {
         pos++;
-        return new_node_ident(t->val);
+        return new_node_ident(*t->input);
     }
 
     error_at(t->input, "non-number or opening parentheses Token found");
