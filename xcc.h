@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int pos;
 extern char *user_input;
 
 /// container.c
@@ -37,6 +36,8 @@ typedef struct {
     char *input;    // token strings for error message
 } Token;
 
+Vector *tokenize(char *p);
+
 
 /// parse.c
 enum {
@@ -65,5 +66,8 @@ Node *add();
 Node *mul();
 Node *unary();
 Node *term();
+Node *parse(Vector *v);
+
+/// error functions
 void error(char *fmt, ...);
 void error_at(char *loc, char *msg);
