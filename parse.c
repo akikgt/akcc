@@ -22,7 +22,7 @@ Node *new_node_num(int val) {
 
 Node *new_node_ident(char name) {
     Node *node = malloc(sizeof(Node));
-    node->ty = ND_NUM;
+    node->ty = ND_IDENT;
     node->name = name;
     return node;
 }
