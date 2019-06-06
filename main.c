@@ -54,13 +54,19 @@ int main(int argc, char **argv) {
     printf(".global main\n");
     printf("main:\n");
 
-    // gen(nodes->data[0]);
-    // printf("%d", nodes->len);
+    // Prologue
+    printf(" push rbp\n");
+    printf(" mov rbp, rsp\n");
+    printf(" sub rsp, 208\n");  // make 26 variables
+
     for (int i = 0; i < nodes->len - 1; i++) {
         gen(nodes->data[i]);
+        printf(" pop rax\n");
     }
 
-    printf(" pop rax\n");
+    // Epilogue
+    printf(" mov rsp, rbp\n");
+    printf(" pop rbp\n");
     printf(" ret\n");
     return 0;
 }

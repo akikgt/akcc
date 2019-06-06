@@ -45,4 +45,7 @@ try 1 '5 > 3;'
 try 0 '-5 > 3;'
 try 1 '500 >= 300;'
 try 0 '-128 >= 127;'
+#multi statements
+try 1 '5;4;3;2;1;'
+try 2 '5;4;3;2;'
 echo OK

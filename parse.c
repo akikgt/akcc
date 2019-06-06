@@ -155,6 +155,4 @@ Vector *parse(Vector *v) {
 
     program();
     return code;
-    // return code->data[0];
-    // return expr();
 }
