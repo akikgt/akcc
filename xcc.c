@@ -136,10 +136,10 @@ void error_at(char *loc, char *msg) {
 
 // ---------------------------------------
 // token
-void add_token(Vector *vec, int ty, int val) {
+void add_token(Vector *vec, int ty, int val, char *input) {
     Token *token = malloc(sizeof(Token));
     token->ty = ty;
-    // token->input = input;
+    token->input = input;
     token->val = val;
     vec_push(vec, (void *)token);
 }
@@ -159,7 +159,7 @@ Vector *tokenize(char *p) {
         if (strncmp(p, "==", 2) == 0) {
             // tokens[i].ty = TK_EQ;
             // tokens[i].input = p;
-            add_token(v, TK_EQ, 0);
+            add_token(v, TK_EQ, 0, p);
             i++;
             p += 2;
             continue;
@@ -167,7 +167,7 @@ Vector *tokenize(char *p) {
         if (strncmp(p, "!=", 2) == 0) {
             // tokens[i].ty = TK_NE;
             // tokens[i].input = p;
-            add_token(v, TK_NE, 0);
+            add_token(v, TK_NE, 0, p);
             i++;
             p += 2;
             continue;
@@ -175,7 +175,7 @@ Vector *tokenize(char *p) {
         if (strncmp(p, "<=", 2) == 0) {
             // tokens[i].ty = TK_LE;
             // tokens[i].input = p;
-            add_token(v, TK_LE, 0);
+            add_token(v, TK_LE, 0, p);
             i++;
             p += 2;
             continue;
@@ -183,7 +183,7 @@ Vector *tokenize(char *p) {
         if (strncmp(p, ">=", 2) == 0) {
             // tokens[i].ty = TK_GE;
             // tokens[i].input = p;
-            add_token(v, TK_GE, 0);
+            add_token(v, TK_GE, 0, p);
             i++;
             p += 2;
             continue;
@@ -196,7 +196,7 @@ Vector *tokenize(char *p) {
             ) {
             // tokens[i].ty = *p;
             // tokens[i].input = p;
-            add_token(v, *p, 0);
+            add_token(v, *p, 0, p);
             i++;
             p++;
             continue;
@@ -206,7 +206,7 @@ Vector *tokenize(char *p) {
             // tokens[i].ty = TK_NUM;
             // tokens[i].input = p;
             // tokens[i].val = strtol(p, &p, 10);
-            add_token(v, TK_NUM, strtol(p, &p, 10));
+            add_token(v, TK_NUM, strtol(p, &p, 10), p);
             i++;
             continue;
         }
@@ -216,7 +216,7 @@ Vector *tokenize(char *p) {
 
     // tokens[i].ty = TK_EOF;
     // tokens[i].input = p;
-    add_token(v, TK_EOF, 0);
+    add_token(v, TK_EOF, 0, p);
 
     return v;
 }
@@ -416,7 +416,7 @@ int main(int argc, char **argv) {
 
     Vector *tokens_vector = tokenize(argv[1]);
     // printf("%d\n", TK_GE);
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < tokens_vector->len; i++) {
         printf("%d\n",((Token *)tokens_vector->data[i])->ty);
     }
     return 0;
