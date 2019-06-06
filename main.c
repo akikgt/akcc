@@ -20,75 +20,16 @@ void error_at(char *loc, char *msg) {
     fprintf(stderr, "^ %s\n", msg);
     exit(1);
 }
-// ---------------------------------------
-
-void gen(Node *node) {
-    if (node->ty == ND_NUM) {
-        printf(" push %d\n", node->val);
-        return;
-    }
-
-    gen(node->lhs);
-    gen(node->rhs);
-
-    printf(" pop rdi\n");
-    printf(" pop rax\n");
-
-    switch (node->ty) {
-        case '+':
-            printf(" add rax, rdi\n");
-            break;
-        case '-':
-            printf(" sub rax, rdi\n");
-            break;
-        case '*':
-            printf(" imul rdi\n");
-            break;
-        case '/':
-            printf(" cqo\n");
-            printf(" idiv rdi\n");
-            break;
-        case ND_EQ:
-            printf(" cmp rax, rdi\n");
-            printf(" sete al\n");
-            printf(" movzb rax, al\n");
-            break;
-        case ND_NE:
-            printf(" cmp rax, rdi\n");
-            printf(" setne al\n");
-            printf(" movzb rax, al\n");
-            break;
-        case ND_LE:
-            printf(" cmp rax, rdi\n");
-            printf(" setle al\n");
-            printf(" movzb rax, al\n");
-            break;
-        case '<':
-            printf(" cmp rax, rdi\n");
-            printf(" setl al\n");
-            printf(" movzb rax, al\n");
-            break;
-    }
-
-    printf(" push rax\n");
-}
 
 // ---------------------------------------
-// char *nodeNames[] = {
-//     [256] = "NUMBER",
-//     [257] = "EQ",
-//     [258] = "NE",
-//     [259] = "LE",
-//     [260] = "GE",
-// };
 
+// test function
 void printNodes(Node *node, int depth) {
     if (node == NULL) {
         return;
     }
     printNodes(node->lhs, depth + 1);
     printf("%*s", depth, "");
-    // printf("%s\n", nodeNames[node->ty]);
     printf("%d\n", node->ty);
     printNodes(node->rhs, depth + 1);
 }
@@ -106,12 +47,6 @@ int main(int argc, char **argv) {
     }
 
     Vector *tokens = tokenize(argv[1]);
-    // printf("%d\n", TK_GE);
-    // for (int i = 0; i < tokens_vector->len; i++) {
-    //     printf("%d\n",((Token *)tokens_vector->data[i])->val);
-    // }
-    // return 0;
-    // Node *node = expr();
     Node *node = parse(tokens);
 
     // print assembly

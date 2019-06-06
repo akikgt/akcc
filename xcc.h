@@ -68,6 +68,9 @@ Node *unary();
 Node *term();
 Node *parse(Vector *v);
 
+/// codegen.c
+void gen(Node *node);
+
 /// error functions
 void error(char *fmt, ...);
 void error_at(char *loc, char *msg);
