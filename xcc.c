@@ -1,19 +1,8 @@
-#include <ctype.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "xcc.h"
 
 // ---------------------------------------
 
 // vector
-
-typedef struct {
-    void **data;
-    int capacity;
-    int len;
-} Vector;
-
 Vector *new_vector() {
     Vector *vec = malloc(sizeof(Vector));
     vec->data = malloc(sizeof(void *) * 16);
@@ -56,63 +45,12 @@ void runtest() {
 
 // ---------------------------------------
 
-// token value
-enum {
-    TK_NUM = 256,   // integers
-    TK_EQ,          // ==
-    TK_NE,          // !=
-    TK_LE,          // <=
-    TK_GE,          // >=
-    TK_EOF,         // EOF
-};
-
-// type of token
-typedef struct {
-    int ty;         // type of token
-    int val;        // the value when ty == TK_NUM
-    char *input;    // token strings for error message
-} Token;
-
-// Token *tokens;
-
-/* 
-AST node
-*/
-enum {
-    ND_NUM = 256,
-    ND_EQ,          // ==
-    ND_NE,          // !=
-    ND_LE,          // <=
-    ND_GE,          // >=
-};
-
-typedef struct Node {
-    int ty;
-    struct Node *lhs;
-    struct Node *rhs;
-    int val;
-} Node;
-
-Node *new_node(int ty, Node *lhs, Node *rhs);
-Node *new_node_num(int val);
-int consume(int ty);
-Node *expr();
-Node *equality();
-Node *relational();
-Node *add();
-Node *mul();
-Node *unary();
-Node *term();
-void error(char *fmt, ...);
-void error_at(char *loc, char *msg);
 
 // ---------------------------------------
 
 char *user_input;
 int pos;
 
-// Vector *tokens;
-// Token tokens[100];
 Vector *tokens;
 
 // error functions
@@ -131,7 +69,6 @@ void error_at(char *loc, char *msg) {
     fprintf(stderr, "^ %s\n", msg);
     exit(1);
 }
-
 
 
 
