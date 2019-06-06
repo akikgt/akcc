@@ -4,6 +4,57 @@
 #include <stdlib.h>
 #include <string.h>
 
+// ---------------------------------------
+
+// vector
+
+typedef struct {
+    void **data;
+    int capacity;
+    int len;
+} Vector;
+
+Vector *new_vector() {
+    Vector *vec = malloc(sizeof(Vector));
+    vec->data = malloc(sizeof(void *) * 16);
+    vec->capacity = 16;
+    vec->len = 0;
+    return vec;
+}
+
+void vec_push(Vector *vec, void *elem) {
+    if (vec->capacity == vec->len) {
+        vec->capacity *= 2;
+        vec->data = realloc(vec->data, sizeof(void *) * vec->capacity);
+    }
+    vec->data[vec->len++] = elem;
+}
+
+int expect(int line, int expected, int actual) {
+    if (expected == actual) 
+        return 1;
+    fprintf(stderr, "%d: %d expected, but got %d\n",
+            line, expected, actual);
+    exit(1);
+}
+
+void runtest() {
+    Vector *vec = new_vector();
+    expect(__LINE__, 0, vec->len);
+
+    for (long i = 0; i < 100; i++) {
+        vec_push(vec, (void *)i);
+    }
+
+    expect(__LINE__, 100, vec->len);
+    expect(__LINE__, 0, (long)vec->data[0]);
+    expect(__LINE__, 50, (long)vec->data[50]);
+    expect(__LINE__, 99, (long)vec->data[99]);
+
+    printf("OK\n");
+}
+
+// ---------------------------------------
 
 // token value
 enum {
@@ -60,6 +111,7 @@ void error_at(char *loc, char *msg);
 char *user_input;
 int pos;
 
+// Vector *tokens;
 Token tokens[100];
 
 // error functions
@@ -79,7 +131,21 @@ void error_at(char *loc, char *msg) {
     exit(1);
 }
 
-void tokenize(char *p) {
+
+
+
+// ---------------------------------------
+// token
+void add_token(Vector *vec, int ty, int val) {
+    Token *token = malloc(sizeof(Token));
+    token->ty = ty;
+    // token->input = input;
+    token->val = val;
+    vec_push(vec, (void *)token);
+}
+
+Vector *tokenize(char *p) {
+    Vector *v = new_vector();
     user_input = p; // save original input
 
     int i = 0;
@@ -91,29 +157,33 @@ void tokenize(char *p) {
         }
 
         if (strncmp(p, "==", 2) == 0) {
-            tokens[i].ty = TK_EQ;
-            tokens[i].input = p;
+            // tokens[i].ty = TK_EQ;
+            // tokens[i].input = p;
+            add_token(v, TK_EQ, 0);
             i++;
             p += 2;
             continue;
         }
         if (strncmp(p, "!=", 2) == 0) {
-            tokens[i].ty = TK_NE;
-            tokens[i].input = p;
+            // tokens[i].ty = TK_NE;
+            // tokens[i].input = p;
+            add_token(v, TK_NE, 0);
             i++;
             p += 2;
             continue;
         }
         if (strncmp(p, "<=", 2) == 0) {
-            tokens[i].ty = TK_LE;
-            tokens[i].input = p;
+            // tokens[i].ty = TK_LE;
+            // tokens[i].input = p;
+            add_token(v, TK_LE, 0);
             i++;
             p += 2;
             continue;
         }
         if (strncmp(p, ">=", 2) == 0) {
-            tokens[i].ty = TK_GE;
-            tokens[i].input = p;
+            // tokens[i].ty = TK_GE;
+            // tokens[i].input = p;
+            add_token(v, TK_GE, 0);
             i++;
             p += 2;
             continue;
@@ -124,17 +194,19 @@ void tokenize(char *p) {
             || *p == '(' || *p == ')'
             ||  *p == '<' || *p == '>'
             ) {
-            tokens[i].ty = *p;
-            tokens[i].input = p;
+            // tokens[i].ty = *p;
+            // tokens[i].input = p;
+            add_token(v, *p, 0);
             i++;
             p++;
             continue;
         }
 
         if (isdigit(*p)) {
-            tokens[i].ty = TK_NUM;
-            tokens[i].input = p;
-            tokens[i].val = strtol(p, &p, 10);
+            // tokens[i].ty = TK_NUM;
+            // tokens[i].input = p;
+            // tokens[i].val = strtol(p, &p, 10);
+            add_token(v, TK_NUM, strtol(p, &p, 10));
             i++;
             continue;
         }
@@ -142,8 +214,11 @@ void tokenize(char *p) {
         error_at(p, "Cannot tokenize");
     }
 
-    tokens[i].ty = TK_EOF;
-    tokens[i].input = p;
+    // tokens[i].ty = TK_EOF;
+    // tokens[i].input = p;
+    add_token(v, TK_EOF, 0);
+
+    return v;
 }
 
 // ---------------------------------------
@@ -328,56 +403,6 @@ void printNodes(Node *node, int depth) {
 }
 // ---------------------------------------
 
-// vector
-
-typedef struct {
-    void **data;
-    int capacity;
-    int len;
-} Vector;
-
-Vector *new_vector() {
-    Vector *vec = malloc(sizeof(Vector));
-    vec->data = malloc(sizeof(void *) * 16);
-    vec->capacity = 16;
-    vec->len = 0;
-    return vec;
-}
-
-void vec_push(Vector *vec, void *elem) {
-    if (vec->capacity == vec->len) {
-        vec->capacity *= 2;
-        vec->data = realloc(vec->data, sizeof(void *) * vec->capacity);
-    }
-    vec->data[vec->len++] = elem;
-}
-
-int expect(int line, int expected, int actual) {
-    if (expected == actual) 
-        return 1;
-    fprintf(stderr, "%d: %d expected, but got %d\n",
-            line, expected, actual);
-    exit(1);
-}
-
-void runtest() {
-    Vector *vec = new_vector();
-    expect(__LINE__, 0, vec->len);
-
-    for (int i = 0; i < 100; i++) {
-        vec_push(vec, (void *)i);
-    }
-
-    expect(__LINE__, 100, vec->len);
-    expect(__LINE__, 0, (long)vec->data[0]);
-    expect(__LINE__, 50, (long)vec->data[50]);
-    expect(__LINE__, 99, (long)vec->data[99]);
-
-    printf("OK\n");
-}
-
-// ---------------------------------------
-
 int main(int argc, char **argv) {
     if (argc != 2) {
         fprintf(stderr, "The number of arguments is invalid \n");
@@ -389,15 +414,13 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    tokenize(argv[1]);
+    Vector *tokens_vector = tokenize(argv[1]);
     // printf("%d\n", TK_GE);
-    // for (int i = 0; i < 10; i++) {
-    //     printf("%d\n",tokens[i].ty);
-    // }
-    // return 0;
+    for (int i = 0; i < 10; i++) {
+        printf("%d\n",((Token *)tokens_vector->data[i])->ty);
+    }
+    return 0;
     Node *node = expr();
-    // printNodes(node, 0);
-
 
     // print assembly
     printf(".intel_syntax noprefix\n");
