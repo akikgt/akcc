@@ -14,6 +14,12 @@ typedef struct {
     int len;
 } Vector;
 
+Vector *new_vector();
+void vec_push(Vector *vec, void *elem);
+int expect(int line, int expected, int actual);
+void runtest();
+
+
 /// token.c
 enum {
     TK_NUM = 256,   // integers
