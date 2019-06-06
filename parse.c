@@ -3,6 +3,7 @@
 static Vector *tokens;
 static int pos;
 
+static Vector *code;
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
@@ -27,9 +28,28 @@ int consume(int ty) {
     return 1;
 }
 
-Node *expr() {
+Node *assign() {
     Node *node = equality();
+    if (consume('='))
+        node = new_node('=', node, assign());
     return node;
+}
+
+Node *expr() {
+    return assign();
+}
+
+Node *stmt() {
+    Node *node = expr();
+    if (!consume(';'))
+        error_at(((Token *)tokens->data[pos])->input, "Not ';'");
+    return node;
+}
+
+void program() {
+    while (((Token *)tokens->data[pos])->ty != TK_EOF)
+        vec_push(code, stmt());
+    vec_push(code, NULL);
 }
 
 Node *equality() {
@@ -117,5 +137,9 @@ Node *term() {
 Node *parse(Vector *v) {
     tokens = v;
     pos = 0;
-    return expr();
+    code = new_vector();
+
+    program();
+    return code->data[0];
+    // return expr();
 }
