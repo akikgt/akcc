@@ -59,5 +59,6 @@ try 3 '1 + 1; a=100; return 3; 100;'
 #multi-character variable
 try 7 'abc=7; return abc;'
 try 3 'abc=7; de = 1; abc=de+1; return abc + de;'
-try 3 'if(1) 1; 3;'
+try 2 'if(1) 2;'
+try 0 'if(0) 3;'
 echo OK

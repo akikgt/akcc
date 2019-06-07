@@ -1,4 +1,5 @@
 #include "xcc.h"
+static label_count = 0;
 
 void gen_lval(Node *node) {
     if (node->ty != ND_IDENT) 
@@ -18,6 +19,17 @@ void gen(Node *node) {
         printf(" mov rsp, rbp\n");
         printf(" pop rbp\n");
         printf(" ret\n");
+        return;
+    }
+
+    if (node->ty == ND_IF) {
+        gen(node->lhs); 
+        printf(" pop rax\n");
+        printf(" cmp rax, 0\n");
+        printf(" je .Lend%d\n", label_count);
+        gen(node->rhs);
+        printf(".Lend%d:\n", label_count);
+        label_count++;
         return;
     }
 
