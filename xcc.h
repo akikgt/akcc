@@ -95,7 +95,9 @@ typedef struct Node {
 
     // block statement(compound statement)
     Vector *stmts;
-    
+
+    // function call
+    Vector *args;
 } Node;
 
 

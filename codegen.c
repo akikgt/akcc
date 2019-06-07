@@ -20,6 +20,10 @@ void gen(Node *node) {
 
     switch (node->ty) {
         case ND_CALL:
+            for (int i = 0; i < node->args->len; i++) {
+                gen(node->args->data[i]);
+                printf("TODO: process arguments\n");
+            }
             printf(" call %s\n", node->name);
             printf(" push rax\n");
             return;

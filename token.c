@@ -127,6 +127,7 @@ Vector *tokenize(char *p) {
             || *p == ';'    // end of stmt
             || *p == '='    // assign
             || *p == '{' || *p == '}'   // block
+            || *p == ','
             ) {
             add_token(v, *p, p);
             i++;

@@ -240,10 +240,18 @@ Node *term() {
         // function call
         if (consume('('))
         {
-            if (!consume(')'))
-                error_at(t->input, "missing closing parentheses");
-
             node = malloc(sizeof(Node));
+            node->args = new_vector();
+            for (;;) {
+                if (consume(')'))
+                    break;
+                vec_push(node->args, expr());
+                if (consume(')'))
+                    break;
+                if (!consume(','))
+                    error_at(t->input, "Not ','");
+            }
+
             node->ty = ND_CALL;
             node->name =  t->name;
             return node;
