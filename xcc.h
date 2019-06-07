@@ -23,6 +23,7 @@ void runtest();
 enum {
     TK_NUM = 256,   // integers
     TK_IDENT,       // identifier
+    TK_RETURN,       // return
     TK_EQ,          // ==
     TK_NE,          // !=
     TK_LE,          // <=
@@ -44,6 +45,7 @@ Vector *tokenize(char *p);
 enum {
     ND_NUM = 256,
     ND_IDENT,
+    ND_RETURN,       // return
     ND_EQ,          // ==
     ND_NE,          // !=
     ND_LE,          // <=

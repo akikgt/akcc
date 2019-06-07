@@ -53,4 +53,7 @@ try 3 'a=3;'
 #assignment
 try 10 'z=2; z + 8;'
 try 10 'a=3; z=2; a + z + 5;'
+#return
+try 2 'return 2;'
+try 3 '1 + 1; a=100; return 3; 100;'
 echo OK
