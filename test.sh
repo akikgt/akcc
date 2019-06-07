@@ -4,7 +4,7 @@ try() {
     input="$2"
 
     ./xcc "$input" > tmp.s
-    gcc -o tmp tmp.s
+    gcc -o tmp tmp.s tmp-plus.o
     ./tmp
     actual="$?"
 
@@ -15,6 +15,8 @@ try() {
         exit 1
     fi
 }
+
+echo 'int two() { printf("Function call test: "); return 2; }' | gcc -xc -c -o tmp-plus.o - 
 
 # simple number
 try 0 '0;'
@@ -76,4 +78,7 @@ try 6 'i = 0; for (; i < 5 ;) i = i + 3; i;'
 try 0 '{}'
 try 8 '{1;2;3;4;5;6; 2 * 2 * 2;}'
 try 8 '{1; i = 0; while(i <= 3) i = i + 1; 2;3;4;5;6; 2 * 2 * 2;}'
+try 200 'if (1 + 1 == 2) { 100; 200;}'
+#function call
+try '2' 'two();'
 echo OK

@@ -235,7 +235,23 @@ Node *term() {
 
     if (t->ty == TK_IDENT) {
         pos++;
-        return new_node_ident(t->name);
+        Node *node;
+
+        // function call
+        if (consume('('))
+        {
+            if (!consume(')'))
+                error_at(t->input, "missing closing parentheses");
+
+            node = malloc(sizeof(Node));
+            node->ty = ND_CALL;
+            node->name =  t->name;
+            return node;
+        }
+
+        // identifier
+        node = new_node_ident(t->name);
+        return node;
     }
 
     error_at(t->input, "non-number or opening parentheses Token found");
