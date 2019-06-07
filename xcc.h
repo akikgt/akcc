@@ -117,6 +117,7 @@ Vector *parse(Vector *v);
 
 /// codegen.c
 void gen(Node *node);
+void gen_func(Node *node);
 
 /// error functions
 void error(char *fmt, ...);

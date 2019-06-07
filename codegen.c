@@ -13,6 +13,9 @@ char *regs[6] = {
 };
 
 void gen_func(Node *node) {
+    if (node->ty != ND_FUNC) 
+        error("This is not function node");
+
     /// currently, we use function scope
     /// TODO: block scope
     map = new_map();
@@ -25,6 +28,12 @@ void gen_func(Node *node) {
     printf(" push rbp\n");
     printf(" mov rbp, rsp\n");
     printf(" sub rsp, 208\n");  // make 26 local variables
+    // set parameters
+    for (int i = 0; i < node->args->len; i++) {
+        gen_lval(node->args->data[i]);
+        printf(" pop rax\n");
+        printf(" mov [rax], %s\n", regs[i]);
+    }
 
     gen(node->body);
 
@@ -56,15 +65,15 @@ void gen_lval(Node *node) {
 void gen(Node *node) {
 
     switch (node->ty) {
-        case ND_FUNC:
-            gen_func(node);
-            return;
+        // case ND_FUNC:
+        //     gen_func(node);
+        //     return;
         case ND_CALL:
             for (int i = 0; i < node->args->len; i++) {
                 gen(node->args->data[i]);
             }
 
-            for (int i = 0; i < node->args->len; i++)
+            for (int i = node->args->len - 1; i >= 0; i--)
                 printf(" pop %s\n", regs[i]);
 
             ////

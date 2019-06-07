@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     // print assembly
     printf(".intel_syntax noprefix\n");
     for (int i = 0; i < nodes->len - 1; i++) {
-        gen(nodes->data[i]);
+        gen_func(nodes->data[i]);
     }
 
     return 0;

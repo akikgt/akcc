@@ -32,4 +32,18 @@ try 5 'main() {plus(2, 3);}'
 try 5 'main() {plus(2, 1 + 1 + 1);}'
 
 try 2 'two() {return 2;} main() { return two();}'
+try 10 'my_mul(a, b) {return a * b;} main() { return my_mul(5, 2);}'
+
+#fibonacci test
+try 55 '
+    fib(a,b,count) {
+        if (count == 1) {
+            return a;
+        }
+        return fib(b, a+b, count - 1);
+    }
+    main() {
+    return fib(1, 1, 10);
+    }'
+# try 10 'fib(a, b, acc) {return a * b;} main() { return fib(1, 1, 1);}'
 echo OK
