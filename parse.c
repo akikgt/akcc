@@ -81,6 +81,19 @@ Node *stmt() {
         
         return node;
     }
+    else if (consume(TK_WHILE)) {
+        node = malloc(sizeof(Node));
+        node->ty = ND_WHILE;
+
+        if (!consume('('))
+            error_at(((Token *)tokens->data[pos])->input, "Not '('");
+        node->cond = expr();
+        if (!consume(')'))
+            error_at(((Token *)tokens->data[pos])->input, "missing closing parentheses");
+        node->then = stmt();
+
+        return node;
+    }
     else {
         /// default statement
         node = expr();

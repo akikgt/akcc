@@ -53,6 +53,7 @@ try 3 'a=3;'
 #assignment
 try 10 'z=2; z + 8;'
 try 10 'a=3; z=2; a + z + 5;'
+try 2 'a = 1; a = a + 1;'
 #return
 try 2 'return 2;'
 try 3 '1 + 1; a=100; return 3; 100;'
@@ -65,4 +66,7 @@ try 0 'if(0) 3;'
 try 3 'if(1) 3; else 7;'
 try 7 'if(0) 3; else 7;'
 try 8 'if(1 + 1 >= 5) 3; else 8;'
+#while
+try 4 'i = 0; while(i <= 3) i = i + 1;'
+try 16 'i = 1; while(i < 16) i = i * 2; i;'
 echo OK

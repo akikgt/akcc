@@ -40,6 +40,7 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        /* C keywords - Reserved words */
         /// Return
         if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])) {
             add_token(v, TK_RETURN, p);
@@ -63,6 +64,15 @@ Vector *tokenize(char *p) {
             p += 4;
             continue;
         }
+
+        /// While 
+        if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])) {
+            add_token(v, TK_WHILE, p);
+            i++;
+            p += 5;
+            continue;
+        }
+        /* End - C keywords - Reserved words */
 
         // Identifier
         if (isalpha(*p) || *p == '_') {
