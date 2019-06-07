@@ -17,7 +17,6 @@ typedef struct {
 
 Vector *new_vector();
 void vec_push(Vector *vec, void *elem);
-int expect(int line, int expected, int actual);
 void runtest();
 
 // map
@@ -84,9 +83,14 @@ typedef struct Node {
     char *name;
 
     // if else statement
+    // for (init; cond; inc) body
     struct Node *cond;
     struct Node *then;
     struct Node *els;
+    struct Node *init;
+    struct Node *inc;
+    struct Node *body;
+    
 } Node;
 
 

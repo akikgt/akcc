@@ -72,6 +72,14 @@ Vector *tokenize(char *p) {
             p += 5;
             continue;
         }
+
+        /// For 
+        if (strncmp(p, "for", 3) == 0 && !is_alnum(p[3])) {
+            add_token(v, TK_FOR, p);
+            i++;
+            p += 3;
+            continue;
+        }
         /* End - C keywords - Reserved words */
 
         // Identifier

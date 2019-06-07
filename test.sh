@@ -69,4 +69,7 @@ try 8 'if(1 + 1 >= 5) 3; else 8;'
 #while
 try 4 'i = 0; while(i <= 3) i = i + 1;'
 try 16 'i = 1; while(i < 16) i = i * 2; i;'
+#for
+try 3 'for(i = 1; i < 3; i = i + 1) 1; i;'
+try 6 'i = 0; for (; i < 5 ;) i = i + 3; i;'
 echo OK

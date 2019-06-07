@@ -16,7 +16,7 @@ void vec_push(Vector *vec, void *elem) {
     vec->data[vec->len++] = elem;
 }
 
-int expect(int line, int expected, int actual) {
+static int expect(int line, int expected, int actual) {
     if (expected == actual) 
         return 1;
     fprintf(stderr, "%d: %d expected, but got %d\n",

@@ -90,8 +90,36 @@ Node *stmt() {
         node->cond = expr();
         if (!consume(')'))
             error_at(((Token *)tokens->data[pos])->input, "missing closing parentheses");
-        node->then = stmt();
 
+        node->then = stmt();
+        return node;
+    }
+    else if (consume(TK_FOR)) {
+        node = malloc(sizeof(Node));
+        node->ty = ND_FOR;
+
+        if (!consume('('))
+            error_at(((Token *)tokens->data[pos])->input, "Not '('");
+
+        if (!consume(';')) {
+            node->init = expr();
+            if (!consume(';'))
+                error_at(((Token *)tokens->data[pos])->input, "Not ';'");
+        }
+
+        if (!consume(';')) {
+            node->cond = expr();
+            if (!consume(';'))
+                error_at(((Token *)tokens->data[pos])->input, "Not ';'");
+        }
+
+        if (!consume(')')) {
+            node->inc = expr();
+            if (!consume(')'))
+                error_at(((Token *)tokens->data[pos])->input, "missing closing parentheses");
+        }
+
+        node->body = stmt();
         return node;
     }
     else {
