@@ -123,9 +123,10 @@ Vector *tokenize(char *p) {
         if (
             *p == '+' || *p == '-' || *p == '*' || *p == '/' 
             || *p == '(' || *p == ')'
-            ||  *p == '<' || *p == '>'
-            || *p == ';'
-            || *p == '='
+            ||  *p == '<' || *p == '>' // inequality
+            || *p == ';'    // end of stmt
+            || *p == '='    // assign
+            || *p == '{' || *p == '}'   // block
             ) {
             add_token(v, *p, p);
             i++;

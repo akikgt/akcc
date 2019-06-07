@@ -69,6 +69,7 @@ enum
     ND_IF,        // if
     ND_WHILE,     // while
     ND_FOR,       // for
+    ND_BLOCK,     // block
     ND_EQ,        // ==
     ND_NE,        // !=
     ND_LE,        // <=
