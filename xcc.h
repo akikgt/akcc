@@ -30,7 +30,7 @@ void map_put(Map *map, char *key, void *val);
 void *map_get(Map *map, char *key);
 void test_map();
 
-extern Map* map;
+// extern Map* map;
 
 
 /// token.c

@@ -1,5 +1,7 @@
 #include "xcc.h"
 static int label_count = 0;
+static Map *map;
+static var_count;
 
 char *regs[6] = {
     "rdi",
@@ -11,11 +13,20 @@ char *regs[6] = {
 };
 
 void gen_lval(Node *node) {
+    if (map == NULL) 
+        map = new_map();
+
     if (node->ty != ND_IDENT) 
         error("lval is not valid variable");
 
-    // int offset = ('z' - *node->name + 1) * 8;
-    int offset = (int)map_get(map, node->name);
+    int offset;
+    if (map_get(map, node->name) == NULL) {
+        offset = (var_count + 1) * 8;
+        map_put(map, node->name, (void *)offset);
+        var_count++;
+    }
+
+    offset = (int)map_get(map, node->name);
     printf(" mov rax, rbp\n");
     printf(" sub rax, %d\n", offset);
     printf(" push rax\n");

@@ -4,7 +4,7 @@ static Vector *tokens;
 static int pos;
 static Vector *code;
 static int var_count;
-Map *map;
+// Map *map;
 
 int consume(int ty) {
     Token *t = tokens->data[pos];
@@ -40,11 +40,11 @@ Node *new_node_ident(char *name) {
     node->ty = ND_IDENT;
     node->name = name;
 
-    if (map_get(map, name) == NULL) {
-        int offset = (var_count + 1) * 8;
-        map_put(map, name, (void *)offset);
-        var_count++;
-    }
+    // if (map_get(map, name) == NULL) {
+    //     int offset = (var_count + 1) * 8;
+    //     map_put(map, name, (void *)offset);
+    //     var_count++;
+    // }
 
     return node;
 }
@@ -278,8 +278,8 @@ Vector *parse(Vector *v) {
     pos = 0;
     code = new_vector();
 
-    map = new_map();
-    var_count = 0;
+    // map = new_map();
+    // var_count = 0;
 
     program();
     return code;
