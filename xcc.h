@@ -35,17 +35,20 @@ extern Map* map;
 
 
 /// token.c
-enum {
-    TK_NUM = 256,   // integers
-    TK_IDENT,       // identifier
-    TK_RETURN,      // return
-    TK_IF,          // if
-    TK_ELSE,        // else
-    TK_EQ,          // ==
-    TK_NE,          // !=
-    TK_LE,          // <=
-    TK_GE,          // >=
-    TK_EOF,         // EOF
+enum
+{
+    TK_NUM = 256, // integers
+    TK_IDENT,     // identifier
+    TK_RETURN,    // return
+    TK_IF,        // if
+    TK_ELSE,      // else
+    TK_WHILE,     // while
+    TK_FOR,       // for
+    TK_EQ,        // ==
+    TK_NE,        // !=
+    TK_LE,        // <=
+    TK_GE,        // >=
+    TK_EOF,       // EOF
 };
 
 typedef struct {
@@ -59,15 +62,18 @@ Vector *tokenize(char *p);
 
 
 /// parse.c
-enum {
-    ND_NUM = 256,   // integers
-    ND_IDENT,       // identifier
-    ND_RETURN,      // return
-    ND_IF,          // if
-    ND_EQ,          // ==
-    ND_NE,          // !=
-    ND_LE,          // <=
-    ND_GE,          // >=
+enum
+{
+    ND_NUM = 256, // integers
+    ND_IDENT,     // identifier
+    ND_RETURN,    // return
+    ND_IF,        // if
+    ND_WHILE,     // while
+    ND_FOR,       // for
+    ND_EQ,        // ==
+    ND_NE,        // !=
+    ND_LE,        // <=
+    ND_GE,        // >=
 };
 
 typedef struct Node {
