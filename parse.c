@@ -82,6 +82,7 @@ Node *stmt() {
         return node;
     }
     else {
+        /// default statement
         node = expr();
         if (!consume(';'))
             error_at(((Token *)tokens->data[pos])->input, "Not ';'");
