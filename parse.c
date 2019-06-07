@@ -2,8 +2,9 @@
 
 static Vector *tokens;
 static int pos;
+static int var_count;
 
-Vector *code;
+static Vector *code;
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
