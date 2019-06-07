@@ -1,5 +1,18 @@
 #include "xcc.h"
 
+// #define _GNU_SOURCEを書かないと使えない？ strdup is not included in standard C
+// char *strndup(const char *s, size_t n) {
+//     char *p = memchr(s, '\0', n);
+//     if (p != NULL)
+//         n = p - s;
+//     p = malloc(n + 1);
+//     if (p != NULL) {
+//         memcpy(p, s, n);
+//         p[n] = '\0';
+//     }
+//     return p;
+// }
+
 int is_alnum(char c) {
     return ('a' <= c && c <= 'z') ||
             ('A' <= c && c <= 'Z') ||
@@ -34,13 +47,14 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        // Identifier
         if (isalpha(*p) || *p == '_') {
             int len = 1;
             while (isalpha(p[len]) || isdigit(p[len]) ||  p[len] == '_')
                 len++;
 
             Token *t = add_token(v, TK_IDENT, p);
-            t->name = strndup(p, len); 
+            t->name = strndup(p, len);
             i++;
             p += len;
             continue;

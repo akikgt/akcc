@@ -5,6 +5,7 @@ static int pos;
 static int var_count;
 
 static Vector *code;
+static Map *map;
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
@@ -21,7 +22,7 @@ Node *new_node_num(int val) {
     return node;
 }
 
-Node *new_node_ident(char name) {
+Node *new_node_ident(char *name) {
     Node *node = malloc(sizeof(Node));
     node->ty = ND_IDENT;
     node->name = name;
@@ -150,7 +151,7 @@ Node *term() {
 
     if (t->ty == TK_IDENT) {
         pos++;
-        return new_node_ident(*t->input);
+        return new_node_ident(t->name);
     }
 
     error_at(t->input, "non-number or opening parentheses Token found");

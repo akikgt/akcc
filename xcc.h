@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -66,7 +67,7 @@ typedef struct Node {
     struct Node *lhs;
     struct Node *rhs;
     int val;
-    char name;
+    char *name;
 } Node;
 
 
