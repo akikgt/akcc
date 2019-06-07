@@ -13,8 +13,26 @@ void gen_lval(Node *node) {
 }
 
 void gen(Node *node) {
+    // if (node == NULL) {
+    //     printf("error");
+    //     return;
+    // }
 
     switch (node->ty) {
+        case ND_BLOCK:
+            if (node->stmts->len == 0) {
+                printf(" push 0\n");
+                return;
+            }
+
+            for (int i = 0; i < node->stmts->len; i++) {
+                gen(node->stmts->data[i]);
+                printf(" pop rax\n");
+            }
+
+            printf(" push rax\n");
+            return;
+
         case ND_RETURN:
             gen(node->lhs);
             printf(" pop rax\n");

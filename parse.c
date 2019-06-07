@@ -6,6 +6,20 @@ static Vector *code;
 static int var_count;
 Map *map;
 
+int consume(int ty) {
+    Token *t = tokens->data[pos];
+    if (t->ty != ty)
+        return 0;
+    pos++;
+    return 1;
+}
+
+// static void expect(int ty) {
+//     if (!consume(ty))
+//         error_at(((Token *)tokens->data[pos])->input, "Not expected");
+//         printf("%c\n", ty);
+// }
+
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
     node->ty = ty;
@@ -35,13 +49,6 @@ Node *new_node_ident(char *name) {
     return node;
 }
 
-int consume(int ty) {
-    Token *t = tokens->data[pos];
-    if (t->ty != ty)
-        return 0;
-    pos++;
-    return 1;
-}
 
 Node *assign() {
     Node *node = equality();
@@ -120,6 +127,17 @@ Node *stmt() {
         }
 
         node->body = stmt();
+        return node;
+    }
+    else if (consume('{')) {
+        node = malloc(sizeof(Node));
+        node->ty = ND_BLOCK;
+        node->stmts = new_vector();
+
+        while (!consume('}')) {
+            vec_push(node->stmts, stmt());
+        }
+
         return node;
     }
     else {

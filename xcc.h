@@ -91,6 +91,9 @@ typedef struct Node {
     struct Node *init;
     struct Node *inc;
     struct Node *body;
+
+    // block statement(compound statement)
+    Vector *stmts;
     
 } Node;
 

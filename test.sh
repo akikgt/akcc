@@ -72,4 +72,8 @@ try 16 'i = 1; while(i < 16) i = i * 2; i;'
 #for
 try 3 'for(i = 1; i < 3; i = i + 1) 1; i;'
 try 6 'i = 0; for (; i < 5 ;) i = i + 3; i;'
+#compound statements
+try 0 '{}'
+try 8 '{1;2;3;4;5;6; 2 * 2 * 2;}'
+try 8 '{1; i = 0; while(i <= 3) i = i + 1; 2;3;4;5;6; 2 * 2 * 2;}'
 echo OK
