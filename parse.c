@@ -149,11 +149,6 @@ Node *stmt() {
     }
 }
 
-void program() {
-    while (((Token *)tokens->data[pos])->ty != TK_EOF)
-        vec_push(code, stmt());
-    vec_push(code, NULL);
-}
 
 Node *equality() {
     Node *node = relational();
@@ -267,6 +262,16 @@ Node *term() {
     return NULL;
 }
 
+Node *function() {
+    Node *node = stmt();
+    return node;
+}
+
+void program() {
+    while (((Token *)tokens->data[pos])->ty != TK_EOF)
+        vec_push(code, function());
+    vec_push(code, NULL);
+}
 
 Vector *parse(Vector *v) {
     tokens = v;
