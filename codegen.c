@@ -14,15 +14,17 @@ char *regs[6] = {
 
 void gen_func(Node *node) {
     /// currently, we use function scope
-    // TODO: block scope
+    /// TODO: block scope
     map = new_map();
+    var_count = 0;
+
     printf(".global %s\n", node->name);
     printf("%s:\n", node->name);
 
     // Prologue
     printf(" push rbp\n");
     printf(" mov rbp, rsp\n");
-    printf(" sub rsp, 208\n");  // make 26 local2variables
+    printf(" sub rsp, 208\n");  // make 26 local variables
 
     gen(node->body);
 

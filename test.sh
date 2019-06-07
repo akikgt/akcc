@@ -31,5 +31,5 @@ try 200 'main() {if (1 + 1 == 2) { 100; 200;}}'
 try 5 'main() {plus(2, 3);}'
 try 5 'main() {plus(2, 1 + 1 + 1);}'
 
-try 2 'test() {return 2;} main() { return test();}'
+try 2 'two() {return 2;} main() { return two();}'
 echo OK
