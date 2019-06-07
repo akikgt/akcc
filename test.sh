@@ -16,7 +16,7 @@ try() {
     fi
 }
 
-echo 'int two() { printf("Function call test: "); return 2; }' | gcc -xc -c -o tmp-plus.o - 
+echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
 # simple number
 try 0 '0;'
@@ -80,5 +80,6 @@ try 8 '{1;2;3;4;5;6; 2 * 2 * 2;}'
 try 8 '{1; i = 0; while(i <= 3) i = i + 1; 2;3;4;5;6; 2 * 2 * 2;}'
 try 200 'if (1 + 1 == 2) { 100; 200;}'
 #function call
-try '2' 'two();'
+try '5' 'plus(2, 3);'
+try '5' 'plus(2, 1 + 1 + 1);'
 echo OK

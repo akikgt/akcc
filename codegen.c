@@ -1,6 +1,15 @@
 #include "xcc.h"
 static int label_count = 0;
 
+char *regs[6] = {
+    "rdi",
+    "rsi",
+    "rdx",
+    "rcx",
+    "r8",
+    "r9",
+};
+
 void gen_lval(Node *node) {
     if (node->ty != ND_IDENT) 
         error("lval is not valid variable");
@@ -22,8 +31,14 @@ void gen(Node *node) {
         case ND_CALL:
             for (int i = 0; i < node->args->len; i++) {
                 gen(node->args->data[i]);
-                printf("TODO: process arguments\n");
             }
+
+            for (int i = 0; i < node->args->len; i++)
+                printf(" pop %s\n", regs[i]);
+
+            ////
+            // TODO: alignment RSP
+            ////
             printf(" call %s\n", node->name);
             printf(" push rax\n");
             return;

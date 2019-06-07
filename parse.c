@@ -237,28 +237,28 @@ Node *term() {
         pos++;
         Node *node;
 
-        // function call
-        if (consume('('))
-        {
-            node = malloc(sizeof(Node));
-            node->args = new_vector();
-            for (;;) {
-                if (consume(')'))
-                    break;
-                vec_push(node->args, expr());
-                if (consume(')'))
-                    break;
-                if (!consume(','))
-                    error_at(t->input, "Not ','");
-            }
-
-            node->ty = ND_CALL;
-            node->name =  t->name;
+        // identifier
+        if (!consume('(')) {
+            node = new_node_ident(t->name);
             return node;
         }
 
-        // identifier
-        node = new_node_ident(t->name);
+        // function call
+        node = malloc(sizeof(Node));
+        node->ty = ND_CALL;
+        node->name = t->name;
+        node->args = new_vector();
+
+        if (consume(')'))
+            return node;
+
+        vec_push(node->args, expr());
+        while (consume(',')) {
+            vec_push(node->args, expr());
+        }
+        if (!consume(')'))
+            error_at(t->input, "missing closing parentheses");
+
         return node;
     }
 
