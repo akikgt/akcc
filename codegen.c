@@ -12,9 +12,28 @@ char *regs[6] = {
     "r9",
 };
 
+void gen_func(Node *node) {
+    /// currently, we use function scope
+    // TODO: block scope
+    map = new_map();
+    printf(".global %s\n", node->name);
+    printf("%s:\n", node->name);
+
+    // Prologue
+    printf(" push rbp\n");
+    printf(" mov rbp, rsp\n");
+    printf(" sub rsp, 208\n");  // make 26 local2variables
+
+    gen(node->body);
+
+    // Epilogue
+    printf(" pop rax\n");
+    printf(" mov rsp, rbp\n");
+    printf(" pop rbp\n");
+    printf(" ret\n");
+}
+
 void gen_lval(Node *node) {
-    // if (map == NULL) 
-    //     map = new_map();
 
     if (node->ty != ND_IDENT) 
         error("lval is not valid variable");
@@ -35,6 +54,9 @@ void gen_lval(Node *node) {
 void gen(Node *node) {
 
     switch (node->ty) {
+        case ND_FUNC:
+            gen_func(node);
+            return;
         case ND_CALL:
             for (int i = 0; i < node->args->len; i++) {
                 gen(node->args->data[i]);
@@ -51,11 +73,6 @@ void gen(Node *node) {
             return;
 
         case ND_BLOCK:
-            // make new local variable maps
-            // TODO: block scope
-            // need environment
-            map = new_map();
-
             if (node->stmts->len == 0) {
                 printf(" push 0\n");
                 return;

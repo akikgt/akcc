@@ -256,7 +256,32 @@ Node *term() {
 }
 
 Node *function() {
-    Node *node = stmt();
+    Token *t = tokens->data[pos];
+    if (!consume(TK_IDENT))
+        error_at(t->input, "Not function");
+
+    Node *node = malloc(sizeof(Node));
+    node->ty = ND_FUNC;
+    node->name = t->name;
+    node->args = new_vector();
+
+    if (!consume('('))
+        error_at(t->input, "Not function");
+
+    if (consume(')')) {
+        node->body = stmt();
+        return node;
+    }
+
+    vec_push(node->args, term());
+    while (consume(','))
+    {
+        vec_push(node->args, term());
+    }
+    if (!consume(')'))
+        error_at(t->input, "missing closing parentheses");
+
+    node->body = stmt();
     return node;
 }
 
