@@ -40,6 +40,7 @@ enum {
     TK_IDENT,       // identifier
     TK_RETURN,      // return
     TK_IF,          // if
+    TK_ELSE,        // else
     TK_EQ,          // ==
     TK_NE,          // !=
     TK_LE,          // <=
@@ -75,6 +76,11 @@ typedef struct Node {
     struct Node *rhs;
     int val;
     char *name;
+
+    // if else statement
+    struct Node *cond;
+    struct Node *then;
+    struct Node *els;
 } Node;
 
 

@@ -56,6 +56,14 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        /// Else statement
+        if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])) {
+            add_token(v, TK_ELSE, p);
+            i++;
+            p += 4;
+            continue;
+        }
+
         // Identifier
         if (isalpha(*p) || *p == '_') {
             int len = 1;
