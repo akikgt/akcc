@@ -34,6 +34,18 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        if (isalpha(*p) || *p == '_') {
+            int len = 1;
+            while (isalpha(p[len]) || isdigit(p[len]) ||  p[len] == '_')
+                len++;
+
+            Token *t = add_token(v, TK_IDENT, p);
+            t->name = strndup(p, len); 
+            i++;
+            p += len;
+            continue;
+        }
+
         if (strncmp(p, "==", 2) == 0) {
             add_token(v, TK_EQ, p);
             i++;
@@ -79,12 +91,12 @@ Vector *tokenize(char *p) {
             continue;
         }
 
-        if ('a' <= *p && *p <= 'z') {
-            add_token(v, TK_IDENT, p);
-            i++;
-            p++;
-            continue;
-        }
+        // if ('a' <= *p && *p <= 'z') {
+        //     add_token(v, TK_IDENT, p);
+        //     i++;
+        //     p++;
+        //     continue;
+        // }
 
         error_at(p, "Cannot tokenize");
     }

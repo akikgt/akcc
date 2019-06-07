@@ -43,6 +43,7 @@ enum {
 typedef struct {
     int ty;         // type of token
     int val;        // the value when ty == TK_NUM
+    char *name;     // name of identifier when ty == TK_IDENT
     char *input;    // token strings for error message
 } Token;
 
