@@ -7,6 +7,7 @@
 extern char *user_input;
 
 /// container.c
+// vector
 typedef struct {
     void **data;
     int capacity;
@@ -17,6 +18,13 @@ Vector *new_vector();
 void vec_push(Vector *vec, void *elem);
 int expect(int line, int expected, int actual);
 void runtest();
+
+// map
+typedef struct {
+    Vector *keys;
+    Vector *vals;
+} Map;
+void test_map();
 
 
 /// token.c
