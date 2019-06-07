@@ -13,8 +13,8 @@ char *regs[6] = {
 };
 
 void gen_lval(Node *node) {
-    if (map == NULL) 
-        map = new_map();
+    // if (map == NULL) 
+    //     map = new_map();
 
     if (node->ty != ND_IDENT) 
         error("lval is not valid variable");
@@ -33,10 +33,6 @@ void gen_lval(Node *node) {
 }
 
 void gen(Node *node) {
-    // if (node == NULL) {
-    //     printf("error");
-    //     return;
-    // }
 
     switch (node->ty) {
         case ND_CALL:
@@ -55,6 +51,11 @@ void gen(Node *node) {
             return;
 
         case ND_BLOCK:
+            // make new local variable maps
+            // TODO: block scope
+            // need environment
+            map = new_map();
+
             if (node->stmts->len == 0) {
                 printf(" push 0\n");
                 return;
