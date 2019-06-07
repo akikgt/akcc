@@ -56,4 +56,7 @@ try 10 'a=3; z=2; a + z + 5;'
 #return
 try 2 'return 2;'
 try 3 '1 + 1; a=100; return 3; 100;'
+#multi-character variable
+try 7 'abc=7; return abc;'
+try 3 'abc=7; de = 1; abc=de+1; return abc + de;'
 echo OK

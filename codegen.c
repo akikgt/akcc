@@ -4,7 +4,8 @@ void gen_lval(Node *node) {
     if (node->ty != ND_IDENT) 
         error("lval is not valid variable");
 
-    int offset = ('z' - *node->name + 1) * 8;
+    // int offset = ('z' - *node->name + 1) * 8;
+    int offset = (int)map_get(map, node->name);
     printf(" mov rax, rbp\n");
     printf(" sub rax, %d\n", offset);
     printf(" push rax\n");

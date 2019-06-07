@@ -2,10 +2,9 @@
 
 static Vector *tokens;
 static int pos;
-static int var_count;
-
 static Vector *code;
-static Map *map;
+static int var_count;
+Map *map;
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
@@ -26,6 +25,13 @@ Node *new_node_ident(char *name) {
     Node *node = malloc(sizeof(Node));
     node->ty = ND_IDENT;
     node->name = name;
+
+    if (map_get(map, name) == NULL) {
+        int offset = (var_count + 1) * 8;
+        map_put(map, name, (void *)offset);
+        var_count++;
+    }
+
     return node;
 }
 
@@ -164,6 +170,9 @@ Vector *parse(Vector *v) {
     tokens = v;
     pos = 0;
     code = new_vector();
+
+    map = new_map();
+    var_count = 0;
 
     program();
     return code;
