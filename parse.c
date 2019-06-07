@@ -62,6 +62,16 @@ Node *stmt() {
         node->ty = ND_RETURN;
         node->lhs = expr();
     }
+    else if (consume(TK_IF)) {
+        if (!consume('('))
+            error_at(((Token *)tokens->data[pos])->input, "Not '('");
+        node = expr();
+        if (!consume(')'))
+            error_at(((Token *)tokens->data[pos])->input, "missing closing parentheses");
+        node = new_node(ND_IF, node, stmt());
+        return node;
+        // todo: else statement 
+    }
     else {
         node = expr();
     }

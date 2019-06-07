@@ -38,7 +38,8 @@ extern Map* map;
 enum {
     TK_NUM = 256,   // integers
     TK_IDENT,       // identifier
-    TK_RETURN,       // return
+    TK_RETURN,      // return
+    TK_IF,          // if
     TK_EQ,          // ==
     TK_NE,          // !=
     TK_LE,          // <=
@@ -46,7 +47,6 @@ enum {
     TK_EOF,         // EOF
 };
 
-// type of token
 typedef struct {
     int ty;         // type of token
     int val;        // the value when ty == TK_NUM
@@ -59,9 +59,10 @@ Vector *tokenize(char *p);
 
 /// parse.c
 enum {
-    ND_NUM = 256,
-    ND_IDENT,
-    ND_RETURN,       // return
+    ND_NUM = 256,   // integers
+    ND_IDENT,       // identifier
+    ND_RETURN,      // return
+    ND_IF,          // if
     ND_EQ,          // ==
     ND_NE,          // !=
     ND_LE,          // <=
