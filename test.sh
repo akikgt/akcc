@@ -33,6 +33,7 @@ try 5 'main() {plus(2, 1 + 1 + 1);}'
 
 try 2 'two() {return 2;} main() { return two();}'
 try 10 'my_mul(a, b) {return a * b;} main() { return my_mul(5, 2);}'
+try 3 'my_sub(a, b) {return a - b;} main() { return my_sub(5, 2);}'
 
 #fibonacci test
 try 55 '
@@ -44,6 +45,17 @@ try 55 '
     }
     main() {
     return fib(1, 1, 10);
-    }'
-# try 10 'fib(a, b, acc) {return a * b;} main() { return fib(1, 1, 1);}'
+    }
+    '
+#factorial test
+try 120 '
+    factorial(n) {
+        if (n == 1)
+            return 1;
+        return n * factorial(n-1);
+    }
+    main() {
+        return factorial(5);
+    }
+'
 echo OK
