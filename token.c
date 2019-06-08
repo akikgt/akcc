@@ -12,6 +12,18 @@
 //     }
 //     return p;
 // }
+// static Map *keywords;
+
+Map *set_keywords() {
+    Map *keywords = new_map();
+    map_put(keywords, "int", (void *)TK_INT);
+    map_put(keywords, "return", (void *)TK_RETURN);
+    map_put(keywords, "if", (void *)TK_IF);
+    map_put(keywords, "else", (void *)TK_ELSE);
+    map_put(keywords, "for", (void *)TK_FOR);
+    map_put(keywords, "while", (void *)TK_WHILE);
+    return keywords;
+}
 
 int is_alnum(char c) {
     return ('a' <= c && c <= 'z') ||
@@ -30,6 +42,7 @@ Token *add_token(Vector *vec, int ty, char *input) {
 
 Vector *tokenize(char *p) {
     Vector *v = new_vector();
+    Map *keywords = set_keywords();
     user_input = p; // save original input
 
     int i = 0;
@@ -40,64 +53,21 @@ Vector *tokenize(char *p) {
             continue;
         }
 
-        /* C keywords - Reserved words */
-        /// int
-        if (strncmp(p, "int", 3) == 0 && !is_alnum(p[3])) {
-            add_token(v, TK_INT, p);
-            i++;
-            p += 3;
-            continue;
-        }
-
-        /// Return
-        if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])) {
-            add_token(v, TK_RETURN, p);
-            i++;
-            p += 6;
-            continue;
-        }
-
-        /// If statement
-        if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2])) {
-            add_token(v, TK_IF, p);
-            i++;
-            p += 2;
-            continue;
-        }
-
-        /// Else statement
-        if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])) {
-            add_token(v, TK_ELSE, p);
-            i++;
-            p += 4;
-            continue;
-        }
-
-        /// While 
-        if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])) {
-            add_token(v, TK_WHILE, p);
-            i++;
-            p += 5;
-            continue;
-        }
-
-        /// For 
-        if (strncmp(p, "for", 3) == 0 && !is_alnum(p[3])) {
-            add_token(v, TK_FOR, p);
-            i++;
-            p += 3;
-            continue;
-        }
-        /* End - C keywords - Reserved words */
-
-        // Identifier
         if (isalpha(*p) || *p == '_') {
             int len = 1;
             while (isalpha(p[len]) || isdigit(p[len]) ||  p[len] == '_')
                 len++;
 
-            Token *t = add_token(v, TK_IDENT, p);
-            t->name = strndup(p, len);
+            char *name = strndup(p, len);
+            if (map_get(keywords, name) != NULL) {
+                // Keywords
+                add_token(v, map_get(keywords, name), p);
+            }
+            else {
+                // Identifier
+                Token *t = add_token(v, TK_IDENT, p);
+                t->name = name;
+            }
             i++;
             p += len;
             continue;
@@ -149,13 +119,6 @@ Vector *tokenize(char *p) {
             i++;
             continue;
         }
-
-        // if ('a' <= *p && *p <= 'z') {
-        //     add_token(v, TK_IDENT, p);
-        //     i++;
-        //     p++;
-        //     continue;
-        // }
 
         error_at(p, "Cannot tokenize");
     }

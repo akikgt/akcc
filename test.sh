@@ -57,6 +57,5 @@ try 120 '
     }
 '
 
-#integer type
-try 1 'int main() { return 1; }'
+
 echo OK
