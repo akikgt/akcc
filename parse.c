@@ -65,19 +65,15 @@ Node *stmt() {
         node->ty = ND_RETURN;
         node->lhs = expr();
         expect(';');
-        // if (!consume(';'))
-        //     error_at(((Token *)tokens->data[pos])->input, "Not ';'");
         return node;
     }
     else if (consume(TK_IF)) {
         node = malloc(sizeof(Node));
         node->ty = ND_IF;
 
-        if (!consume('('))
-            error_at(((Token *)tokens->data[pos])->input, "Not '('");
+        expect('(');
         node->cond = expr();
-        if (!consume(')'))
-            error_at(((Token *)tokens->data[pos])->input, "missing closing parentheses");
+        expect(')');
         node->then = stmt();
 
         if (consume(TK_ELSE)) 
@@ -89,11 +85,9 @@ Node *stmt() {
         node = malloc(sizeof(Node));
         node->ty = ND_WHILE;
 
-        if (!consume('('))
-            error_at(((Token *)tokens->data[pos])->input, "Not '('");
+        expect('(');
         node->cond = expr();
-        if (!consume(')'))
-            error_at(((Token *)tokens->data[pos])->input, "missing closing parentheses");
+        expect(')');
 
         node->then = stmt();
         return node;
@@ -102,25 +96,20 @@ Node *stmt() {
         node = malloc(sizeof(Node));
         node->ty = ND_FOR;
 
-        if (!consume('('))
-            error_at(((Token *)tokens->data[pos])->input, "Not '('");
-
+        expect('(');
         if (!consume(';')) {
             node->init = expr();
-            if (!consume(';'))
-                error_at(((Token *)tokens->data[pos])->input, "Not ';'");
+            expect(';');
         }
 
         if (!consume(';')) {
             node->cond = expr();
-            if (!consume(';'))
-                error_at(((Token *)tokens->data[pos])->input, "Not ';'");
+            expect(';');
         }
 
         if (!consume(')')) {
             node->inc = expr();
-            if (!consume(')'))
-                error_at(((Token *)tokens->data[pos])->input, "missing closing parentheses");
+            expect(')');
         }
 
         node->body = stmt();
@@ -140,8 +129,7 @@ Node *stmt() {
     else {
         /// default statement
         node = expr();
-        if (!consume(';'))
-            error_at(((Token *)tokens->data[pos])->input, "Not ';'");
+        expect(';');
         return node;
     }
 }
@@ -215,8 +203,7 @@ Node *term() {
     Token *t = tokens->data[pos];
     if (consume('(')) {
         Node *node = expr();
-        if (!consume(')'))
-            error_at(t->input, "missing closing parentheses");
+        expect(')');
         return node;
     }
 
@@ -265,8 +252,7 @@ Node *term() {
         while (consume(',')) {
             vec_push(node->args, expr());
         }
-        if (!consume(')'))
-            error_at(t->input, "missing closing parentheses");
+        expect(')');
 
         return node;
     }
@@ -289,8 +275,7 @@ Node *function() {
     node->name = t->name;
     node->args = new_vector();
 
-    if (!consume('('))
-        error_at(t->input, "Not function");
+    expect('(');
 
     if (consume(')')) {
         node->body = stmt();
@@ -302,8 +287,7 @@ Node *function() {
     {
         vec_push(node->args, term());
     }
-    if (!consume(')'))
-        error_at(t->input, "missing closing parentheses");
+    expect(')');
 
     node->body = stmt();
     return node;
