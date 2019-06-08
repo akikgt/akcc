@@ -20,14 +20,11 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 
 try 0 'int main() { return 0;}'
 try 42 'int main() { return 42;}'
-try 2 'int main() { int a; a = 2; return a;}'
 try 100 'int main() { return 10 + 20 + 30 + 20 / 2 * 4;}'
-try 4 'int main() {int i; i = 0; while(i <= 3) i = i + 1;}'
-try 16 'int main() {int i; i = 1; while(i < 16) i = i * 2; i;}'
-try 3 'int main() {int i; for(i = 1; i < 3; i = i + 1) 1; i;}'
-try 6 'int main() {int i; i = 0; for (; i < 5 ;) i = i + 3; i;}'
-try 8 'int main() {1; int i; i = 0; while(i <= 3) i = i + 1; 2;3;4;5;6; 2 * 2 * 2;}'
-try 200 'int main() {if (1 + 1 == 2) { 100; 200;}}'
+try 16 'int main() {int i = 1; while(i < 16) i = i * 2; i;}'
+try 3 'int main() {for(int i = 1; i < 3; i = i + 1) 1; i;}'
+try 6 'int main() {int i = 0; for (; i < 5 ;) i = i + 3; i;}'
+try 100 'int main() { int a = 100; return a;}'
 
 try 5 'int main() {plus(2, 3);}'
 try 5 'int main() {plus(2, 1 + 1 + 1);}'

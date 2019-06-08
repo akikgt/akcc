@@ -30,8 +30,7 @@ void gen_func(Node *node) {
     printf(" sub rsp, 208\n");  // make 26 local variables
     // set parameters
     for (int i = 0; i < node->args->len; i++) {
-        gen(node->args->data[i]);
-
+        gen_lval(node->args->data[i]);
         // set each parameters to local variable address
         printf(" pop rax\n");
         printf(" mov [rax], %s\n", regs[i]);
@@ -48,15 +47,14 @@ void gen_func(Node *node) {
 
 void gen_lval(Node *node) {
 
-    if (node->ty != ND_IDENT) 
+    if (node->ty != ND_IDENT && node->ty != ND_VARDEF) 
         error("lval is not valid variable");
 
-    // int offset;
-    // if (map_get(map, node->name) == NULL) {
-    //     offset = (var_count + 1) * 8;
-    //     map_put(map, node->name, (void *)offset);
-    //     var_count++;
-    // }
+    // variable definition
+    if (node->ty == ND_VARDEF) {
+        var_count++;
+        map_put(map, node->name, (void *)(var_count * 8));
+    }
 
     int offset = (int)map_get(map, node->name);
     printf(" mov rax, rbp\n");
@@ -68,12 +66,7 @@ void gen(Node *node) {
 
     switch (node->ty) {
         case ND_VARDEF:
-            // add new variable to map
-            var_count++;
-            map_put(map, node->name, (void *)(var_count * 8));
-            printf(" mov rax, rbp\n");
-            printf(" sub rax, %d\n", (var_count * 8));
-            printf(" push rax\n");
+            gen_lval(node);
             return;
 
         case ND_CALL:
