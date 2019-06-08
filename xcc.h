@@ -14,6 +14,8 @@ typedef struct Type {
 } Type;
 
 /// container.c
+char *format(char *fmt, ...);
+
 // vector
 typedef struct {
     void **data;

@@ -15,13 +15,11 @@ int consume(int ty) {
     return 1;
 }
 
-
-
-// static void expect(int ty) {
-//     if (!consume(ty))
-//         error_at(((Token *)tokens->data[pos])->input, "Not expected");
-//         printf("%c\n", ty);
-// }
+static void expect(int ty) {
+    Token *t = tokens->data[pos];
+    if (!consume(ty))
+        error_at(t->input, format("Not '%c'", ty));
+}
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
@@ -66,8 +64,9 @@ Node *stmt() {
         node = malloc(sizeof(Node));
         node->ty = ND_RETURN;
         node->lhs = expr();
-        if (!consume(';'))
-            error_at(((Token *)tokens->data[pos])->input, "Not ';'");
+        expect(';');
+        // if (!consume(';'))
+        //     error_at(((Token *)tokens->data[pos])->input, "Not ';'");
         return node;
     }
     else if (consume(TK_IF)) {

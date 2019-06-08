@@ -57,5 +57,6 @@ try 120 '
     }
 '
 
+try 1 'int main() {return 100}'
 
 echo OK
