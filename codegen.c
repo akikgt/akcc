@@ -30,7 +30,9 @@ void gen_func(Node *node) {
     printf(" sub rsp, 208\n");  // make 26 local variables
     // set parameters
     for (int i = 0; i < node->args->len; i++) {
-        gen_lval(node->args->data[i]);
+        gen(node->args->data[i]);
+
+        // set each parameters to local variable address
         printf(" pop rax\n");
         printf(" mov [rax], %s\n", regs[i]);
     }
@@ -69,6 +71,9 @@ void gen(Node *node) {
             // add new variable to map
             var_count++;
             map_put(map, node->name, (void *)(var_count * 8));
+            printf(" mov rax, rbp\n");
+            printf(" sub rax, %d\n", (var_count * 8));
+            printf(" push rax\n");
             return;
 
         case ND_CALL:

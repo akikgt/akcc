@@ -33,29 +33,29 @@ try 5 'int main() {plus(2, 3);}'
 try 5 'int main() {plus(2, 1 + 1 + 1);}'
 
 try 2 'int two() {return 2;} int main() { return two();}'
-try 10 'int my_mul(a, b) {return a * b;} int main() { return my_mul(5, 2);}'
-try 3 'int my_sub(a, b) {return a - b;} int main() { return my_sub(5, 2);}'
+try 10 'int my_mul(int a, int b) {return a * b;} int main() { return my_mul(5, 2);}'
+try 3 'int my_sub(int a, int b) {return a - b;} int main() { return my_sub(5, 2);}'
 
 #fibonacci test
 try 55 '
-    fib(a,b,count) {
+    int fib(int a, int b, int count) {
         if (count == 1) {
             return a;
         }
         return fib(b, a+b, count - 1);
     }
-    main() {
+    int main() {
     return fib(1, 1, 10);
     }
     '
 #factorial test
 try 120 '
-    factorial(n) {
+    int factorial(int n) {
         if (n == 1)
             return 1;
         return n * factorial(n-1);
     }
-    main() {
+    int main() {
         return factorial(5);
     }
 '

@@ -39,8 +39,6 @@ Node *new_node_num(int val) {
 }
 
 Node *new_node_ident(char *name) {
-    if (map_get(vars, name) == NULL)
-        error("'%s' is undefined variable", name);
 
     Node *node = malloc(sizeof(Node));
     node->ty = ND_IDENT;
@@ -249,6 +247,8 @@ Node *term() {
 
         // identifier
         if (!consume('(')) {
+            if (map_get(vars, t->name) == NULL)
+                error_at(t->input, "undefined variable");
             node = new_node_ident(t->name);
             return node;
         }
@@ -323,5 +323,6 @@ Vector *parse(Vector *v) {
     vars = new_map();
 
     program();
+
     return code;
 }
