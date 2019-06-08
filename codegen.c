@@ -49,14 +49,14 @@ void gen_lval(Node *node) {
     if (node->ty != ND_IDENT) 
         error("lval is not valid variable");
 
-    int offset;
-    if (map_get(map, node->name) == NULL) {
-        offset = (var_count + 1) * 8;
-        map_put(map, node->name, (void *)offset);
-        var_count++;
-    }
+    // int offset;
+    // if (map_get(map, node->name) == NULL) {
+    //     offset = (var_count + 1) * 8;
+    //     map_put(map, node->name, (void *)offset);
+    //     var_count++;
+    // }
 
-    offset = (int)map_get(map, node->name);
+    int offset = (int)map_get(map, node->name);
     printf(" mov rax, rbp\n");
     printf(" sub rax, %d\n", offset);
     printf(" push rax\n");
@@ -65,9 +65,12 @@ void gen_lval(Node *node) {
 void gen(Node *node) {
 
     switch (node->ty) {
-        // case ND_FUNC:
-        //     gen_func(node);
-        //     return;
+        case ND_VARDEF:
+            // add new variable to map
+            var_count++;
+            map_put(map, node->name, (void *)(var_count * 8));
+            return;
+
         case ND_CALL:
             for (int i = 0; i < node->args->len; i++) {
                 gen(node->args->data[i]);

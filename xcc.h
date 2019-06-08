@@ -43,6 +43,7 @@ enum
     TK_ELSE,      // else
     TK_WHILE,     // while
     TK_FOR,       // for
+    TK_INT,       // int
     TK_EQ,        // ==
     TK_NE,        // !=
     TK_LE,        // <=
@@ -64,6 +65,7 @@ Vector *tokenize(char *p);
 enum
 {
     ND_NUM = 256, // integers
+    ND_VARDEF,    // variable definition
     ND_IDENT,     // identifier
     ND_RETURN,    // return
     ND_IF,        // if

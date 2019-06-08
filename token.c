@@ -41,6 +41,14 @@ Vector *tokenize(char *p) {
         }
 
         /* C keywords - Reserved words */
+        /// int
+        if (strncmp(p, "int", 3) == 0 && !is_alnum(p[3])) {
+            add_token(v, TK_INT, p);
+            i++;
+            p += 3;
+            continue;
+        }
+
         /// Return
         if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])) {
             add_token(v, TK_RETURN, p);

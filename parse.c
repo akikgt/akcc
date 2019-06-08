@@ -5,6 +5,8 @@ static int pos;
 static Vector *code;
 static int var_count;
 
+static Map *vars;
+
 int consume(int ty) {
     Token *t = tokens->data[pos];
     if (t->ty != ty)
@@ -12,6 +14,8 @@ int consume(int ty) {
     pos++;
     return 1;
 }
+
+
 
 // static void expect(int ty) {
 //     if (!consume(ty))
@@ -35,6 +39,9 @@ Node *new_node_num(int val) {
 }
 
 Node *new_node_ident(char *name) {
+    if (map_get(vars, name) == NULL)
+        error("'%s' is undefined variable", name);
+
     Node *node = malloc(sizeof(Node));
     node->ty = ND_IDENT;
     node->name = name;
@@ -216,6 +223,21 @@ Node *term() {
         return node;
     }
 
+    // variable declaration
+    if (t->ty == TK_INT) {
+        pos++;
+        t = tokens->data[pos];
+        if (!consume(TK_IDENT))
+            error_at(t->input, "not variable declaration");
+        Node *node = malloc(sizeof(Node));
+        node->ty = ND_VARDEF;
+        node->name = t->name;
+        if (map_get(vars, node->name) != NULL)
+            error("'%s' is already defined", node->name);
+        map_put(vars, node->name, 1);
+        return node;
+    }
+
     if (t->ty == TK_NUM) {
         pos++;
         return new_node_num(t->val);
@@ -256,6 +278,9 @@ Node *term() {
 }
 
 Node *function() {
+    if (!consume(TK_INT))
+        error_at(((Token *)tokens->data[pos])->input, "Not type declaration");
+
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
         error_at(t->input, "Not function");
@@ -295,7 +320,7 @@ Vector *parse(Vector *v) {
     tokens = v;
     pos = 0;
     code = new_vector();
-
+    vars = new_map();
 
     program();
     return code;
