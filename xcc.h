@@ -7,6 +7,12 @@
 
 extern char *user_input;
 
+/// type
+typedef struct Type {
+    enum { INT, PTR } ty;
+    struct Type *ptr_to;
+} Type;
+
 /// container.c
 // vector
 typedef struct {
