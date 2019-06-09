@@ -112,6 +112,13 @@ typedef struct Node {
 
 } Node;
 
+typedef struct Function {
+    // int ty;
+    char *name;
+    Node *node;
+    Map *vars;
+} Function;
+
 
 Node *new_node(int ty, Node *lhs, Node *rhs);
 Node *new_node_num(int val);
@@ -127,7 +134,7 @@ Vector *parse(Vector *v);
 
 /// codegen.c
 void gen(Node *node);
-void gen_func(Node *node);
+void gen_func(Function *fn);
 
 /// error functions
 void error(char *fmt, ...);

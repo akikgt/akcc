@@ -37,11 +37,9 @@ Node *new_node_num(int val) {
 }
 
 Node *new_node_ident(char *name) {
-
     Node *node = malloc(sizeof(Node));
     node->ty = ND_IDENT;
     node->name = name;
-
     return node;
 }
 
@@ -231,7 +229,7 @@ Node *term() {
         pos++;
         Node *node;
 
-        // identifier
+        // Identifier
         if (!consume('(')) {
             if (map_get(vars, t->name) == NULL)
                 error_at(t->input, "undefined variable");
@@ -239,7 +237,7 @@ Node *term() {
             return node;
         }
 
-        // function call
+        // Function call
         node = malloc(sizeof(Node));
         node->ty = ND_CALL;
         node->name = t->name;
@@ -262,7 +260,7 @@ Node *term() {
     return NULL;
 }
 
-Node *function() {
+Function *function() {
     if (!consume(TK_INT))
         error_at(((Token *)tokens->data[pos])->input, "Not type declaration");
 
@@ -275,11 +273,14 @@ Node *function() {
     node->name = t->name;
     node->args = new_vector();
 
+    Function *fn = malloc(sizeof(Function));
+    fn->node = node;
+
     expect('(');
 
     if (consume(')')) {
         node->body = stmt();
-        return node;
+        return fn;
     }
 
     vec_push(node->args, term());
@@ -290,7 +291,7 @@ Node *function() {
     expect(')');
 
     node->body = stmt();
-    return node;
+    return fn;
 }
 
 void program() {

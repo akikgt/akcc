@@ -12,7 +12,8 @@ char *regs[6] = {
     "r9",
 };
 
-void gen_func(Node *node) {
+void gen_func(Function *fn) {
+    Node *node = fn->node;
     if (node->ty != ND_FUNC) 
         error("This is not function node");
 
