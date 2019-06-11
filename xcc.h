@@ -10,6 +10,8 @@ extern char *user_input;
 /// type
 typedef struct Type {
     enum { INT, PTR } ty;
+
+    // Pointer
     struct Type *ptr_to;
 } Type;
 
@@ -118,6 +120,13 @@ typedef struct Function {
     Node *node;
     Map *vars;
 } Function;
+
+
+/// variable
+typedef struct Var {
+    Type *ty;
+    int offset;
+} Var;
 
 
 Node *new_node(int ty, Node *lhs, Node *rhs);

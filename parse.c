@@ -276,6 +276,10 @@ Function *function() {
     Function *fn = malloc(sizeof(Function));
     fn->node = node;
 
+    // make space for local variables every time in function definition
+    vars = new_map();
+    fn->vars = vars;
+
     expect('(');
 
     if (consume(')')) {
@@ -304,7 +308,6 @@ Vector *parse(Vector *v) {
     tokens = v;
     pos = 0;
     code = new_vector();
-    vars = new_map();
 
     program();
 
