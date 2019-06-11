@@ -3,9 +3,10 @@
 static Vector *tokens;
 static int pos;
 static Vector *code;
-static int var_count;
+// static int var_count;
 
 static Map *vars;
+static int offset;
 
 int consume(int ty) {
     Token *t = tokens->data[pos];
@@ -205,18 +206,28 @@ Node *term() {
         return node;
     }
 
-    // variable declaration
+    // Variable declaration
     if (t->ty == TK_INT) {
         pos++;
         t = tokens->data[pos];
         if (!consume(TK_IDENT))
             error_at(t->input, "not variable declaration");
+
         Node *node = malloc(sizeof(Node));
         node->ty = ND_VARDEF;
         node->name = t->name;
+
         if (map_get(vars, node->name) != NULL)
             error("'%s' is already defined", node->name);
-        map_put(vars, node->name, 1);
+
+        // variable setting
+        Var *var = malloc(sizeof(Var));
+        var->offset = offset;
+        offset += 8;
+        var->ty = malloc(sizeof(Type));
+        var->ty->ty = INT;
+        map_put(vars, node->name, var);
+
         return node;
     }
 
@@ -278,6 +289,7 @@ Function *function() {
 
     // make space for local variables every time in function definition
     vars = new_map();
+    offset = 8;
     fn->vars = vars;
 
     expect('(');

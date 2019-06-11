@@ -1,34 +1,34 @@
 #include "xcc.h"
-static int label_count = 0;
-static Map *map;
-static var_count;
 
-char *regs[6] = {
-    "rdi",
-    "rsi",
-    "rdx",
-    "rcx",
-    "r8",
-    "r9",
-};
+static int label_count = 0;
+// static Function *current_fn;
+static Map *vars;
+
+char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
+int roundup(int x, int align) {
+    return (x + align - 1) & ~(align - 1);
+}
 
 void gen_func(Function *fn) {
+    /// currently, we use function scope
+    /// TODO: block scope
+    vars = fn->vars;
+
     Node *node = fn->node;
     if (node->ty != ND_FUNC) 
         error("This is not function node");
 
-    /// currently, we use function scope
-    /// TODO: block scope
-    map = new_map();
-    var_count = 0;
-
+    // Prologue
     printf(".global %s\n", node->name);
     printf("%s:\n", node->name);
-
-    // Prologue
     printf("  push rbp\n");
     printf("  mov rbp, rsp\n");
-    printf("  sub rsp, 208\n");  // make 26 local variables
+
+    // For x86-64 ABI, roundup RSP to multiplies of 16
+    int var_size = vars->keys->len * 8;
+    printf("  sub rsp, %d\n", roundup(var_size, 16));  // make local variables
+
     // set parameters
     for (int i = 0; i < node->args->len; i++) {
         gen_lval(node->args->data[i]);
@@ -51,13 +51,8 @@ void gen_lval(Node *node) {
     if (node->ty != ND_IDENT && node->ty != ND_VARDEF) 
         error("lval is not valid variable");
 
-    // variable definition
-    if (node->ty == ND_VARDEF) {
-        var_count++;
-        map_put(map, node->name, (void *)(var_count * 8));
-    }
-
-    int offset = (int)map_get(map, node->name);
+    Var *var = map_get(vars, node->name);
+    int offset = var->offset;
     printf("  mov rax, rbp\n");
     printf("  sub rax, %d\n", offset);
     printf("  push rax\n");

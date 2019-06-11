@@ -143,8 +143,13 @@ Vector *parse(Vector *v);
 
 /// codegen.c
 void gen(Node *node);
+void gen_lval(Node *node);
 void gen_func(Function *fn);
+int roundup(int x, int align); 
+
 
 /// error functions
 void error(char *fmt, ...);
 void error_at(char *loc, char *msg);
+
+

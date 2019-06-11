@@ -33,6 +33,8 @@ try 2 'int two() {return 2;} int main() { return two();}'
 try 10 'int my_mul(int a, int b) {return a * b;} int main() { return my_mul(5, 2);}'
 try 3 'int my_sub(int a, int b) {return a - b;} int main() { return my_sub(5, 2);}'
 
+try 10 'int my_mul(int a, int b, int c) {return a * b * c;} int main() { return my_mul(5, 2, 1);}'
+
 #fibonacci test
 try 55 '
     int fib(int a, int b, int count) {
