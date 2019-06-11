@@ -25,6 +25,7 @@ void gen_func(Function *fn) {
     printf("  push rbp\n");
     printf("  mov rbp, rsp\n");
 
+    // Alignment RSP
     // For x86-64 ABI, roundup RSP to multiplies of 16
     int var_size = vars->keys->len * 8;
     printf("  sub rsp, %d\n", roundup(var_size, 16));  // make local variables
@@ -73,9 +74,6 @@ void gen(Node *node) {
             for (int i = node->args->len - 1; i >= 0; i--)
                 printf("  pop %s\n", regs[i]);
 
-            ////
-            // TODO: alignment RSP
-            ////
             printf("  call %s\n", node->name);
             printf("  push rax\n");
             return;

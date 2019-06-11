@@ -209,6 +209,13 @@ Node *term() {
     // Variable declaration
     if (t->ty == TK_INT) {
         pos++;
+
+        int ptr_count = 0;
+        while (consume('*')) {
+            /// TODO: pointer processing
+            ptr_count++;
+        }
+
         t = tokens->data[pos];
         if (!consume(TK_IDENT))
             error_at(t->input, "not variable declaration");
@@ -224,8 +231,26 @@ Node *term() {
         Var *var = malloc(sizeof(Var));
         var->offset = offset;
         offset += 8;
+
         var->ty = malloc(sizeof(Type));
-        var->ty->ty = INT;
+        var->ty->ty = INT; // Base type
+
+        while (ptr_count > 0) {
+            Type *prev = var->ty;
+            var->ty = malloc(sizeof(Type));
+            var->ty->ty = PTR;
+            var->ty->ptr_to = prev;
+            ptr_count--;
+        }
+
+        // check code for pointer
+        // Type *cur = var->ty;
+        // while (cur)
+        // {
+        //     printf("%d\n", cur->ty);
+        //     cur = cur->ptr_to;
+        // }
+
         map_put(vars, node->name, var);
 
         return node;

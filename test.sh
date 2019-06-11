@@ -18,6 +18,9 @@ try() {
 
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
+#pointer test
+try 0 'int main() { int ***pointer; return 0;}'
+
 try 0 'int main() { return 0;}'
 try 42 'int main() { return 42;}'
 try 100 'int main() { return 10 + 20 + 30 + 20 / 2 * 4;}'
@@ -58,6 +61,7 @@ try 120 '
         return factorial(5);
     }
 '
+
 
 # try 0 'int main {}'
 echo OK
