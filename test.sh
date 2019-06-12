@@ -20,15 +20,22 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 
 #pointer test
 try 0 'int main() {int ****p; return 0; } '
-try 1 '
+try 3 '
     int main() {
         int *p;
         alloc1(&p, 3);
         return *p;
     }
 '
+try 7 '
+    int main() {
+        int *p;
+        alloc4(&p, 5, 2, 3, 7);
+        p = p + 12;
+        return *p;
+    }
+'
 
-        # alloc4(&p, 1, 2, 3, 4);
 try 3 '
     int main() {
         int x;
