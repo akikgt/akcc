@@ -48,6 +48,10 @@ void gen_func(Function *fn) {
 }
 
 void gen_lval(Node *node) {
+    if (node->ty == ND_DEREF) {
+        gen(node->expr);
+        return;
+    }
 
     if (node->ty != ND_IDENT && node->ty != ND_VARDEF) 
         error("lval is not valid variable");
@@ -60,6 +64,8 @@ void gen_lval(Node *node) {
 }
 
 void gen(Node *node) {
+    if (node == NULL)
+        error("node is null");
 
     switch (node->ty) {
         case ND_VARDEF:
@@ -93,6 +99,8 @@ void gen(Node *node) {
             return;
 
         case ND_RETURN:
+            // printf("; return statement start\n");
+
             gen(node->lhs);
             printf("  pop rax\n");
             printf("  mov rsp, rbp\n");
@@ -157,13 +165,37 @@ void gen(Node *node) {
             return;
 
         case ND_IDENT:
+            // printf("; identifier start\n");
+
             gen_lval(node);
             printf("  pop rax\n");
             printf("  mov rax, [rax]\n");
             printf("  push rax\n");
+
+            // printf("; identifier end\n");
+            return;
+
+        case ND_DEREF:
+            // printf("; dereference start\n");
+            gen_lval(node);
+            printf("  pop rax\n");
+            printf("  mov rax, [rax]\n");
+            printf("  push rax\n");
+            // printf("; dereference end\n");
+            return;
+
+            // gen_lval(node);
+            // printf("  pop rax\n");
+            // printf("  mov rax, [rax]\n");
+            // printf("  push rax\n");
+            // return;
+
+        case ND_ADDR:
+            gen_lval(node->expr); /// RAX = address of IDENT
             return;
 
         case '=':
+            // printf("; assign start\n");
             gen_lval(node->lhs);
             gen(node->rhs);
 
@@ -171,8 +203,11 @@ void gen(Node *node) {
             printf("  pop rax\n");
             printf("  mov [rax], rdi\n");
             printf("  push rdi\n");
+            // printf("; assign end\n");
             return;
+
     }
+
 
     /// operators requiring two operands
     gen(node->lhs);
@@ -214,6 +249,9 @@ void gen(Node *node) {
             printf("  cmp rax, rdi\n");
             printf("  setl al\n");
             printf("  movzb rax, al\n");
+            break;
+
+        default:
             break;
     }
 

@@ -106,6 +106,7 @@ Vector *tokenize(char *p) {
             || *p == '='    // assign
             || *p == '{' || *p == '}'   // block
             || *p == ','
+            || *p == '&'        // address
             ) {
             add_token(v, *p, p);
             i++;

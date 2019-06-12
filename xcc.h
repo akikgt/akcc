@@ -84,6 +84,8 @@ enum
     ND_BLOCK,     // block
     ND_CALL,      // function call
     ND_FUNC,      // function definition
+    ND_ADDR,      // address of operator ('&')
+    ND_DEREF,     // pointer dereference ('*')
     ND_EQ,        // ==
     ND_NE,        // !=
     ND_LE,        // <=
@@ -96,6 +98,7 @@ typedef struct Node {
     struct Node *rhs;
     int val;
     char *name;
+    struct Node *expr;
 
     // if else statement
     // for (init; cond; inc) body

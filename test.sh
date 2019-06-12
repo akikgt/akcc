@@ -19,7 +19,23 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
 #pointer test
-try 0 'int main() { int ***pointer; return 0;}'
+try 0 'int main() {int ****p; return 0; } '
+# try 3 '
+#     int main() {
+#         int *p;
+#         *p = 3;
+#         return *p;
+#         }'
+
+try 3 '
+    int main() {
+        int x;
+        x = 1;
+        int *y;
+        y = &x;
+        x = 3;
+        return *y;
+        }'
 
 try 0 'int main() { return 0;}'
 try 42 'int main() { return 42;}'

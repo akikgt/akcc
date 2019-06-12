@@ -191,6 +191,18 @@ Node *mul() {
 }
 
 Node *unary() {
+    if (consume('*')) {
+        Node *node = malloc(sizeof(Node));
+        node->ty = ND_DEREF;
+        node->expr = unary();
+        return node;
+    }
+    if (consume('&')) {
+        Node *node = malloc(sizeof(Node));
+        node->ty = ND_ADDR;
+        node->expr = unary();
+        return node;
+    }
     if (consume('+'))
         return term();
     if (consume('-'))
@@ -212,7 +224,6 @@ Node *term() {
 
         int ptr_count = 0;
         while (consume('*')) {
-            /// TODO: pointer processing
             ptr_count++;
         }
 
