@@ -168,8 +168,17 @@ Node *add() {
     Node *node = mul();
 
     for (;;) {
-        if (consume('+'))
+        if (consume('+')) {
             node = new_node('+', node, mul());
+            // scaling to adjust type length
+            if (node->lhs->ty == ND_IDENT) {
+                Var *v = map_get(vars, node->lhs->name);
+                if (v->ty->ty == PTR) {
+                    node->rhs->val = node->rhs->val * 4;
+                }
+            }
+        }
+
         else if (consume('-'))
             node = new_node('-', node, mul());
         else
