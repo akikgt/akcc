@@ -4,7 +4,7 @@ try() {
     input="$2"
 
     ./xcc "$input" > tmp.s
-    gcc -o tmp tmp.s tmp-plus.o
+    gcc -o tmp tmp.s tmp-plus.o tmp-alloc.o
     ./tmp
     actual="$?"
 
@@ -20,7 +20,15 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 
 #pointer test
 try 0 'int main() {int ****p; return 0; } '
+try 1 '
+    int main() {
+        int *p;
+        alloc1(&p, 3);
+        return *p;
+    }
+'
 
+        # alloc4(&p, 1, 2, 3, 4);
 try 3 '
     int main() {
         int x;
