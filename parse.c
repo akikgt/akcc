@@ -171,6 +171,7 @@ Node *add() {
         if (consume('+')) {
             node = new_node('+', node, mul());
             // scaling to adjust type length
+            // TODO: can process lhs and rhs pointer
             if (node->lhs->ty == ND_IDENT) {
                 Var *v = map_get(vars, node->lhs->name);
                 if (v->ty->ty == PTR) {
