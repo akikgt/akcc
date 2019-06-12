@@ -165,6 +165,7 @@ void gen(Node *node) {
             return;
 
         case ND_IDENT:
+        case ND_DEREF:
             // printf("; identifier start\n");
 
             gen_lval(node);
@@ -175,19 +176,12 @@ void gen(Node *node) {
             // printf("; identifier end\n");
             return;
 
-        case ND_DEREF:
-            // printf("; dereference start\n");
-            gen_lval(node);
-            printf("  pop rax\n");
-            printf("  mov rax, [rax]\n");
-            printf("  push rax\n");
-            // printf("; dereference end\n");
-            return;
-
+            // // printf("; dereference start\n");
             // gen_lval(node);
             // printf("  pop rax\n");
             // printf("  mov rax, [rax]\n");
             // printf("  push rax\n");
+            // // printf("; dereference end\n");
             // return;
 
         case ND_ADDR:

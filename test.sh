@@ -20,12 +20,6 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 
 #pointer test
 try 0 'int main() {int ****p; return 0; } '
-# try 3 '
-#     int main() {
-#         int *p;
-#         *p = 3;
-#         return *p;
-#         }'
 
 try 3 '
     int main() {
