@@ -317,6 +317,46 @@ Node *term() {
     return NULL;
 }
 
+Node *param()
+{
+    expect(TK_INT);
+
+    int ptr_count = 0;
+    while (consume('*'))
+    {
+        ptr_count++;
+    }
+
+    Token *t = tokens->data[pos];
+    if (!consume(TK_IDENT))
+        error_at(t->input, "not variable declaration");
+
+    Node *node = malloc(sizeof(Node));
+    node->ty = ND_VARDEF;
+    node->name = t->name;
+
+    // variable setting
+    Var *var = malloc(sizeof(Var));
+    var->offset = offset;
+    offset += 8;
+
+    var->ty = malloc(sizeof(Type));
+    var->ty->ty = INT; // Base type
+
+    while (ptr_count > 0)
+    {
+        Type *prev = var->ty;
+        var->ty = malloc(sizeof(Type));
+        var->ty->ty = PTR;
+        var->ty->ptr_to = prev;
+        ptr_count--;
+    }
+
+    map_put(vars, node->name, var);
+
+    return node;
+}
+
 Function *function() {
     if (!consume(TK_INT))
         error_at(((Token *)tokens->data[pos])->input, "Not type declaration");
@@ -340,17 +380,15 @@ Function *function() {
 
     expect('(');
 
-    if (consume(')')) {
-        node->body = stmt();
-        return fn;
-    }
-
-    vec_push(node->args, term());
-    while (consume(','))
+    if (!consume(')'))
     {
-        vec_push(node->args, term());
+        vec_push(node->args, param());
+        while (consume(','))
+        {
+            vec_push(node->args, param());
+        }
+        expect(')');
     }
-    expect(')');
 
     node->body = stmt();
     return fn;
