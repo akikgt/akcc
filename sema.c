@@ -75,6 +75,18 @@ void walk(Node *node) {
         case ND_DEREF: // pointer dereference ('*')
             walk(node->expr);
             return;
+        case ND_SIZEOF: {
+            walk(node->expr);
+            Type *ty = node->expr->ty;
+            if (ty->ty == PTR)
+                node->val = 8;
+            if (ty->ty == INT)
+                node->val = 4;
+            // convert to integer
+            node->op = ND_NUM;
+            node->ty = int_ty();
+            return;
+        }
         case ND_EQ: // ==
         case ND_NE: // !=
         case ND_LE: // <=

@@ -48,6 +48,7 @@ enum
 {
     TK_NUM = 256, // integers
     TK_IDENT,     // identifier
+    TK_SIZEOF,    // sizeof
     TK_RETURN,    // return
     TK_IF,        // if
     TK_ELSE,      // else
@@ -77,6 +78,7 @@ enum
     ND_NUM = 256, // integers
     ND_VARDEF,    // variable definition
     ND_IDENT,     // identifier
+    ND_SIZEOF,    // sizeof
     ND_RETURN,    // return
     ND_IF,        // if
     ND_WHILE,     // while

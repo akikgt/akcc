@@ -189,18 +189,8 @@ Node *add() {
     Node *node = mul();
 
     for (;;) {
-        if (consume('+')) {
+        if (consume('+'))
             node = new_node('+', node, mul());
-            // scaling to adjust type length
-            // TODO: can process lhs and rhs pointer
-            // if (node->lhs->op == ND_IDENT) {
-            //     Var *v = map_get(vars, node->lhs->name);
-            //     if (v->ty->ty == PTR) {
-            //         node->rhs->val = node->rhs->val * 4;
-            //     }
-            // }
-        }
-
         else if (consume('-'))
             node = new_node('-', node, mul());
         else
@@ -233,6 +223,12 @@ Node *unary() {
     if (consume('&')) {
         Node *node = malloc(sizeof(Node));
         node->op = ND_ADDR;
+        node->expr = unary();
+        return node;
+    }
+    if (consume(TK_SIZEOF)) {
+        Node *node = malloc(sizeof(Node));
+        node->op = ND_SIZEOF;
         node->expr = unary();
         return node;
     }
