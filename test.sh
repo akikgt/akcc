@@ -90,4 +90,13 @@ try 120 '
 
 
 try 1 'int main() { return 100 % 3; }'
+try 1 '
+    int main() {
+        int x = 10;
+        if (x % 2 == 1)
+            return 0;
+        else
+            return 1;
+    }
+'
 echo OK

@@ -1,7 +1,6 @@
 #include "xcc.h"
 
 static int label_count = 0;
-// static Function *current_fn;
 static Map *vars;
 
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
@@ -108,7 +107,7 @@ void gen(Node *node) {
         case ND_RETURN:
             // printf("; return statement start\n");
 
-            gen(node->lhs);
+            gen(node->expr);
             printf("  pop rax\n");
             printf("  mov rsp, rbp\n");
             printf("  pop rbp\n");
@@ -144,7 +143,7 @@ void gen(Node *node) {
             printf("  pop rax\n");
             printf("  cmp rax, 0\n");
             printf("  je .Lend%d\n", label_count);
-            gen(node->then);
+            gen(node->body);
             printf("  jmp .Lbegin%d\n", label_count);
             printf(".Lend%d:\n", label_count);
             return;

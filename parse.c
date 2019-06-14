@@ -74,7 +74,7 @@ Node *stmt() {
     if (consume(TK_RETURN)) {
         node = malloc(sizeof(Node));
         node->op = ND_RETURN;
-        node->lhs = expr();
+        node->expr = expr();
         expect(';');
         return node;
     }
@@ -100,7 +100,7 @@ Node *stmt() {
         node->cond = expr();
         expect(')');
 
-        node->then = stmt();
+        node->body = stmt();
         return node;
     }
     else if (consume(TK_FOR)) {
@@ -361,6 +361,7 @@ Node *param()
     var->offset = offset;
     offset += 8;
     var->ty = ty;
+    node->ty = ty;
 
     map_put(vars, node->name, var);
 
@@ -369,7 +370,7 @@ Node *param()
 
 Function *function() {
     if (!consume(TK_INT))
-        error_at(((Token *)tokens->data[pos])->input, "Not type declaration");
+        error_at(((Token *)tokens->data[pos])->input, "Not type specification");
 
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
@@ -379,6 +380,9 @@ Function *function() {
     node->op = ND_FUNC;
     node->name = t->name;
     node->args = new_vector();
+    
+    ///TODO: type settings for function
+    // node->ty;
 
     Function *fn = malloc(sizeof(Function));
     fn->node = node;

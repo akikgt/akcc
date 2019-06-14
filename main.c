@@ -48,6 +48,7 @@ int main(int argc, char **argv) {
 
     Vector *tokens = tokenize(argv[1]);
     Vector *nodes = parse(tokens);
+    sema(nodes);
 
     // print assembly
     printf(".intel_syntax noprefix\n");

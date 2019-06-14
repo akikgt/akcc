@@ -102,8 +102,10 @@ typedef struct Node {
     char *name;
     struct Node *expr;
 
-    // if else statement
-    // for (init; cond; inc) body
+    // 'if' (cond) then 'else' body
+    // 'for' (init; cond; inc) body
+    // 'while' (cond) body;
+    // function (args) body
     struct Node *cond;
     struct Node *then;
     struct Node *els;
@@ -121,6 +123,7 @@ typedef struct Node {
 
 typedef struct Function {
     // int ty;
+    Type *ty;   // C type
     char *name;
     Node *node;
     Map *vars;
@@ -148,11 +151,15 @@ Node *param();
 Node *declaration();
 Vector *parse(Vector *v);
 
+/// sema.c
+void sema(Vector *nodes);
+
 /// codegen.c
 void gen(Node *node);
 void gen_lval(Node *node);
 void gen_func(Function *fn);
 int roundup(int x, int align); 
+
 
 
 /// error functions
