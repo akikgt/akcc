@@ -112,7 +112,7 @@ void walk(Node *node) {
                     size = 8;
                 if (node->rhs->ty->ty == INT)
                     size = 4;
-                    node->rhs->val = node->rhs->val * size;
+                node->rhs->val = node->rhs->val * size;
             }
             node->ty = node->lhs->ty;
             return;
