@@ -10,6 +10,7 @@ extern char *user_input;
 /// type
 typedef struct Type {
     enum { INT, PTR, ARRAY } ty;
+    int size;
 
     // Pointer
     struct Type *ptr_to;

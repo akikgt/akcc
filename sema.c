@@ -2,14 +2,15 @@
 
 static Map *vars;
 
-Type *new_ty() {
-    Type *ty = malloc(sizeof(Type));
-    return ty;
+Type *new_ty(int ty, int size) {
+    Type *ret = malloc(sizeof(Type));
+    ret->ty = ty;
+    ret->size = size;
+    return ret;
 }
 
 Type *int_ty() {
-    Type *ty = new_ty();
-    ty->ty = INT;
+    Type *ty = new_ty(INT, 4);
     ty->ptr_to = NULL;
     return ty;
 }

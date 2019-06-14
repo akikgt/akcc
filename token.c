@@ -106,6 +106,7 @@ Vector *tokenize(char *p) {
             || *p == ';'    // end of stmt
             || *p == '='    // assign
             || *p == '{' || *p == '}'   // block
+            || *p == '[' || *p == ']'   // array
             || *p == ','
             || *p == '&'        // address
             ) {

@@ -308,10 +308,25 @@ Node *declaration() {
     if (map_get(vars, node->name) != NULL)
         error("'%s' is already defined", node->name);
 
+
+    int size = 8;
+    // array declaration
+    if (consume('[')) {
+        ty = ptr_to(ty);
+        ty->ty = ARRAY;
+
+        Token *t = tokens->data[pos];
+        if (t->ty == TK_NUM) {
+            ty->array_size = t->val * 4;
+            pos++;
+        }
+        expect(']');
+    }
+
     // variable setting
     Var *var = malloc(sizeof(Var));
     var->offset = offset;
-    offset += 8;
+    offset += size;
     var->ty = ty;
 
     // check code for pointer
