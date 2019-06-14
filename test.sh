@@ -89,5 +89,5 @@ try 120 '
 '
 
 
-# try 3 'int main() { return 100 % 97; }'
+try 1 'int main() { return 100 % 3; }'
 echo OK

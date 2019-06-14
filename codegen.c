@@ -231,6 +231,11 @@ void gen(Node *node) {
             printf("  cqo\n");
             printf("  idiv rdi\n");
             break;
+        case '%':
+            printf("  cqo\n");
+            printf("  idiv rdi\n");     // reminder will be in rdx
+            printf("  mov rax, rdx\n");
+            break;
         case ND_EQ:
             printf("  cmp rax, rdi\n");
             printf("  sete al\n");
