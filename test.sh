@@ -27,12 +27,14 @@ try 3 '
         return *p;
     }
 '
+
 try 8 '
     int main() {
         int *p;
         alloc4(&p, 1, 2, 4, 8);
         int *q;
-        q = p + 3;
+        q = p + 4;
+        q = q - 1;
         return *q;
     }
 '

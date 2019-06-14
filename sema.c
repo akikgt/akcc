@@ -14,7 +14,6 @@ Type *int_ty() {
     return ty;
 }
 
-
 void walk(Node *node) {
     switch (node->op) {
         case ND_NUM:
@@ -80,17 +79,32 @@ void walk(Node *node) {
         case ND_NE: // !=
         case ND_LE: // <=
         case ND_GE: // >=
+        case '=':
         case '<':
-        case '+':
-        case '-':
         case '*':
         case '/':
         case '%':
             walk(node->lhs);
             walk(node->rhs);
             node->ty = node->lhs->ty;
-            // printf("change type to interger\n");
             return;
+        case '+':
+        case '-': {
+            walk(node->lhs);
+            walk(node->rhs);
+            /// pointer arithmetic
+            if (node->lhs->ty->ty == PTR)
+            {
+                int size;
+                if (node->rhs->ty->ty == PTR)
+                    size = 8;
+                if (node->rhs->ty->ty == INT)
+                    size = 4;
+                    node->rhs->val = node->rhs->val * size;
+            }
+            node->ty = node->lhs->ty;
+            return;
+        }
         default:
             return;
         }
