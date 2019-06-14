@@ -16,7 +16,7 @@ void gen_func(Function *fn) {
     vars = fn->vars;
 
     Node *node = fn->node;
-    if (node->ty != ND_FUNC) 
+    if (node->op != ND_FUNC) 
         error("This is not function node");
 
     // Prologue
@@ -48,12 +48,12 @@ void gen_func(Function *fn) {
 }
 
 void gen_lval(Node *node) {
-    if (node->ty == ND_DEREF) {
+    if (node->op == ND_DEREF) {
         gen(node->expr);
         return;
     }
 
-    if (node->ty != ND_IDENT && node->ty != ND_VARDEF) 
+    if (node->op != ND_IDENT && node->op != ND_VARDEF) 
         error("lval is not valid variable");
 
     Var *var = map_get(vars, node->name);
@@ -67,7 +67,7 @@ void gen(Node *node) {
     if (node == NULL)
         error("node is null");
 
-    switch (node->ty) {
+    switch (node->op) {
         case ND_VARDEF:
             gen_lval(node);
             if (!node->init)
@@ -217,7 +217,7 @@ void gen(Node *node) {
     printf("  pop rdi\n");
     printf("  pop rax\n");
 
-    switch (node->ty) {
+    switch (node->op) {
         case '+':
             printf("  add rax, rdi\n");
             break;

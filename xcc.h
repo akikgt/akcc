@@ -92,8 +92,10 @@ enum
     ND_GE,        // >=
 };
 
+/// AST Node
 typedef struct Node {
-    int ty;
+    int op;     // AST Node Type
+    Type *ty;     // C type
     struct Node *lhs;
     struct Node *rhs;
     int val;

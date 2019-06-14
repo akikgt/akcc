@@ -36,7 +36,7 @@ static Type *ptr_to(Type *ty) {
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
-    node->ty = ty;
+    node->op = ty;
     node->lhs = lhs;
     node->rhs = rhs;
     return node;
@@ -44,14 +44,14 @@ Node *new_node(int ty, Node *lhs, Node *rhs) {
 
 Node *new_node_num(int val) {
     Node *node = malloc(sizeof(Node));
-    node->ty = ND_NUM;
+    node->op = ND_NUM;
     node->val = val;
     return node;
 }
 
 Node *new_node_ident(char *name) {
     Node *node = malloc(sizeof(Node));
-    node->ty = ND_IDENT;
+    node->op = ND_IDENT;
     node->name = name;
     return node;
 }
@@ -73,14 +73,14 @@ Node *stmt() {
 
     if (consume(TK_RETURN)) {
         node = malloc(sizeof(Node));
-        node->ty = ND_RETURN;
+        node->op = ND_RETURN;
         node->lhs = expr();
         expect(';');
         return node;
     }
     else if (consume(TK_IF)) {
         node = malloc(sizeof(Node));
-        node->ty = ND_IF;
+        node->op = ND_IF;
 
         expect('(');
         node->cond = expr();
@@ -94,7 +94,7 @@ Node *stmt() {
     }
     else if (consume(TK_WHILE)) {
         node = malloc(sizeof(Node));
-        node->ty = ND_WHILE;
+        node->op = ND_WHILE;
 
         expect('(');
         node->cond = expr();
@@ -105,7 +105,7 @@ Node *stmt() {
     }
     else if (consume(TK_FOR)) {
         node = malloc(sizeof(Node));
-        node->ty = ND_FOR;
+        node->op = ND_FOR;
 
         expect('(');
         if (!consume(';')) {
@@ -132,7 +132,7 @@ Node *stmt() {
     }
     else if (consume('{')) {
         node = malloc(sizeof(Node));
-        node->ty = ND_BLOCK;
+        node->op = ND_BLOCK;
         node->stmts = new_vector();
 
         while (!consume('}')) {
@@ -193,7 +193,7 @@ Node *add() {
             node = new_node('+', node, mul());
             // scaling to adjust type length
             // TODO: can process lhs and rhs pointer
-            if (node->lhs->ty == ND_IDENT) {
+            if (node->lhs->op == ND_IDENT) {
                 Var *v = map_get(vars, node->lhs->name);
                 if (v->ty->ty == PTR) {
                     node->rhs->val = node->rhs->val * 4;
@@ -224,13 +224,13 @@ Node *mul() {
 Node *unary() {
     if (consume('*')) {
         Node *node = malloc(sizeof(Node));
-        node->ty = ND_DEREF;
+        node->op = ND_DEREF;
         node->expr = unary();
         return node;
     }
     if (consume('&')) {
         Node *node = malloc(sizeof(Node));
-        node->ty = ND_ADDR;
+        node->op = ND_ADDR;
         node->expr = unary();
         return node;
     }
@@ -270,7 +270,7 @@ Node *term() {
 
         // Function call
         node = malloc(sizeof(Node));
-        node->ty = ND_CALL;
+        node->op = ND_CALL;
         node->name = t->name;
         node->args = new_vector();
 
@@ -294,7 +294,7 @@ Node *term() {
 Node *declaration() {
 
     Type *ty = malloc(sizeof(Type));
-    ty->ty = INT;
+    ty->ty = INT;   /// Base pointer
     while (consume('*')) {
         ty = ptr_to(ty);
     }
@@ -304,7 +304,7 @@ Node *declaration() {
         error_at(t->input, "not variable declaration");
 
     Node *node = malloc(sizeof(Node));
-    node->ty = ND_VARDEF;
+    node->op = ND_VARDEF;
     node->name = t->name;
 
     if (map_get(vars, node->name) != NULL)
@@ -315,7 +315,6 @@ Node *declaration() {
     var->offset = offset;
     offset += 8;
     var->ty = ty;
-
 
     // check code for pointer
     // Type *cur = var->ty;
@@ -352,7 +351,7 @@ Node *param()
         error_at(t->input, "not variable declaration");
 
     Node *node = malloc(sizeof(Node));
-    node->ty = ND_VARDEF;
+    node->op = ND_VARDEF;
     node->name = t->name;
 
     // variable setting
@@ -375,7 +374,7 @@ Function *function() {
         error_at(t->input, "Not function");
 
     Node *node = malloc(sizeof(Node));
-    node->ty = ND_FUNC;
+    node->op = ND_FUNC;
     node->name = t->name;
     node->args = new_vector();
 

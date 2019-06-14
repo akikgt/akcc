@@ -30,7 +30,7 @@ void printNodes(Node *node, int depth) {
     }
     printNodes(node->lhs, depth + 1);
     printf("%*s", depth, "");
-    printf("%d\n", node->ty);
+    printf("%d\n", node->op);
     printNodes(node->rhs, depth + 1);
 }
 // ---------------------------------------
