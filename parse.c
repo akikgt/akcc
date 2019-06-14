@@ -22,9 +22,16 @@ static void expect(int ty) {
         error_at(t->input, format("Not '%c'", ty));
 }
 
-static is_typename() {
+static int is_typename() {
     Token *t = tokens->data[pos];
     return t->ty == TK_INT;
+}
+
+static Type *ptr_to(Type *ty) {
+    Type *new_ty = malloc(sizeof(Type));
+    new_ty->ty = PTR;
+    new_ty->ptr_to = ty;
+    return new_ty;
 }
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
@@ -286,10 +293,10 @@ Node *term() {
 
 Node *declaration() {
 
-    int ptr_count = 0;
-    while (consume('*'))
-    {
-        ptr_count++;
+    Type *ty = malloc(sizeof(Type));
+    ty->ty = INT;
+    while (consume('*')) {
+        ty = ptr_to(ty);
     }
 
     Token *t = tokens->data[pos];
@@ -307,18 +314,8 @@ Node *declaration() {
     Var *var = malloc(sizeof(Var));
     var->offset = offset;
     offset += 8;
+    var->ty = ty;
 
-    var->ty = malloc(sizeof(Type));
-    var->ty->ty = INT; // Base type
-
-    while (ptr_count > 0)
-    {
-        Type *prev = var->ty;
-        var->ty = malloc(sizeof(Type));
-        var->ty->ty = PTR;
-        var->ty->ptr_to = prev;
-        ptr_count--;
-    }
 
     // check code for pointer
     // Type *cur = var->ty;
@@ -330,6 +327,7 @@ Node *declaration() {
 
     map_put(vars, node->name, var);
 
+    node->init = NULL;
     if (consume('=')) {
         node->init = assign();
     }
@@ -343,10 +341,10 @@ Node *param()
 {
     expect(TK_INT);
 
-    int ptr_count = 0;
-    while (consume('*'))
-    {
-        ptr_count++;
+    Type *ty = malloc(sizeof(Type));
+    ty->ty = INT;
+    while (consume('*')) {
+        ty = ptr_to(ty);
     }
 
     Token *t = tokens->data[pos];
@@ -361,18 +359,7 @@ Node *param()
     Var *var = malloc(sizeof(Var));
     var->offset = offset;
     offset += 8;
-
-    var->ty = malloc(sizeof(Type));
-    var->ty->ty = INT; // Base type
-
-    while (ptr_count > 0)
-    {
-        Type *prev = var->ty;
-        var->ty = malloc(sizeof(Type));
-        var->ty->ty = PTR;
-        var->ty->ptr_to = prev;
-        ptr_count--;
-    }
+    var->ty = ty;
 
     map_put(vars, node->name, var);
 
