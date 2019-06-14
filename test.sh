@@ -23,6 +23,15 @@ try 8 'int main() { int *p; return sizeof(p + 2); }'
 try 4 'int main() { int i; return sizeof i; }'
 try 0 'int main() { int a[10]; return 0; }'
 try 0 'int main(int arg, int **argv) {int ****p; return 0; } '
+try 8 '
+    int main() {
+        int **p;
+        p = 0;
+        p = p + 1;
+        int i = p;
+        return i;
+    }
+'
 try 3 '
     int main() {
         int *p;

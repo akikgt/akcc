@@ -79,10 +79,7 @@ void walk(Node *node) {
         case ND_SIZEOF: {
             walk(node->expr);
             Type *ty = node->expr->ty;
-            if (ty->ty == PTR)
-                node->val = 8;
-            if (ty->ty == INT)
-                node->val = 4;
+            node->val = ty->size;
             // convert to integer
             node->op = ND_NUM;
             node->ty = int_ty();
@@ -108,12 +105,9 @@ void walk(Node *node) {
             /// pointer arithmetic
             if (node->lhs->ty->ty == PTR)
             {
-                int size;
-                if (node->rhs->ty->ty == PTR)
-                    size = 8;
-                if (node->rhs->ty->ty == INT)
-                    size = 4;
-                node->rhs->val = node->rhs->val * size;
+                int size = node->lhs->ty->ptr_to->size;
+                Node *rhs = node->rhs;
+                rhs->val = rhs->val * size;
             }
             node->ty = node->lhs->ty;
             return;

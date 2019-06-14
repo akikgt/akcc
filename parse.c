@@ -27,10 +27,11 @@ static int is_typename() {
     return t->ty == TK_INT;
 }
 
-static Type *ptr_to(Type *ty) {
+static Type *ptr_to(Type *base) {
     Type *new_ty = malloc(sizeof(Type));
     new_ty->ty = PTR;
-    new_ty->ptr_to = ty;
+    new_ty->size = 8;
+    new_ty->ptr_to = base;
     return new_ty;
 }
 
@@ -293,6 +294,7 @@ Node *declaration() {
 
     Type *ty = malloc(sizeof(Type));
     ty->ty = INT;   /// Base pointer
+    ty->size = 4;
     while (consume('*')) {
         ty = ptr_to(ty);
     }
