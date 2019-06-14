@@ -142,6 +142,8 @@ Node *add();
 Node *mul();
 Node *unary();
 Node *term();
+Node *param();
+Node *declaration();
 Vector *parse(Vector *v);
 
 /// codegen.c

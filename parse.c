@@ -22,6 +22,11 @@ static void expect(int ty) {
         error_at(t->input, format("Not '%c'", ty));
 }
 
+static is_typename() {
+    Token *t = tokens->data[pos];
+    return t->ty == TK_INT;
+}
+
 Node *new_node(int ty, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
     node->ty = ty;
@@ -97,8 +102,12 @@ Node *stmt() {
 
         expect('(');
         if (!consume(';')) {
-            node->init = expr();
-            expect(';');
+            if (consume(TK_INT))
+                node->init = declaration();
+            else {
+                node->init = expr();
+                expect(';');
+            }
         }
 
         if (!consume(';')) {
@@ -123,6 +132,11 @@ Node *stmt() {
             vec_push(node->stmts, stmt());
         }
 
+        return node;
+    }
+    else if (consume(TK_INT)) {
+        /// variable declaration
+        node = declaration();
         return node;
     }
     else {
@@ -228,54 +242,7 @@ Node *term() {
         return node;
     }
 
-    // Variable declaration
-    if (t->ty == TK_INT) {
-        pos++;
-
-        int ptr_count = 0;
-        while (consume('*')) {
-            ptr_count++;
-        }
-
-        t = tokens->data[pos];
-        if (!consume(TK_IDENT))
-            error_at(t->input, "not variable declaration");
-
-        Node *node = malloc(sizeof(Node));
-        node->ty = ND_VARDEF;
-        node->name = t->name;
-
-        if (map_get(vars, node->name) != NULL)
-            error("'%s' is already defined", node->name);
-
-        // variable setting
-        Var *var = malloc(sizeof(Var));
-        var->offset = offset;
-        offset += 8;
-
-        var->ty = malloc(sizeof(Type));
-        var->ty->ty = INT; // Base type
-
-        while (ptr_count > 0) {
-            Type *prev = var->ty;
-            var->ty = malloc(sizeof(Type));
-            var->ty->ty = PTR;
-            var->ty->ptr_to = prev;
-            ptr_count--;
-        }
-
-        // check code for pointer
-        // Type *cur = var->ty;
-        // while (cur)
-        // {
-        //     printf("%d\n", cur->ty);
-        //     cur = cur->ptr_to;
-        // }
-
-        map_put(vars, node->name, var);
-
-        return node;
-    }
+    
 
     if (t->ty == TK_NUM) {
         pos++;
@@ -315,6 +282,61 @@ Node *term() {
     error_at(t->input, "non-number or opening parentheses Token found");
 
     return NULL;
+}
+
+Node *declaration() {
+
+    int ptr_count = 0;
+    while (consume('*'))
+    {
+        ptr_count++;
+    }
+
+    Token *t = tokens->data[pos];
+    if (!consume(TK_IDENT))
+        error_at(t->input, "not variable declaration");
+
+    Node *node = malloc(sizeof(Node));
+    node->ty = ND_VARDEF;
+    node->name = t->name;
+
+    if (map_get(vars, node->name) != NULL)
+        error("'%s' is already defined", node->name);
+
+    // variable setting
+    Var *var = malloc(sizeof(Var));
+    var->offset = offset;
+    offset += 8;
+
+    var->ty = malloc(sizeof(Type));
+    var->ty->ty = INT; // Base type
+
+    while (ptr_count > 0)
+    {
+        Type *prev = var->ty;
+        var->ty = malloc(sizeof(Type));
+        var->ty->ty = PTR;
+        var->ty->ptr_to = prev;
+        ptr_count--;
+    }
+
+    // check code for pointer
+    // Type *cur = var->ty;
+    // while (cur)
+    // {
+    //     printf("%d\n", cur->ty);
+    //     cur = cur->ptr_to;
+    // }
+
+    map_put(vars, node->name, var);
+
+    if (consume('=')) {
+        node->init = assign();
+    }
+
+    expect(';');
+
+    return node;
 }
 
 Node *param()

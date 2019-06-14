@@ -70,6 +70,13 @@ void gen(Node *node) {
     switch (node->ty) {
         case ND_VARDEF:
             gen_lval(node);
+            if (!node->init)
+                return;
+            gen(node->init);
+            printf("  pop rdi\n");
+            printf("  pop rax\n");
+            printf("  mov [rax], rdi\n");
+            printf("  push rdi\n");
             return;
 
         case ND_CALL:
