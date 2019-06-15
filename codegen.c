@@ -10,6 +10,18 @@ int roundup(int x, int align) {
     return (x + align - 1) & ~(align - 1);
 }
 
+static char *get_reg(Type *ty, char r) {
+    switch (ty->size) {
+        case 1:  return (r == 'a') ? "al" : "dil";
+        case 2:  return (r == 'a') ? "ax" : "di";
+        case 4:  return (r == 'a') ? "eax" : "edi";
+        case 8:  return (r == 'a') ? "rax" : "rdi";
+        default:
+            error("Unknown data size");
+            break;
+    }
+}
+
 void gen_func(Function *fn) {
     /// currently, we use function scope
     /// TODO: block scope
@@ -42,12 +54,19 @@ void gen_func(Function *fn) {
         gen_lval(param);
         // set each parameters to local variable address
         printf("  pop rax\n");
-        if (param->ty->size == 4)
-            printf("  mov [rax], %s\n", regs32[i]);
-        else if (param->ty->size == 8)
-            printf("  mov [rax], %s\n", regs[i]);
-        else 
-            printf("  mov [rax], %s\n", regs[i]);
+        switch (param->ty->size) {
+            case 1:
+            case 2:
+            case 4:
+                printf("  mov [rax], %s\n", regs32[i]);
+                break;
+            case 8:
+                printf("  mov [rax], %s\n", regs[i]);
+                break;
+            default:
+                error("Unknown data size");
+                break;
+        }
     }
 
     gen(node->body);
@@ -198,18 +217,10 @@ void gen(Node *node) {
         case ND_IDENT:
         case ND_DEREF:
             // printf("; identifier start\n");
-
             gen_lval(node);
             printf("  pop rax\n");
-            // printf("%s\n", node->name);
-            if (node->ty->size == 4)
-                printf("  mov eax, [rax]\n");
-            else if (node->ty->size == 8)
-                printf("  mov rax, [rax]\n");
-            else
-                printf("  mov rax, [rax]\n");
+            printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
             printf("  push rax\n");
-
             // printf("; identifier end\n");
             return;
 
@@ -224,13 +235,7 @@ void gen(Node *node) {
 
             printf("  pop rdi\n");
             printf("  pop rax\n");
-            // printf("  mov [rax], rdi\n");
-            if (node->ty->size == 4)
-                printf("  mov [rax], edi\n");
-            else if (node->ty->size == 8)
-                printf("  mov [rax], rdi\n");
-            else
-                printf("  mov [rax], rdi\n");
+            printf("  mov [rax], %s\n", get_reg(node->ty, 'd'));
             printf("  push rdi\n");
             // printf("; assign end\n");
             return;
