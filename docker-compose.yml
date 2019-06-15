@@ -8,3 +8,5 @@ services:
       - .:/usr/src
     command:
       - /bin/bash
+    cap_add:
+      - SYS_PTRACE

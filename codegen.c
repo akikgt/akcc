@@ -26,7 +26,7 @@ void gen_func(Function *fn) {
     printf("  mov rbp, rsp\n");
 
     // count total variable size
-    int var_size = 16;
+    int var_size = 0;
     for (int i = 0; i < vars->keys->len; i++) {
         Var *v = vars->vals->data[i];
         var_size += v->ty->size; 
