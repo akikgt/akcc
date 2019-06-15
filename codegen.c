@@ -116,8 +116,14 @@ void gen(Node *node) {
             }
 
             for (int i = 0; i < node->stmts->len; i++) {
-                gen(node->stmts->data[i]);
-                printf("  pop rax\n");
+                Node *stmt = node->stmts->data[i];
+                /// if, for, while statement will not push any value at the end.
+                if (stmt->op == ND_IF || stmt->op == ND_FOR || stmt->op == ND_WHILE)
+                    gen(stmt);
+                else {
+                    gen(stmt);
+                    printf("  pop rax\n");
+                }
             }
 
             printf("  push rax\n");
