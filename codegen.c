@@ -22,6 +22,62 @@ static char *get_reg(Type *ty, char r) {
     }
 }
 
+static emit_binop(Node *node) {
+    gen(node->lhs);
+    gen(node->rhs);
+
+    printf("  pop rdi\n");
+    printf("  pop rax\n");
+
+    switch (node->op)
+    {
+    case '+':
+        printf("  add rax, rdi\n");
+        break;
+    case '-':
+        printf("  sub rax, rdi\n");
+        break;
+    case '*':
+        printf("  imul rdi\n");
+        break;
+    case '/':
+        printf("  cqo\n");
+        printf("  idiv rdi\n");
+        break;
+    case '%':
+        printf("  cqo\n");
+        printf("  idiv rdi\n"); // reminder will be in rdx
+        printf("  mov rax, rdx\n");
+        break;
+    case ND_EQ:
+        printf("  cmp rax, rdi\n");
+        printf("  sete al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case ND_NE:
+        printf("  cmp rax, rdi\n");
+        printf("  setne al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case ND_LE:
+        printf("  cmp rax, rdi\n");
+        printf("  setle al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case '<':
+        printf("  cmp rax, rdi\n");
+        printf("  setl al\n");
+        printf("  movzb rax, al\n");
+        break;
+
+    default:
+        error("Unknown operator");
+        break;
+    }
+
+    printf("  push rax\n");
+}
+
 void gen_func(Function *fn) {
     /// currently, we use function scope
     /// TODO: block scope
@@ -239,60 +295,18 @@ void gen(Node *node) {
             printf("  push rdi\n");
             // printf("; assign end\n");
             return;
-
-    }
-
-
-    /// operators requiring two operands
-    gen(node->lhs);
-    gen(node->rhs);
-
-    printf("  pop rdi\n");
-    printf("  pop rax\n");
-
-    switch (node->op) {
-        case '+':
-            printf("  add rax, rdi\n");
-            break;
-        case '-':
-            printf("  sub rax, rdi\n");
-            break;
-        case '*':
-            printf("  imul rdi\n");
-            break;
-        case '/':
-            printf("  cqo\n");
-            printf("  idiv rdi\n");
-            break;
-        case '%':
-            printf("  cqo\n");
-            printf("  idiv rdi\n");     // reminder will be in rdx
-            printf("  mov rax, rdx\n");
-            break;
-        case ND_EQ:
-            printf("  cmp rax, rdi\n");
-            printf("  sete al\n");
-            printf("  movzb rax, al\n");
-            break;
-        case ND_NE:
-            printf("  cmp rax, rdi\n");
-            printf("  setne al\n");
-            printf("  movzb rax, al\n");
-            break;
-        case ND_LE:
-            printf("  cmp rax, rdi\n");
-            printf("  setle al\n");
-            printf("  movzb rax, al\n");
-            break;
-        case '<':
-            printf("  cmp rax, rdi\n");
-            printf("  setl al\n");
-            printf("  movzb rax, al\n");
-            break;
-
         default:
-            break;
+            emit_binop(node);
+            return;
     }
+}
 
-    printf("  push rax\n");
+
+void gen_x86(Vector *nodes) {
+    printf(".intel_syntax noprefix\n");
+
+    for (int i = 0; i < nodes->len - 1; i++)
+    {
+        gen_func(nodes->data[i]);
+    }
 }

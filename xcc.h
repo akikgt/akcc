@@ -165,6 +165,7 @@ void sema(Vector *nodes);
 void gen(Node *node);
 void gen_lval(Node *node);
 void gen_func(Function *fn);
+void gen_x86(Vector *nodes);
 int roundup(int x, int align); 
 
 
