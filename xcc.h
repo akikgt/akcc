@@ -14,6 +14,9 @@ typedef struct Type {
 
     // Pointer
     struct Type *ptr_to;
+
+    // Array
+    struct Type *arr_of;
     size_t array_size;
 } Type;
 
