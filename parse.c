@@ -3,7 +3,6 @@
 static Vector *tokens;
 static int pos;
 static Vector *code;
-// static int var_count;
 
 static Map *vars;
 static int offset;
@@ -33,6 +32,34 @@ static Type *ptr_to(Type *base) {
     new_ty->size = 8;
     new_ty->ptr_to = base;
     return new_ty;
+}
+
+static Type *arr_of(Type *base) {
+    Type *ret = base;
+    Vector *stack = new_vector();
+
+    while (consume('[')) {
+        Token *t = tokens->data[pos];
+        if (!(t->ty == TK_NUM))
+            vec_push(stack, (void *)-1);
+        vec_push(stack, (void *)t->val);
+        pos++;
+        expect(']');
+    }
+
+    for (int i = stack->len - 1; i >= 0; i--) {
+        // printf("%d\n", stack->data[i]);
+        Type *new_ty = malloc(sizeof(Type));
+        new_ty->ty = ARRAY;        
+        new_ty->array_size = stack->data[i];
+        new_ty->size = new_ty->array_size * ret->size;
+        new_ty->arr_of = ret;
+        // printf("array size is %d\n", new_ty->size);
+
+        ret = new_ty;
+    }
+
+    return ret;
 }
 
 Node *new_node(int ty, Node *lhs, Node *rhs) {
@@ -310,34 +337,17 @@ Node *declaration() {
     if (map_get(vars, node->name) != NULL)
         error("'%s' is already defined", node->name);
 
-
-    int size = 8;
     // array declaration
-    if (consume('[')) {
-        ty = ptr_to(ty);
-        ty->ty = ARRAY;
-
-        Token *t = tokens->data[pos];
-        if (t->ty == TK_NUM) {
-            ty->array_size = t->val * 4;
-            pos++;
-        }
-        expect(']');
+    t = tokens->data[pos];
+    if (t->ty == '[') {
+        ty = arr_of(ty);
     }
 
     // variable setting
     Var *var = malloc(sizeof(Var));
+    offset += ty->size;
     var->offset = offset;
-    offset += size;
     var->ty = ty;
-
-    // check code for pointer
-    // Type *cur = var->ty;
-    // while (cur)
-    // {
-    //     printf("%d\n", cur->ty);
-    //     cur = cur->ptr_to;
-    // }
 
     map_put(vars, node->name, var);
 
@@ -357,6 +367,7 @@ Node *param()
 
     Type *ty = malloc(sizeof(Type));
     ty->ty = INT;
+    ty->size = 4;
     while (consume('*')) {
         ty = ptr_to(ty);
     }
@@ -371,8 +382,8 @@ Node *param()
 
     // variable setting
     Var *var = malloc(sizeof(Var));
+    offset += ty->size;
     var->offset = offset;
-    offset += 8;
     var->ty = ty;
     node->ty = ty;
 
@@ -402,7 +413,7 @@ Function *function() {
 
     // make space for local variables every time in function definition
     vars = new_map();
-    offset = 8;
+    offset = 0;
     fn->vars = vars;
 
     expect('(');

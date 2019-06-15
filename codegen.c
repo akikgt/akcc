@@ -4,6 +4,7 @@ static int label_count = 0;
 static Map *vars;
 
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+// char *regs[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
 int roundup(int x, int align) {
     return (x + align - 1) & ~(align - 1);
@@ -24,9 +25,15 @@ void gen_func(Function *fn) {
     printf("  push rbp\n");
     printf("  mov rbp, rsp\n");
 
+    // count total variable size
+    int var_size = 0;
+    for (int i = 0; i < vars->keys->len; i++) {
+        Var *v = vars->vals->data[i];
+        var_size += v->ty->size; 
+    }
+
     // Alignment RSP
     // For x86-64 ABI, roundup RSP to multiplies of 16
-    int var_size = vars->keys->len * 8;
     printf("  sub rsp, %d\n", roundup(var_size, 16));  // make local variables
 
     // set parameters
