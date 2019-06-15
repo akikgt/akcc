@@ -4,7 +4,7 @@ static int label_count = 0;
 static Map *vars;
 
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-// char *regs[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
+char *regs32[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
 int roundup(int x, int align) {
     return (x + align - 1) & ~(align - 1);
@@ -26,7 +26,7 @@ void gen_func(Function *fn) {
     printf("  mov rbp, rsp\n");
 
     // count total variable size
-    int var_size = 0;
+    int var_size = 16;
     for (int i = 0; i < vars->keys->len; i++) {
         Var *v = vars->vals->data[i];
         var_size += v->ty->size; 
@@ -38,10 +38,16 @@ void gen_func(Function *fn) {
 
     // set parameters
     for (int i = 0; i < node->args->len; i++) {
-        gen_lval(node->args->data[i]);
+        Node *param = node->args->data[i];
+        gen_lval(param);
         // set each parameters to local variable address
         printf("  pop rax\n");
-        printf("  mov [rax], %s\n", regs[i]);
+        if (param->ty->size == 4)
+            printf("  mov [rax], %s\n", regs32[i]);
+        else if (param->ty->size == 8)
+            printf("  mov [rax], %s\n", regs[i]);
+        else 
+            printf("  mov [rax], %s\n", regs[i]);
     }
 
     gen(node->body);
@@ -81,7 +87,13 @@ void gen(Node *node) {
             gen(node->init);
             printf("  pop rdi\n");
             printf("  pop rax\n");
-            printf("  mov [rax], rdi\n");
+            // printf("  mov [rax], rdi\n");
+            if (node->ty->size == 4)
+                printf("  mov [rax], edi\n");
+            else if (node->ty->size == 8)
+                printf("  mov [rax], rdi\n");
+            else
+                printf("  mov [rax], rdi\n");
             printf("  push rdi\n");
             return;
 
@@ -183,19 +195,17 @@ void gen(Node *node) {
 
             gen_lval(node);
             printf("  pop rax\n");
-            printf("  mov rax, [rax]\n");
+            // printf("%s\n", node->name);
+            if (node->ty->size == 4)
+                printf("  mov eax, [rax]\n");
+            else if (node->ty->size == 8)
+                printf("  mov rax, [rax]\n");
+            else
+                printf("  mov rax, [rax]\n");
             printf("  push rax\n");
 
             // printf("; identifier end\n");
             return;
-
-            // // printf("; dereference start\n");
-            // gen_lval(node);
-            // printf("  pop rax\n");
-            // printf("  mov rax, [rax]\n");
-            // printf("  push rax\n");
-            // // printf("; dereference end\n");
-            // return;
 
         case ND_ADDR:
             gen_lval(node->expr); /// RAX = address of IDENT
@@ -208,7 +218,13 @@ void gen(Node *node) {
 
             printf("  pop rdi\n");
             printf("  pop rax\n");
-            printf("  mov [rax], rdi\n");
+            // printf("  mov [rax], rdi\n");
+            if (node->ty->size == 4)
+                printf("  mov [rax], edi\n");
+            else if (node->ty->size == 8)
+                printf("  mov [rax], rdi\n");
+            else
+                printf("  mov [rax], rdi\n");
             printf("  push rdi\n");
             // printf("; assign end\n");
             return;

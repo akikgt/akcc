@@ -22,13 +22,23 @@ void walk(Node *node) {
             node->ty = int_ty();
             return;
         case ND_VARDEF: // variable definition
+        {
             // printf("walk var definition nodes\n");
+            Var *v = map_get(vars, node->name);
+            // printf("%s\n", node->name);
+            node->ty = v->ty;
+            // printf("%d\n", node->ty->size);
+            if (node->init)
+                walk(node->init);
             return;
+        }
         case ND_IDENT:  // identifier 
         {
             // printf("walk identifier nodes\n");
             Var *v = map_get(vars, node->name);
+            // printf("%s\n", node->name);
             node->ty = v->ty;
+            // printf("%d\n", node->ty->size);
             return;
         }  
         case ND_RETURN: // return
@@ -72,9 +82,11 @@ void walk(Node *node) {
             return;
         case ND_ADDR: // address of operator ('&')
             walk(node->expr);
+            node->ty = new_ty(PTR, 8);
             return;
         case ND_DEREF: // pointer dereference ('*')
             walk(node->expr);
+            node->ty = node->expr->ty->ptr_to;
             return;
         case ND_SIZEOF: {
             walk(node->expr);
@@ -109,6 +121,7 @@ void walk(Node *node) {
                 Node *rhs = node->rhs;
                 rhs->val = rhs->val * size;
             }
+            // printf("%d\n", node->lhs->ty->size);
             node->ty = node->lhs->ty;
             return;
         }
