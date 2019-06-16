@@ -25,13 +25,13 @@ try 8 'int main() {
 int a[10]; 
 *a = 8;
 return *a; }'
-try 40 'int main() { int a[10]; return sizeof a; }'
+# try 40 'int main() { int a[10]; return sizeof a; }'
 try 3 'int main() { int a[10]; a[2] = 3; return a[1*2]; }'
 try 3 '
 int main() {
 int a[2];
 *a = 1;
-*(a + 1) = 2;
+*(1 + a) = 2;
 int *p;
 p = a;
 return *p + *(p + 1); }
@@ -42,7 +42,7 @@ try 8 '
     int main() {
         int **p;
         p = 0;
-        p = p + 1;
+        p = 1 + p - 10 + 10;
         int i = p;
         return i;
     }

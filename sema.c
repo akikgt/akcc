@@ -27,6 +27,12 @@ static Node *arr_to_ptr(Node *base) {
     return ret;
 }
 
+static void swap(Node **a, Node **b) {
+    Node *tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
 Node *walk(Node *node) {
     switch (node->op) {
         case ND_NUM:
@@ -90,9 +96,7 @@ Node *walk(Node *node) {
             node->ty = new_ty(PTR, 8);
             return node;
         case ND_DEREF: // pointer dereference ('*')
-            // printf("%d\n", node->expr->op);
             node->expr = walk(node->expr);
-            // printf("%d\n", node->expr->op);
             node->ty = node->expr->ty->ptr_to;
             return node;
         case ND_SIZEOF: {
@@ -121,8 +125,15 @@ Node *walk(Node *node) {
         case '-': {
             node->lhs = walk(node->lhs);
             node->rhs = walk(node->rhs);
+
+            if (node->rhs->ty->ty == PTR) {
+                if (node->lhs->ty->ty == PTR)
+                    error("pointer %c pointer is not defined", node->op);
+                swap(&node->lhs, &node->rhs);
+            }
+
             /// pointer arithmetic
-            if (node->lhs->ty->ty == PTR || node->lhs->ty->ty == ARRAY)
+            if (node->lhs->ty->ty == PTR)
             {
                 int size = node->lhs->ty->ptr_to->size;
                 node->rhs = new_node('*', node->rhs, new_node_num(size));
