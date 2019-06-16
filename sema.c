@@ -15,7 +15,7 @@ Type *int_ty() {
     return ty;
 }
 
-Node *arr_to_ptr(Node *base) {
+static Node *arr_to_ptr(Node *base) {
     if (!(base->ty->ty == ARRAY))
         return base;
 
@@ -24,79 +24,85 @@ Node *arr_to_ptr(Node *base) {
     ret->ty = ptr_to(base->ty->arr_of);
     ret->expr = base;
 
-    return base;
+    return ret;
 }
 
-void walk(Node *node) {
+Node *walk(Node *node) {
     switch (node->op) {
         case ND_NUM:
             node->ty = int_ty();
-            return;
+            return node;
         case ND_VARDEF: // variable definition
         {
             Var *v = map_get(vars, node->name);
             node->ty = v->ty;
             if (node->init)
-                walk(node->init);
-            return;
+                node->init = walk(node->init);
+            return node;
         }
         case ND_IDENT:  // identifier 
         {
             Var *v = map_get(vars, node->name);
             node->ty = v->ty;
-            return;
+            if (node->ty->ty == ARRAY) {
+                node = arr_to_ptr(node);
+                // printf("%d\n", node->op);
+            }
+            return node;
         }  
         case ND_RETURN: // return
-            walk(node->expr);
-            return;
+            node->expr = walk(node->expr);
+            return node;
         case ND_IF: // if
-            walk(node->cond);
-            walk(node->then);
+            node->cond = walk(node->cond);
+            node->then = walk(node->then);
             if (node->els)
-                walk(node->els);
-            return;
+                node->els = walk(node->els);
+            return node;
         case ND_WHILE: // while
-            walk(node->cond);
-            walk(node->body);
-            return;
+            node->cond = walk(node->cond);
+            node->body = walk(node->body);
+            return node;
         case ND_FOR: // for
             if (node->init)
-                walk(node->init);
+                node->init = walk(node->init);
             if (node->cond)
-                walk(node->cond);
+                node->cond = walk(node->cond);
             if (node->inc)
-                walk(node->inc);
-            walk(node->body);
-            return;
+                node->inc = walk(node->inc);
+            node->body = walk(node->body);
+            return node;
         case ND_BLOCK: // block
             for (int i = 0; i < node->stmts->len; i++)
-                walk(node->stmts->data[i]); 
-            return;
+                node->stmts->data[i] = walk(node->stmts->data[i]); 
+            return node;
         case ND_CALL: // function call
             for (int i = 0; i < node->args->len; i++)
-                walk(node->args->data[i]);
-            return;
+                node->args->data[i] = walk(node->args->data[i]);
+            return node;
         case ND_FUNC: // function definition
             for (int i = 0; i < node->args->len; i++)
-                walk(node->args->data[i]);
-            walk(node->body);
-            return;
+                node->args->data[i] = walk(node->args->data[i]);
+            node->body = walk(node->body);
+            return node;
         case ND_ADDR: // address of operator ('&')
-            walk(node->expr);
+            node->expr = walk(node->expr);
             node->ty = new_ty(PTR, 8);
-            return;
+            return node;
         case ND_DEREF: // pointer dereference ('*')
-            walk(node->expr);
+            // printf("%d\n", node->expr->op);
+            node->expr = walk(node->expr);
+            // printf("%d\n", node->expr->op);
             node->ty = node->expr->ty->ptr_to;
-            return;
+            return node;
         case ND_SIZEOF: {
-            walk(node->expr);
+            node->expr = walk(node->expr);
             Type *ty = node->expr->ty;
             node->val = ty->size;
             // convert to integer
             node->op = ND_NUM;
             node->ty = int_ty();
-            return;
+            return node;
         }
         case ND_EQ: // ==
         case ND_NE: // !=
@@ -107,14 +113,14 @@ void walk(Node *node) {
         case '*':
         case '/':
         case '%':
-            walk(node->lhs);
-            walk(node->rhs);
+            node->lhs = walk(node->lhs);
+            node->rhs = walk(node->rhs);
             node->ty = node->lhs->ty;
-            return;
+            return node;
         case '+':
         case '-': {
-            walk(node->lhs);
-            walk(node->rhs);
+            node->lhs = walk(node->lhs);
+            node->rhs = walk(node->rhs);
             /// pointer arithmetic
             if (node->lhs->ty->ty == PTR || node->lhs->ty->ty == ARRAY)
             {
@@ -122,10 +128,10 @@ void walk(Node *node) {
                 node->rhs = new_node('*', node->rhs, new_node_num(size));
             }
             node->ty = node->lhs->ty;
-            return;
+            return node;
         }
         default:
-            return;
+            return node;
         }
 }
 

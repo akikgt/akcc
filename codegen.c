@@ -11,8 +11,8 @@ int roundup(int x, int align) {
 }
 
 static char *get_reg(Type *ty, char r) {
-    if (ty->ty == ARRAY)
-        return (r == 'a') ? "rax" : "rdi";
+    // if (ty->ty == ARRAY)
+    //     return (r == 'a') ? "rax" : "rdi";
 
     switch (ty->size) {
         case 1:  return (r == 'a') ? "al" : "dil";
@@ -20,7 +20,7 @@ static char *get_reg(Type *ty, char r) {
         case 4:  return (r == 'a') ? "eax" : "edi";
         case 8:  return (r == 'a') ? "rax" : "rdi";
         default:
-            error("Unknown data size");
+            error("Unknown data size: %d", ty->size);
             break;
     }
 
@@ -156,6 +156,7 @@ void gen_lval(Node *node) {
 }
 
 void gen(Node *node) {
+    // printf("%d\n", node->op);
     if (node == NULL)
         error("node is null");
 
@@ -268,16 +269,17 @@ void gen(Node *node) {
             return;
 
         case ND_IDENT:
-        case ND_DEREF:
             gen_lval(node);
-            if (node->ty->ty == ARRAY) {
-                node->ty->size = 8;
-            }
-            else {
-                printf("  pop rax\n");
-                printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
-                printf("  push rax\n");
-            }
+            printf("  pop rax\n");
+            printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
+            printf("  push rax\n");
+            return;
+
+        case ND_DEREF:
+            gen(node->expr);
+            printf("  pop rax\n");
+            printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
+            printf("  push rax\n");
             return;
 
         case ND_ADDR:

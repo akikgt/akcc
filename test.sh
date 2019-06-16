@@ -21,6 +21,10 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 #pointer test
 try 8 'int main() { int *p; return sizeof(p + 2); }'
 try 4 'int main() { int i; return sizeof i; }'
+try 8 'int main() { 
+int a[10]; 
+*a = 8;
+return *a; }'
 try 40 'int main() { int a[10]; return sizeof a; }'
 try 3 'int main() { int a[10]; a[2] = 3; return a[1*2]; }'
 try 3 '
@@ -32,11 +36,6 @@ int *p;
 p = a;
 return *p + *(p + 1); }
 '
-try 8 'int main() { 
-int a[10]; 
-*a = 8;
-return *a; }'
-
 try 20 'int main() { int a[1][5][10]; int b = 20; return b; }'
 try 0 'int main(int arg, int **argv) {int ****p; return 0; } '
 try 8 '
