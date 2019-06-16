@@ -291,7 +291,15 @@ Node *term() {
         if (!consume('(')) {
             if (map_get(vars, t->name) == NULL)
                 error_at(t->input, "undefined variable");
-            node = new_node_ident(t->name);
+            if (consume('[')) {
+                node = malloc(sizeof(Node));
+                node->op = ND_DEREF;
+                // printf("%s\n", t->name);
+                node->expr = new_node('+', new_node_ident(t->name), add());
+                expect(']');
+            }
+            else
+                node = new_node_ident(t->name);
             return node;
         }
 

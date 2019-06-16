@@ -273,14 +273,15 @@ void gen(Node *node) {
         case ND_DEREF:
             // printf("; identifier start\n");
             gen_lval(node);
-            printf("  pop rax\n");
             if (node->ty->ty == ARRAY) {
                 node->ty->size = 8;
                 /// keep rax
             }
-            else
+            else {
+                printf("  pop rax\n");
                 printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
-            printf("  push rax\n");
+                printf("  push rax\n");
+            }
             // printf("; identifier end\n");
             return;
 
