@@ -86,7 +86,16 @@ void walk(Node *node) {
             return;
         case ND_DEREF: // pointer dereference ('*')
             walk(node->expr);
+            // if (node->expr->ty->ty == ARRAY) {
+            //     printf("aaaa\n");
+            //     // printf("%d\n", node->ty->ty);
+            //     // node->ty->ty = PTR;
+            //     // node->ty->size = 8;
+            //     // node->ty = int_ty();
+            // }
+            // else
             node->ty = node->expr->ty->ptr_to;
+            // printf("%d\n", node->ty->ty);
             return;
         case ND_SIZEOF: {
             walk(node->expr);
@@ -109,13 +118,17 @@ void walk(Node *node) {
             walk(node->lhs);
             walk(node->rhs);
             node->ty = node->lhs->ty;
+            // if (node->ty->ty == ARRAY) {
+            //     node->ty->ty = PTR;
+            //     node->ty->size = 8;
+            // }
             return;
         case '+':
         case '-': {
             walk(node->lhs);
             walk(node->rhs);
             /// pointer arithmetic
-            if (node->lhs->ty->ty == PTR)
+            if (node->lhs->ty->ty == PTR || node->lhs->ty->ty == ARRAY)
             {
                 int size = node->lhs->ty->ptr_to->size;
                 Node *rhs = node->rhs;

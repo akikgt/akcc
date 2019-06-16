@@ -11,6 +11,9 @@ int roundup(int x, int align) {
 }
 
 static char *get_reg(Type *ty, char r) {
+    if (ty->ty == ARRAY)
+        return (r == 'a') ? "rax" : "rdi";
+
     switch (ty->size) {
         case 1:  return (r == 'a') ? "al" : "dil";
         case 2:  return (r == 'a') ? "ax" : "di";
@@ -20,9 +23,11 @@ static char *get_reg(Type *ty, char r) {
             error("Unknown data size");
             break;
     }
+
+    return 0;
 }
 
-static emit_binop(Node *node) {
+static void emit_binop(Node *node) {
     gen(node->lhs);
     gen(node->rhs);
 
@@ -162,13 +167,7 @@ void gen(Node *node) {
             gen(node->init);
             printf("  pop rdi\n");
             printf("  pop rax\n");
-            // printf("  mov [rax], rdi\n");
-            if (node->ty->size == 4)
-                printf("  mov [rax], edi\n");
-            else if (node->ty->size == 8)
-                printf("  mov [rax], rdi\n");
-            else
-                printf("  mov [rax], rdi\n");
+            printf("  mov [rax], %s\n", get_reg(node->ty, 'd'));
             printf("  push rdi\n");
             return;
 
@@ -275,7 +274,12 @@ void gen(Node *node) {
             // printf("; identifier start\n");
             gen_lval(node);
             printf("  pop rax\n");
-            printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
+            if (node->ty->ty == ARRAY) {
+                node->ty->size = 8;
+                /// keep rax
+            }
+            else
+                printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
             printf("  push rax\n");
             // printf("; identifier end\n");
             return;

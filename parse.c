@@ -54,6 +54,7 @@ static Type *arr_of(Type *base) {
         new_ty->array_size = stack->data[i];
         new_ty->size = new_ty->array_size * ret->size;
         new_ty->arr_of = ret;
+        new_ty->ptr_to = ret;
         // printf("array size is %d\n", new_ty->size);
 
         ret = new_ty;
