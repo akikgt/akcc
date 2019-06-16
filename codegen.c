@@ -204,8 +204,6 @@ void gen(Node *node) {
             return;
 
         case ND_RETURN:
-            // printf("; return statement start\n");
-
             gen(node->expr);
             printf("  pop rax\n");
             printf("  mov rsp, rbp\n");
@@ -271,18 +269,15 @@ void gen(Node *node) {
 
         case ND_IDENT:
         case ND_DEREF:
-            // printf("; identifier start\n");
             gen_lval(node);
             if (node->ty->ty == ARRAY) {
                 node->ty->size = 8;
-                /// keep rax
             }
             else {
                 printf("  pop rax\n");
                 printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
                 printf("  push rax\n");
             }
-            // printf("; identifier end\n");
             return;
 
         case ND_ADDR:
@@ -290,7 +285,6 @@ void gen(Node *node) {
             return;
 
         case '=':
-            // printf("; assign start\n");
             gen_lval(node->lhs);
             gen(node->rhs);
 
@@ -298,7 +292,6 @@ void gen(Node *node) {
             printf("  pop rax\n");
             printf("  mov [rax], %s\n", get_reg(node->ty, 'd'));
             printf("  push rdi\n");
-            // printf("; assign end\n");
             return;
         default:
             emit_binop(node);

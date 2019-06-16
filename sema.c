@@ -18,35 +18,26 @@ Type *int_ty() {
 void walk(Node *node) {
     switch (node->op) {
         case ND_NUM:
-            // printf("walk number nodes\n");
             node->ty = int_ty();
             return;
         case ND_VARDEF: // variable definition
         {
-            // printf("walk var definition nodes\n");
             Var *v = map_get(vars, node->name);
-            // printf("%s\n", node->name);
             node->ty = v->ty;
-            // printf("%d\n", node->ty->size);
             if (node->init)
                 walk(node->init);
             return;
         }
         case ND_IDENT:  // identifier 
         {
-            // printf("walk identifier nodes\n");
             Var *v = map_get(vars, node->name);
-            // printf("%s\n", node->name);
             node->ty = v->ty;
-            // printf("%d\n", node->ty->size);
             return;
         }  
         case ND_RETURN: // return
-            // printf("walk return nodes\n");
             walk(node->expr);
             return;
         case ND_IF: // if
-            // printf("walk if-else statement nodes\n");
             walk(node->cond);
             walk(node->then);
             if (node->els)
@@ -66,7 +57,6 @@ void walk(Node *node) {
             walk(node->body);
             return;
         case ND_BLOCK: // block
-            // printf("walk block statement nodes\n");
             for (int i = 0; i < node->stmts->len; i++)
                 walk(node->stmts->data[i]); 
             return;
@@ -75,7 +65,6 @@ void walk(Node *node) {
                 walk(node->args->data[i]);
             return;
         case ND_FUNC: // function definition
-            // printf("walk function definition nodes\n");
             for (int i = 0; i < node->args->len; i++)
                 walk(node->args->data[i]);
             walk(node->body);
@@ -109,10 +98,6 @@ void walk(Node *node) {
             walk(node->lhs);
             walk(node->rhs);
             node->ty = node->lhs->ty;
-            // if (node->ty->ty == ARRAY) {
-            //     node->ty->ty = PTR;
-            //     node->ty->size = 8;
-            // }
             return;
         case '+':
         case '-': {
@@ -122,11 +107,8 @@ void walk(Node *node) {
             if (node->lhs->ty->ty == PTR || node->lhs->ty->ty == ARRAY)
             {
                 int size = node->lhs->ty->ptr_to->size;
-                // Node *rhs = node->rhs;
-                // rhs->val = rhs->val * size;
                 node->rhs = new_node('*', node->rhs, new_node_num(size));
             }
-            // printf("%d\n", node->lhs->ty->size);
             node->ty = node->lhs->ty;
             return;
         }

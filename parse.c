@@ -48,15 +48,12 @@ static Type *arr_of(Type *base) {
     }
 
     for (int i = stack->len - 1; i >= 0; i--) {
-        // printf("%d\n", stack->data[i]);
         Type *new_ty = malloc(sizeof(Type));
         new_ty->ty = ARRAY;        
         new_ty->array_size = stack->data[i];
         new_ty->size = new_ty->array_size * ret->size;
         new_ty->arr_of = ret;
         new_ty->ptr_to = ret;
-        // printf("array size is %d\n", new_ty->size);
-
         ret = new_ty;
     }
 
