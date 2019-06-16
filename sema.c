@@ -15,6 +15,18 @@ Type *int_ty() {
     return ty;
 }
 
+Node *arr_to_ptr(Node *base) {
+    if (!(base->ty->ty == ARRAY))
+        return base;
+
+    Node *ret = malloc(sizeof(Node));
+    ret->op = ND_ADDR;
+    ret->ty = ptr_to(base->ty->arr_of);
+    ret->expr = base;
+
+    return base;
+}
+
 void walk(Node *node) {
     switch (node->op) {
         case ND_NUM:

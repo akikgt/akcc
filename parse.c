@@ -26,7 +26,7 @@ static int is_typename() {
     return t->ty == TK_INT;
 }
 
-static Type *ptr_to(Type *base) {
+Type *ptr_to(Type *base) {
     Type *new_ty = malloc(sizeof(Type));
     new_ty->ty = PTR;
     new_ty->size = 8;
