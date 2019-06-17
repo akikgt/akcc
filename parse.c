@@ -60,24 +60,27 @@ static Type *arr_of(Type *base) {
     return ret;
 }
 
-Node *new_node_binop(int op, Node *lhs, Node *rhs) {
+Node *new_node(int op) {
     Node *node = malloc(sizeof(Node));
     node->op = op;
+    return node;
+}
+
+Node *new_node_binop(int op, Node *lhs, Node *rhs) {
+    Node *node = new_node(op);
     node->lhs = lhs;
     node->rhs = rhs;
     return node;
 }
 
 Node *new_node_num(int val) {
-    Node *node = malloc(sizeof(Node));
-    node->op = ND_NUM;
+    Node *node = new_node(ND_NUM);
     node->val = val;
     return node;
 }
 
 Node *new_node_ident(char *name) {
-    Node *node = malloc(sizeof(Node));
-    node->op = ND_IDENT;
+    Node *node = new_node(ND_IDENT);
     node->name = name;
     return node;
 }
