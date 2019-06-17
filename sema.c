@@ -144,7 +144,7 @@ Node *do_walk(Node *node, int decay) {
             if (node->lhs->ty->ty == PTR)
             {
                 int size = node->lhs->ty->ptr_to->size;
-                node->rhs = new_node('*', node->rhs, new_node_num(size));
+                node->rhs = new_node_binop('*', node->rhs, new_node_num(size));
             }
             node->ty = node->lhs->ty;
             return node;

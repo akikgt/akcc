@@ -60,9 +60,9 @@ static Type *arr_of(Type *base) {
     return ret;
 }
 
-Node *new_node(int ty, Node *lhs, Node *rhs) {
+Node *new_node_binop(int op, Node *lhs, Node *rhs) {
     Node *node = malloc(sizeof(Node));
-    node->op = ty;
+    node->op = op;
     node->lhs = lhs;
     node->rhs = rhs;
     return node;
@@ -86,7 +86,7 @@ Node *new_node_ident(char *name) {
 Node *assign() {
     Node *node = equality();
     if (consume('='))
-        node = new_node('=', node, assign());
+        node = new_node_binop('=', node, assign());
     return node;
 }
 
@@ -186,9 +186,9 @@ Node *equality() {
     
     for (;;) {
         if (consume(TK_EQ))
-            node = new_node(ND_EQ, node, relational());
+            node = new_node_binop(ND_EQ, node, relational());
         else if (consume(TK_NE))
-            node = new_node(ND_NE, node, relational());
+            node = new_node_binop(ND_NE, node, relational());
         else
             return node;        
     }
@@ -199,13 +199,13 @@ Node *relational() {
     
     for (;;) {
         if (consume(TK_LE))
-            node = new_node(ND_LE, node, add());
+            node = new_node_binop(ND_LE, node, add());
         else if (consume(TK_GE))
-            node = new_node(ND_LE, add(), node);
+            node = new_node_binop(ND_LE, add(), node);
         else if (consume('<'))
-            node = new_node('<', node, add());
+            node = new_node_binop('<', node, add());
         else if (consume('>'))
-            node = new_node('<', add(), node);
+            node = new_node_binop('<', add(), node);
         else
             return node;        
     }
@@ -216,9 +216,9 @@ Node *add() {
 
     for (;;) {
         if (consume('+'))
-            node = new_node('+', node, mul());
+            node = new_node_binop('+', node, mul());
         else if (consume('-'))
-            node = new_node('-', node, mul());
+            node = new_node_binop('-', node, mul());
         else
             return node;
     }
@@ -229,11 +229,11 @@ Node *mul() {
 
     for (;;) {
         if (consume('*'))
-            node = new_node('*', node, unary());
+            node = new_node_binop('*', node, unary());
         else if (consume('/'))
-            node = new_node('/', node, unary());
+            node = new_node_binop('/', node, unary());
         else if (consume('%'))
-            node = new_node('%', node, unary());
+            node = new_node_binop('%', node, unary());
         else
             return node;
     }
@@ -261,7 +261,7 @@ Node *unary() {
     if (consume('+'))
         return term();
     if (consume('-'))
-        return new_node('-', new_node_num(0), term());
+        return new_node_binop('-', new_node_num(0), term());
     return term();
 }
 
@@ -292,7 +292,7 @@ Node *term() {
                 node = malloc(sizeof(Node));
                 node->op = ND_DEREF;
                 // printf("%s\n", t->name);
-                node->expr = new_node('+', new_node_ident(t->name), add());
+                node->expr = new_node_binop('+', new_node_ident(t->name), add());
                 expect(']');
             }
             else

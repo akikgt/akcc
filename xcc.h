@@ -144,7 +144,7 @@ typedef struct Var {
 } Var;
 
 
-Node *new_node(int ty, Node *lhs, Node *rhs);
+Node *new_node_binop(int ty, Node *lhs, Node *rhs);
 Node *new_node_num(int val);
 int consume(int ty);
 Type *ptr_to(Type *base);
