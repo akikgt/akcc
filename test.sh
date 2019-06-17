@@ -21,6 +21,7 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 #global variable
 try 0 'int a; int main() { return a;} '
 try 2 'int a; int main() { a = 2; return a;} '
+try 100 'int a[2]; int main() { a[1] = 100; return a[1];} '
 #pointer test
 try 8 'int main(int a[100]) { int *p; return sizeof(p + 2); }'
 try 4 'int main() { int i; return sizeof i; }'
