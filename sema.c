@@ -32,8 +32,17 @@ static void swap(Node **a, Node **b) {
     *a = *b;
     *b = tmp;
 }
+Node *do_walk(Node *node, int decay);
 
 Node *walk(Node *node) {
+    return do_walk(node, 1);
+}
+
+Node *walk_nodecay(Node *node) {
+    return do_walk(node, 0);
+}
+
+Node *do_walk(Node *node, int decay) {
     switch (node->op) {
         case ND_NUM:
             node->ty = int_ty();
@@ -50,9 +59,8 @@ Node *walk(Node *node) {
         {
             Var *v = map_get(vars, node->name);
             node->ty = v->ty;
-            if (node->ty->ty == ARRAY) {
+            if (decay && node->ty->ty == ARRAY) {
                 node = arr_to_ptr(node);
-                // printf("%d\n", node->op);
             }
             return node;
         }  
@@ -100,7 +108,7 @@ Node *walk(Node *node) {
             node->ty = node->expr->ty->ptr_to;
             return node;
         case ND_SIZEOF: {
-            node->expr = walk(node->expr);
+            node->expr = walk_nodecay(node->expr);
             Type *ty = node->expr->ty;
             node->val = ty->size;
             // convert to integer
