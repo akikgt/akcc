@@ -21,6 +21,11 @@ static void expect(int ty) {
         error_at(t->input, format("Not '%c'", ty));
 }
 
+static int peek(int ty) {
+    Token *t = tokens->data[pos];
+    return t->ty == ty;
+}
+
 static int is_typename() {
     Token *t = tokens->data[pos];
     return t->ty == TK_INT;
@@ -388,20 +393,14 @@ Node *param()
     return node;
 }
 
-Function *function() {
-    if (!consume(TK_INT))
-        error_at(((Token *)tokens->data[pos])->input, "Not type specification");
+Function *function(Type *ty, char *name) {
 
-    Token *t = tokens->data[pos];
-    if (!consume(TK_IDENT))
-        error_at(t->input, "Not function");
+    // Token *t = tokens->data[pos++];
 
     Node *node = new_node(ND_FUNC);
-    node->name = t->name;
+    node->ty = ty;
+    node->name = name;
     node->args = new_vector();
-    
-    ///TODO: type settings for function
-    // node->ty;
 
     Function *fn = malloc(sizeof(Function));
     fn->node = node;
@@ -428,8 +427,21 @@ Function *function() {
 }
 
 void program() {
-    while (((Token *)tokens->data[pos])->ty != TK_EOF)
-        vec_push(code, function());
+    // top level check
+    // Token *t = tokens->data[pos];
+    while (!peek(TK_EOF)) {
+
+        Type *ty = type_specifier();
+
+        Token *t = tokens->data[pos];
+        expect(TK_IDENT);
+
+        // Function
+        if (peek('('))
+            vec_push(code, function(ty, t->name));
+
+        // Global variable
+    }
     vec_push(code, NULL);
 }
 
