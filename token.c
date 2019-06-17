@@ -27,13 +27,6 @@ Map *set_keywords() {
     return keywords;
 }
 
-int is_alnum(char c) {
-    return ('a' <= c && c <= 'z') ||
-            ('A' <= c && c <= 'Z') ||
-            ('0' <= c && c <= '9') ||
-            (c == '_');
-}
-
 Token *add_token(Vector *vec, int ty, char *input) {
     Token *token = malloc(sizeof(Token));
     token->ty = ty;
