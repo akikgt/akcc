@@ -17,10 +17,10 @@ int main(int argc, char **argv) {
 
     Vector *tokens = tokenize(argv[1]);
 
-    Vector *nodes = parse(tokens);
-    sema(nodes);
+    Program *prog = parse(tokens);
+    sema(prog);
 
-    gen_x86(nodes);
+    gen_x86(prog);
 
     return 0;
 }

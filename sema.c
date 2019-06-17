@@ -32,6 +32,7 @@ static void swap(Node **a, Node **b) {
     *a = *b;
     *b = tmp;
 }
+
 Node *do_walk(Node *node, int decay);
 
 Node *walk(Node *node) {
@@ -154,10 +155,10 @@ Node *do_walk(Node *node, int decay) {
         }
 }
 
-void sema(Vector *nodes)
+void sema(Program *prog)
 {
-    for (int i = 0; i < nodes->len - 1; i++) {
-        Function *fn = nodes->data[i];
+    for (int i = 0; i < prog->fns->len - 1; i++) {
+        Function *fn = prog->fns->data[i];
         vars = fn->vars;
         Node *node = fn->node;
 

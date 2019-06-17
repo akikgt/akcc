@@ -2,7 +2,8 @@
 
 static Vector *tokens;
 static int pos;
-static Vector *code;
+// static Vector *code;
+static Program *prog;
 
 static Map *vars;
 static int offset;
@@ -438,19 +439,22 @@ void program() {
 
         // Function
         if (peek('('))
-            vec_push(code, function(ty, t->name));
+            vec_push(prog->fns, function(ty, t->name));
 
         // Global variable
     }
-    vec_push(code, NULL);
+    vec_push(prog->fns, NULL);
 }
 
-Vector *parse(Vector *v) {
+Program *parse(Vector *v) {
     tokens = v;
     pos = 0;
-    code = new_vector();
+
+    prog = malloc(sizeof(Program));
+    prog->gvars = new_vector();
+    prog->fns = new_vector();
 
     program();
 
-    return code;
+    return prog;
 }

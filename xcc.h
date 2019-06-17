@@ -143,6 +143,11 @@ typedef struct Var {
     int offset;
 } Var;
 
+typedef struct Program {
+    Vector *gvars;
+    Vector *fns;
+} Program;
+
 
 Node *new_node(int op);
 Node *new_node_binop(int op, Node *lhs, Node *rhs);
@@ -158,16 +163,16 @@ Node *unary();
 Node *term();
 Node *param();
 Node *declaration();
-Vector *parse(Vector *v);
+Program *parse(Vector *v);
 
 /// sema.c
-void sema(Vector *nodes);
+void sema(Program *prog);
 
 /// codegen.c
 void gen(Node *node);
 void gen_lval(Node *node);
 void gen_func(Function *fn);
-void gen_x86(Vector *nodes);
+void gen_x86(Program *prog);
 int roundup(int x, int align); 
 
 
