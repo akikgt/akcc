@@ -18,6 +18,8 @@ try() {
 
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
+#char test
+try 0 'int main() { char a; return a;} '
 #global variable
 try 0 'int a; int main() { return a;} '
 try 2 'int a; int main() { a = 2; return a;} '

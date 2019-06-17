@@ -9,7 +9,7 @@ extern char *user_input;
 
 /// type
 typedef struct Type {
-    enum { INT, PTR, ARRAY } ty;
+    enum { INT, CHAR, PTR, ARRAY } ty;
     int size;
 
     // Pointer
@@ -60,6 +60,7 @@ enum
     TK_WHILE,     // while
     TK_FOR,       // for
     TK_INT,       // int
+    TK_CHAR,      // char
     TK_EQ,        // ==
     TK_NE,        // !=
     TK_LE,        // <=
