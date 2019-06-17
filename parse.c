@@ -101,15 +101,13 @@ Node *stmt() {
     Node *node;
 
     if (consume(TK_RETURN)) {
-        node = malloc(sizeof(Node));
-        node->op = ND_RETURN;
+        node = new_node(ND_RETURN);
         node->expr = expr();
         expect(';');
         return node;
     }
     else if (consume(TK_IF)) {
-        node = malloc(sizeof(Node));
-        node->op = ND_IF;
+        node = new_node(ND_IF);
 
         expect('(');
         node->cond = expr();
@@ -122,8 +120,7 @@ Node *stmt() {
         return node;
     }
     else if (consume(TK_WHILE)) {
-        node = malloc(sizeof(Node));
-        node->op = ND_WHILE;
+        node = new_node(ND_WHILE);
 
         expect('(');
         node->cond = expr();
@@ -133,8 +130,7 @@ Node *stmt() {
         return node;
     }
     else if (consume(TK_FOR)) {
-        node = malloc(sizeof(Node));
-        node->op = ND_FOR;
+        node = new_node(ND_FOR);
 
         expect('(');
         if (!consume(';')) {
@@ -160,8 +156,7 @@ Node *stmt() {
         return node;
     }
     else if (consume('{')) {
-        node = malloc(sizeof(Node));
-        node->op = ND_BLOCK;
+        node = new_node(ND_BLOCK);
         node->stmts = new_vector();
 
         while (!consume('}')) {
@@ -244,20 +239,17 @@ Node *mul() {
 
 Node *unary() {
     if (consume('*')) {
-        Node *node = malloc(sizeof(Node));
-        node->op = ND_DEREF;
+        Node *node = new_node(ND_DEREF);
         node->expr = unary();
         return node;
     }
     if (consume('&')) {
-        Node *node = malloc(sizeof(Node));
-        node->op = ND_ADDR;
+        Node *node = new_node(ND_ADDR);
         node->expr = unary();
         return node;
     }
     if (consume(TK_SIZEOF)) {
-        Node *node = malloc(sizeof(Node));
-        node->op = ND_SIZEOF;
+        Node *node = new_node(ND_SIZEOF);
         node->expr = unary();
         return node;
     }
@@ -292,9 +284,7 @@ Node *term() {
             if (map_get(vars, t->name) == NULL)
                 error_at(t->input, "undefined variable");
             if (consume('[')) {
-                node = malloc(sizeof(Node));
-                node->op = ND_DEREF;
-                // printf("%s\n", t->name);
+                node = new_node(ND_DEREF);
                 node->expr = new_node_binop('+', new_node_ident(t->name), add());
                 expect(']');
             }
@@ -304,8 +294,7 @@ Node *term() {
         }
 
         // Function call
-        node = malloc(sizeof(Node));
-        node->op = ND_CALL;
+        node = new_node(ND_CALL);
         node->name = t->name;
         node->args = new_vector();
 
@@ -339,8 +328,7 @@ Node *declaration() {
     if (!consume(TK_IDENT))
         error_at(t->input, "not variable declaration");
 
-    Node *node = malloc(sizeof(Node));
-    node->op = ND_VARDEF;
+    Node *node = new_node(ND_VARDEF);
     node->name = t->name;
 
     if (map_get(vars, node->name) != NULL)
@@ -385,8 +373,7 @@ Node *param()
     if (!consume(TK_IDENT))
         error_at(t->input, "not variable declaration");
 
-    Node *node = malloc(sizeof(Node));
-    node->op = ND_VARDEF;
+    Node *node = new_node(ND_VARDEF);
     node->name = t->name;
 
     // variable setting
@@ -409,8 +396,7 @@ Function *function() {
     if (!consume(TK_IDENT))
         error_at(t->input, "Not function");
 
-    Node *node = malloc(sizeof(Node));
-    node->op = ND_FUNC;
+    Node *node = new_node(ND_FUNC);
     node->name = t->name;
     node->args = new_vector();
     
