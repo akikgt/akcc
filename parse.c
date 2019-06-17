@@ -329,7 +329,6 @@ Node *term() {
 }
 
 Node *declaration() {
-
     Type *ty = type_specifier();
 
     Token *t = tokens->data[pos];
@@ -354,13 +353,14 @@ Node *declaration() {
     var->offset = offset;
     var->ty = ty;
 
+    node->ty = ty;
+
     map_put(vars, node->name, var);
 
     node->init = NULL;
     if (consume('=')) {
         node->init = assign();
     }
-
 
     return node;
 }
@@ -369,18 +369,18 @@ Node *param()
 {
     Type *ty = type_specifier();
 
+    // variable setting
+    Var *var = malloc(sizeof(Var));
+    offset += ty->size;
+    var->offset = offset;
+    var->ty = ty;
+
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
         error_at(t->input, "not variable declaration");
 
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;
-
-    // variable setting
-    Var *var = malloc(sizeof(Var));
-    offset += ty->size;
-    var->offset = offset;
-    var->ty = ty;
     node->ty = ty;
 
     map_put(vars, node->name, var);
