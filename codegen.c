@@ -2,6 +2,7 @@
 
 static int label_count = 0;
 static Map *vars;
+static Map *gvars;
 
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 char *regs32[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
@@ -11,9 +12,6 @@ int roundup(int x, int align) {
 }
 
 static char *get_reg(Type *ty, char r) {
-    // if (ty->ty == ARRAY)
-    //     return (r == 'a') ? "rax" : "rdi";
-
     switch (ty->size) {
         case 1:  return (r == 'a') ? "al" : "dil";
         case 2:  return (r == 'a') ? "ax" : "di";
@@ -115,6 +113,11 @@ void gen_func(Function *fn) {
         gen_lval(param);
         // set each parameters to local variable address
         printf("  pop rax\n");
+        if (param->ty->ty == ARRAY) {
+            /// TODO: array parameter
+            printf("  mov [rax], %s\n", regs[i]);
+            continue;
+        }
         switch (param->ty->size) {
             case 1:
             case 2:
@@ -125,7 +128,7 @@ void gen_func(Function *fn) {
                 printf("  mov [rax], %s\n", regs[i]);
                 break;
             default:
-                error("Unknown data size");
+                error("Unknown data size %d", param->ty->size);
                 break;
         }
     }
@@ -149,6 +152,16 @@ void gen_lval(Node *node) {
         error("lval is not valid variable");
 
     Var *var = map_get(vars, node->name);
+    if (var == NULL) {
+        // lookup global variables
+        if (!map_get(gvars, node->name))
+            error("cannot find variable");
+
+        // printf("global variable\n");
+        printf("  lea eax, %s[rip]\n", node->name);
+        printf("  push rax\n");
+        return;
+    }
     int offset = var->offset;
     printf("  mov rax, rbp\n");
     printf("  sub rax, %d\n", offset);
@@ -301,9 +314,24 @@ void gen(Node *node) {
     }
 }
 
+void gen_gvar(Var *v) {
+    printf("%s: \n", v->name);
+    printf("  .zero  %d\n", v->ty->size);
+}
+
 
 void gen_x86(Program *prog) {
     printf(".intel_syntax noprefix\n");
+    printf(".data\n");
+
+    gvars = prog->gvars;
+    // Global variables
+    for (int i = 0; i < prog->gvars->keys->len; i++) {
+        Var *v = prog->gvars->vals->data[i];
+        gen_gvar(v);
+    }
+
+    printf(".text\n");
 
     // Functions
     for (int i = 0; i < prog->fns->len - 1; i++)

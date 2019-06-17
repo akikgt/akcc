@@ -6,6 +6,8 @@ static int pos;
 static Program *prog;
 
 static Map *vars;
+// static Map *gvars;
+
 static int offset;
 
 int consume(int ty) {
@@ -60,10 +62,13 @@ static Type *arr_of(Type *base) {
 
     while (consume('[')) {
         Token *t = tokens->data[pos];
-        if (!(t->ty == TK_NUM))
-            vec_push(stack, (void *)-1);
-        vec_push(stack, (void *)t->val);
-        pos++;
+        if (!(t->ty == TK_NUM)) {
+            vec_push(stack, (void *)0);
+        }
+        else {
+            vec_push(stack, (void *)t->val);
+            pos++;
+        }
         expect(']');
     }
 
@@ -287,8 +292,6 @@ Node *term() {
         return node;
     }
 
-    
-
     if (t->ty == TK_NUM) {
         pos++;
         return new_node_num(t->val);
@@ -300,8 +303,10 @@ Node *term() {
 
         // Identifier
         if (!consume('(')) {
-            if (map_get(vars, t->name) == NULL)
-                error_at(t->input, "undefined variable");
+            if (map_get(vars, t->name) == NULL) {
+                if (map_get(prog->gvars, t->name) == NULL)
+                    error_at(t->input, "undefined variable");
+            }
             if (consume('[')) {
                 node = new_node(ND_DEREF);
                 node->expr = new_node_binop('+', new_node_ident(t->name), add());
@@ -347,11 +352,8 @@ Node *declaration() {
     if (map_get(vars, node->name) != NULL)
         error("'%s' is already defined", node->name);
 
-    // array declaration
-    t = tokens->data[pos];
-    if (t->ty == '[') {
-        ty = arr_of(ty);
-    }
+    // array check
+    ty = arr_of(ty);
 
     // variable setting
     Var *var = malloc(sizeof(Var));
@@ -375,15 +377,18 @@ Node *param()
 {
     Type *ty = type_specifier();
 
+    Token *t = tokens->data[pos];
+    if (!consume(TK_IDENT))
+        error_at(t->input, "not variable declaration");
+
+    // array check
+    ty = arr_of(ty);
+
     // variable setting
     Var *var = malloc(sizeof(Var));
     offset += ty->size;
     var->offset = offset;
     var->ty = ty;
-
-    Token *t = tokens->data[pos];
-    if (!consume(TK_IDENT))
-        error_at(t->input, "not variable declaration");
 
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;
@@ -427,9 +432,15 @@ Function *function(Type *ty, char *name) {
     return fn;
 }
 
-void program() {
-    // top level check
-    // Token *t = tokens->data[pos];
+void add_gvar(Type *ty, char *name) {
+    Var *v = malloc(sizeof(Var));
+    v->ty = ty;
+    v->name = name;
+    map_put(prog->gvars, name, v);
+}
+
+void toplevel() {
+
     while (!peek(TK_EOF)) {
 
         Type *ty = type_specifier();
@@ -440,8 +451,12 @@ void program() {
         // Function
         if (peek('('))
             vec_push(prog->fns, function(ty, t->name));
-
         // Global variable
+        else {
+            ty = arr_of(ty);
+            add_gvar(ty, t->name);
+            expect(';');
+        }
     }
     vec_push(prog->fns, NULL);
 }
@@ -451,10 +466,10 @@ Program *parse(Vector *v) {
     pos = 0;
 
     prog = malloc(sizeof(Program));
-    prog->gvars = new_vector();
+    prog->gvars = new_map();
     prog->fns = new_vector();
 
-    program();
+    toplevel();
 
     return prog;
 }

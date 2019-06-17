@@ -141,10 +141,11 @@ typedef struct Function {
 typedef struct Var {
     Type *ty;
     int offset;
+    char *name;
 } Var;
 
 typedef struct Program {
-    Vector *gvars;
+    Map *gvars;
     Vector *fns;
 } Program;
 

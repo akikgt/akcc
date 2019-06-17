@@ -1,6 +1,7 @@
 #include "xcc.h"
 
 static Map *vars;
+static Map *gvars;
 
 Type *new_ty(int ty, int size) {
     Type *ret = malloc(sizeof(Type));
@@ -59,6 +60,9 @@ Node *do_walk(Node *node, int decay) {
         case ND_IDENT:  // identifier 
         {
             Var *v = map_get(vars, node->name);
+            // lookup global variable
+            if (!v)
+                v = map_get(gvars, node->name);
             node->ty = v->ty;
             if (decay && node->ty->ty == ARRAY) {
                 node = arr_to_ptr(node);
@@ -157,6 +161,7 @@ Node *do_walk(Node *node, int decay) {
 
 void sema(Program *prog)
 {
+    gvars = prog->gvars;
     for (int i = 0; i < prog->fns->len - 1; i++) {
         Function *fn = prog->fns->data[i];
         vars = fn->vars;
