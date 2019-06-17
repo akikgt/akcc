@@ -26,6 +26,20 @@ static int is_typename() {
     return t->ty == TK_INT;
 }
 
+static Type *type_specifier() {
+    /// TODO: accept other types like void, char...
+    expect(TK_INT);
+
+    Type *ty = malloc(sizeof(Type));
+    ty->ty = INT;
+    ty->size = 4;
+    while (consume('*')) {
+        ty = ptr_to(ty);
+    }
+
+    return ty;
+}
+
 Type *ptr_to(Type *base) {
     Type *new_ty = malloc(sizeof(Type));
     new_ty->ty = PTR;
@@ -134,12 +148,11 @@ Node *stmt() {
 
         expect('(');
         if (!consume(';')) {
-            if (consume(TK_INT))
+            if (is_typename())
                 node->init = declaration();
-            else {
+            else
                 node->init = expr();
-                expect(';');
-            }
+            expect(';');
         }
 
         if (!consume(';')) {
@@ -165,9 +178,9 @@ Node *stmt() {
 
         return node;
     }
-    else if (consume(TK_INT)) {
-        /// variable declaration
+    else if (is_typename()) {
         node = declaration();
+        expect(';');
         return node;
     }
     else {
@@ -317,12 +330,7 @@ Node *term() {
 
 Node *declaration() {
 
-    Type *ty = malloc(sizeof(Type));
-    ty->ty = INT;   /// Base pointer
-    ty->size = 4;
-    while (consume('*')) {
-        ty = ptr_to(ty);
-    }
+    Type *ty = type_specifier();
 
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
@@ -353,21 +361,13 @@ Node *declaration() {
         node->init = assign();
     }
 
-    expect(';');
 
     return node;
 }
 
 Node *param()
 {
-    expect(TK_INT);
-
-    Type *ty = malloc(sizeof(Type));
-    ty->ty = INT;
-    ty->size = 4;
-    while (consume('*')) {
-        ty = ptr_to(ty);
-    }
+    Type *ty = type_specifier();
 
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
