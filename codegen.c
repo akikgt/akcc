@@ -120,6 +120,9 @@ void gen_func(Function *fn) {
         }
         switch (param->ty->size) {
             case 1:
+            // TODO: make regs8 array and modify dil -> regs8[i]
+                printf("  mov [rax], %s\n", "dil");
+                break;
             case 2:
             case 4:
                 printf("  mov [rax], %s\n", regs32[i]);
@@ -152,8 +155,9 @@ void gen_lval(Node *node) {
         error("lval is not valid variable");
 
     Var *var = map_get(vars, node->name);
+
+    // Global variable
     if (var == NULL) {
-        // lookup global variables
         if (!map_get(gvars, node->name))
             error("cannot find variable");
 
@@ -162,6 +166,7 @@ void gen_lval(Node *node) {
         printf("  push rax\n");
         return;
     }
+
     int offset = var->offset;
     printf("  mov rax, rbp\n");
     printf("  sub rax, %d\n", offset);
@@ -284,6 +289,7 @@ void gen(Node *node) {
         case ND_IDENT:
             gen_lval(node);
             printf("  pop rax\n");
+            // TODO: when node->ty->size == 1, use movsx or movzx. like LOAD_REG(node->ty, 'a');
             printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
             printf("  push rax\n");
             return;

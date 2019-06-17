@@ -31,16 +31,24 @@ static int peek(int ty) {
 
 static int is_typename() {
     Token *t = tokens->data[pos];
-    return t->ty == TK_INT;
+    return t->ty == TK_INT || t->ty == TK_CHAR;
 }
 
 static Type *type_specifier() {
-    /// TODO: accept other types like void, char...
-    expect(TK_INT);
-
     Type *ty = malloc(sizeof(Type));
-    ty->ty = INT;
-    ty->size = 4;
+
+    Token *t = tokens->data[pos++];
+    switch (t->ty) {
+        case TK_CHAR:
+            ty->ty = CHAR;
+            ty->size = 1;
+            break;
+        case TK_INT:
+            ty->ty = INT;
+            ty->size = 4;
+            break;
+    }
+
     while (consume('*')) {
         ty = ptr_to(ty);
     }
