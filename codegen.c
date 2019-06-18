@@ -1,6 +1,6 @@
 #include "xcc.h"
 
-static int label_count = 0;
+static int label_count;
 static Map *vars;
 static Map *gvars;
 
@@ -23,6 +23,13 @@ static char *get_reg(Type *ty, char r) {
     }
 
     return 0;
+}
+
+static emit_load(Node *node) {
+    printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
+    if (node->ty->size == 1) {
+        printf("  movsx eax, %s\n", get_reg(node->ty, 'a'));
+    }
 }
 
 static void emit_binop(Node *node) {
@@ -289,15 +296,14 @@ void gen(Node *node) {
         case ND_IDENT:
             gen_lval(node);
             printf("  pop rax\n");
-            // TODO: when node->ty->size == 1, use movsx or movzx. like LOAD_REG(node->ty, 'a');
-            printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
+            emit_load(node);
             printf("  push rax\n");
             return;
 
         case ND_DEREF:
             gen(node->expr);
             printf("  pop rax\n");
-            printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
+            emit_load(node);
             printf("  push rax\n");
             return;
 

@@ -20,17 +20,17 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 
 #char test
 try 0 'int main() { char a; return a;} '
-# try 0 '
-# int main() {
-#     char x[3];
-#     x[0] = -1;
-#     x[1] = 2;
-#     int y;
-#     y = 4;
-#     return x[0] + y; 
-# }
-# '
-try 0 'char b; int main(char arg) { arg = 5; char a = 65; return a;} '
+try 1 '
+int main() {
+    char x[3];
+    x[0] = -3;
+    x[1] = 2;
+    int y;
+    y = 4;
+    return x[0] + y; 
+}
+'
+try 65 'char b; int main(char arg) { arg = 5; char a = 65; return a;} '
 #global variable
 try 0 'int a; int main() { return a;} '
 try 2 'int a; int main() { a = 2; return a;} '
