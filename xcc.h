@@ -107,6 +107,7 @@ enum
     ND_NE,        // !=
     ND_LE,        // <=
     ND_GE,        // >=
+    ND_TY_SIZE    // size of specific types
 };
 
 /// AST Node
@@ -177,6 +178,7 @@ Node *unary();
 Node *term();
 Node *param();
 Node *declaration();
+void add_gvar(Type *ty, char *name, char *data);
 Program *parse(Vector *v);
 
 /// sema.c

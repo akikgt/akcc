@@ -101,10 +101,15 @@ Node *do_walk(Node *node, int decay) {
             node->ty = node->expr->ty->ptr_to;
             return node;
         case ND_SIZEOF: {
-            node->expr = walk_nodecay(node->expr);
-            Type *ty = node->expr->ty;
-            node->val = ty->size;
-            // convert to integer
+            if (node->expr->op == ND_TY_SIZE) {
+                node->val = node->expr->val;
+            }
+            else {
+                node->expr = walk_nodecay(node->expr);
+                Type *ty = node->expr->ty;
+                node->val = ty->size;
+            }
+            // convert to number node
             node->op = ND_NUM;
             node->ty = int_ty();
             return node;

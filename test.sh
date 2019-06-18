@@ -18,8 +18,13 @@ try() {
 
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
+try 5 'int main() {
+    int *p = malloc(sizeof(char));
+    *p = 5;
+    return *p;
+    }'
 #fizzbuzz test
-try 1 ' int main() {
+try 1 'char a; int main() {
     printf("fizzbuzz test\n");
     for (int i = 1; i <= 30; i = i + 1) {
         if (i % 15 == 0)

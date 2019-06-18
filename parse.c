@@ -9,6 +9,7 @@ static Map *vars;
 static int offset;
 static int str_count;
 
+
 int consume(int ty) {
     Token *t = tokens->data[pos];
     if (t->ty != ty)
@@ -31,6 +32,17 @@ static int peek(int ty) {
 static int is_typename() {
     Token *t = tokens->data[pos];
     return t->ty == TK_INT || t->ty == TK_CHAR;
+}
+
+int sizeof_types(int ty) {
+    switch (ty) {
+        case TK_CHAR: return 1;
+        case TK_INT: return 4;
+        default:
+            error("unknown type");
+            break;
+    }
+
 }
 
 static Type *type_specifier() {
@@ -296,6 +308,15 @@ Node *term() {
     if (consume('(')) {
         Node *node = expr();
         expect(')');
+        return node;
+    }
+
+    // For sizeof 
+    if (is_typename()) {
+        pos++;
+        int size = sizeof_types(t->ty);
+        Node *node = new_node(ND_TY_SIZE);
+        node->val = size;
         return node;
     }
 

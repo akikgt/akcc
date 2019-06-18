@@ -206,7 +206,7 @@ void gen(Node *node) {
             for (int i = node->args->len - 1; i >= 0; i--)
                 printf("  pop %s\n", regs[i]);
 
-            printf("  mov rax, 0\n"); // al must be 0 before call a variadic function
+            printf("  mov rax, 0\n"); // AL must be 0 before call a variadic function
             printf("  call %s\n", node->name);
             printf("  push rax\n");
             return;
