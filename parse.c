@@ -418,6 +418,7 @@ Function *function(Type *ty, char *name) {
 
     Function *fn = malloc(sizeof(Function));
     fn->node = node;
+    fn->ty = ty;
 
     // make space for local variables every time in function definition
     vars = new_map();

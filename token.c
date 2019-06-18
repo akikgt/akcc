@@ -48,6 +48,25 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        // String literal
+        if (*p == '"') {
+            p++;
+            int len = 0;
+            while (!(p[len] == '"'))
+                len++;
+
+            char *str;
+            if (!len)
+                str = "";
+            else
+                str = strndup(p, len);
+            
+            add_token(v, TK_STRING, p);
+            i++;
+            p += len + 1;
+            continue;
+        }
+
         if (isalpha(*p) || *p == '_') {
             int len = 1;
             while (isalpha(p[len]) || isdigit(p[len]) ||  p[len] == '_')

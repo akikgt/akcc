@@ -52,6 +52,7 @@ void test_map();
 enum
 {
     TK_NUM = 256, // integers
+    TK_STRING,    // string literal
     TK_IDENT,     // identifier
     TK_SIZEOF,    // sizeof
     TK_RETURN,    // return

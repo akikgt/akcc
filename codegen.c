@@ -25,9 +25,10 @@ static char *get_reg(Type *ty, char r) {
     return 0;
 }
 
-static emit_load(Node *node) {
+static void emit_load(Node *node) {
     printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
     if (node->ty->size == 1) {
+        // TODO: consider movzx
         printf("  movsx eax, %s\n", get_reg(node->ty, 'a'));
     }
 }
