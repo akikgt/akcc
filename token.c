@@ -50,20 +50,18 @@ Vector *tokenize(char *p) {
 
         // String literal
         if (*p == '"') {
-            p++;
-            int len = 0;
+            int len = 1;
             while (!(p[len] == '"'))
                 len++;
+            len++;
 
-            char *str;
-            if (!len)
-                str = "";
-            else
-                str = strndup(p, len);
-            
-            add_token(v, TK_STRING, p);
+            char *str = strndup(p, len);
+            Token *t = add_token(v, TK_STRING, p);
+            t->name = str;
+            t->len = len;
+
             i++;
-            p += len + 1;
+            p += t->len;
             continue;
         }
 

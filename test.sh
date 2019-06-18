@@ -19,7 +19,8 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
 #char test
-try 0 'int main() { char *a; a = "abc\n"; return 1;} '
+try 1 'int main() { char *a; a = "abc"; return 1;} '
+try 0 'int main() { printf("yattaze\n"); return 1;} '
 try 0 'int main() { char a; return a;} '
 try 1 '
 int main() {

@@ -3,19 +3,6 @@
 static Map *vars;
 static Map *gvars;
 
-Type *new_ty(int ty, int size) {
-    Type *ret = malloc(sizeof(Type));
-    ret->ty = ty;
-    ret->size = size;
-    return ret;
-}
-
-Type *int_ty() {
-    Type *ty = new_ty(INT, 4);
-    ty->ptr_to = NULL;
-    return ty;
-}
-
 static Node *arr_to_ptr(Node *base) {
     if (!(base->ty->ty == ARRAY))
         return base;
@@ -106,6 +93,7 @@ Node *do_walk(Node *node, int decay) {
             return node;
         case ND_ADDR: // address of operator ('&')
             node->expr = walk(node->expr);
+            // TODO: pointer to specific type
             node->ty = new_ty(PTR, 8);
             return node;
         case ND_DEREF: // pointer dereference ('*')

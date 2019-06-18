@@ -2,13 +2,12 @@
 
 static Vector *tokens;
 static int pos;
-// static Vector *code;
 static Program *prog;
 
 static Map *vars;
-// static Map *gvars;
 
 static int offset;
+static int str_count;
 
 int consume(int ty) {
     Token *t = tokens->data[pos];
@@ -305,6 +304,17 @@ Node *term() {
         return new_node_num(t->val);
     }
 
+    // String literal
+    if (t->ty == TK_STRING) {
+        pos++;
+        Type *ty = char_ty();
+        ty = arr_ty(ty, t->len);
+
+        char *str_label = format(".LSTR%d", str_count++);
+        add_gvar(ty, str_label, t->name);
+        return new_node_ident(str_label);
+    }
+
     if (t->ty == TK_IDENT) {
         pos++;
         Node *node;
@@ -441,10 +451,11 @@ Function *function(Type *ty, char *name) {
     return fn;
 }
 
-void add_gvar(Type *ty, char *name) {
+void add_gvar(Type *ty, char *name, char *data) {
     Var *v = malloc(sizeof(Var));
     v->ty = ty;
     v->name = name;
+    v->data = data;
     map_put(prog->gvars, name, v);
 }
 
@@ -463,7 +474,7 @@ void toplevel() {
         // Global variable
         else {
             ty = arr_of(ty);
-            add_gvar(ty, t->name);
+            add_gvar(ty, t->name, 0);
             expect(';');
         }
     }

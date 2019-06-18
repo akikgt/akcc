@@ -20,8 +20,12 @@ typedef struct Type {
     size_t array_size;
 } Type;
 
-/// container.c
+/// util.c
 char *format(char *fmt, ...);
+Type *new_ty(int ty, int size);
+Type *int_ty();
+Type *char_ty();
+Type *arr_ty(Type *base, int len);
 
 // vector
 typedef struct {
@@ -73,6 +77,10 @@ typedef struct {
     int ty;         // type of token
     int val;        // the value when ty == TK_NUM
     char *name;     // name of identifier when ty == TK_IDENT
+
+    // string literal
+    int len;
+
     char *input;    // token strings for error message
 } Token;
 
@@ -144,6 +152,9 @@ typedef struct Var {
     Type *ty;
     int offset;
     char *name;
+
+    // for global variable initial data
+    char *data;
 } Var;
 
 typedef struct Program {

@@ -1,6 +1,6 @@
 #include "xcc.h"
 
-/// error functions
+/// Error functions
 void error(char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
@@ -17,6 +17,7 @@ void error_at(char *loc, char *msg) {
     exit(1);
 }
 
+/// General
 char *format(char *fmt, ...) {
     char buf[2048];
     va_list ap;
@@ -26,6 +27,35 @@ char *format(char *fmt, ...) {
     return strdup(buf);
 }
 
+/// Type
+Type *new_ty(int ty, int size) {
+    Type *ret = malloc(sizeof(Type));
+    ret->ty = ty;
+    ret->size = size;
+    return ret;
+}
+
+Type *int_ty() {
+    Type *ty = new_ty(INT, 4);
+    ty->ptr_to = NULL;
+    return ty;
+}
+
+Type *char_ty() {
+    Type *ty = new_ty(CHAR, 1);
+    ty->ptr_to = NULL;
+    return ty;
+}
+
+Type *arr_ty(Type *base, int len) {
+    Type *ty = new_ty(ARRAY, base->size * len);
+    ty->array_size = len;
+    ty->arr_of = base;
+    ty->ptr_to = base;
+    return ty;
+}
+
+/// Vector
 Vector *new_vector() {
     Vector *vec = malloc(sizeof(Vector));
     vec->data = malloc(sizeof(void *) * 16);
@@ -68,8 +98,7 @@ void test_vector() {
     printf("OK\n");
 }
 
-/// map
-
+/// Map
 Map *new_map() {
     Map *map = malloc(sizeof(Map));
     map->keys = new_vector();
