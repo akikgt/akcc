@@ -160,7 +160,7 @@ void gen_lval(Node *node) {
     }
 
     if (node->op != ND_IDENT && node->op != ND_VARDEF) 
-        error("lval is not valid variable");
+        error("lval is not valid variable. op: %d", node->op);
 
     Var *var = map_get(vars, node->name);
 
