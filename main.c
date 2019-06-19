@@ -17,7 +17,6 @@ int main(int argc, char **argv) {
 
     Vector *tokens;
     if (!strcmp(argv[1], "-file")) {
-        char *buf = read_file(argv[2]);
         tokens = tokenize(read_file(argv[2]));
     }
     else {
