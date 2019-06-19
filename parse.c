@@ -321,6 +321,8 @@ Node *unary() {
         return term();
     if (consume('-'))
         return new_node_binop('-', new_node_num(0), term());
+    
+    // pre-increment/decrement
     if (consume(TK_INC)) {
         Node *lhs = term();
         Node *rhs = new_node_binop('+', lhs, new_node_num(1));

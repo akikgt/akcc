@@ -322,13 +322,13 @@ void gen(Node *node) {
         case ND_POST_INC: {
             gen(node->expr);
             printf("  add rax, 1\n");
-            printf("  mov [rsi], rax\n"); // address of expr should be stored in rsi
+            printf("  mov [rsi], %s\n", get_reg(node->ty, 'a')); // address of expr should be stored in rsi
             return;
         }
         case ND_POST_DEC: {
             gen(node->expr);
             printf("  sub rax, 1\n");
-            printf("  mov [rsi], rax\n"); // address of expr should be stored in rsi
+            printf("  mov [rsi], %s\n", get_reg(node->ty, 'a')); // address of expr should be stored in rsi
             return;
         }
 

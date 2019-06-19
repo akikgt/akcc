@@ -95,6 +95,7 @@ Node *do_walk(Node *node, int decay) {
             node->expr = walk(node->expr);
             // TODO: pointer to specific type
             node->ty = new_ty(PTR, 8);
+            node->ty->ptr_to = node->expr->ty;
             return node;
         case ND_DEREF: // pointer dereference ('*')
             node->expr = walk(node->expr);
