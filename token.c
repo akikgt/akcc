@@ -127,6 +127,18 @@ Vector *tokenize(char *p) {
             p += 2;
             continue;
         }
+        if (strncmp(p, "/=", 2) == 0) {
+            add_token(v, TK_DIV_EQ, p);
+            i++;
+            p += 2;
+            continue;
+        }
+        if (strncmp(p, "%=", 2) == 0) {
+            add_token(v, TK_MOD_EQ, p);
+            i++;
+            p += 2;
+            continue;
+        }
 
         if (
             *p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '%'

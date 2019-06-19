@@ -147,6 +147,14 @@ Node *assign() {
         Node *rhs = new_node_binop('*', node, assign());
         node = new_node_binop('=', node, rhs);
     }
+    else if (consume(TK_DIV_EQ)) {
+        Node *rhs = new_node_binop('/', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
+    else if (consume(TK_MOD_EQ)) {
+        Node *rhs = new_node_binop('%', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
     return node;
 }
 
