@@ -42,7 +42,7 @@ int sizeof_types(int ty) {
             error("unknown type");
             break;
     }
-
+    return 8;
 }
 
 static Type *type_specifier() {

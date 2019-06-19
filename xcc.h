@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 extern char *user_input;
 
@@ -17,11 +18,12 @@ typedef struct Type {
 
     // Array
     struct Type *arr_of;
-    size_t array_size;
+    int array_size;  // TODO: use size_t
 } Type;
 
 /// util.c
 char *format(char *fmt, ...);
+char *read_file(char *path);
 Type *new_ty(int ty, int size);
 Type *int_ty();
 Type *char_ty();

@@ -5,7 +5,7 @@ char *user_input;
 // ---------------------------------------
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
+    if (!(argc == 2 || argc == 3)) {
         fprintf(stderr, "The number of arguments is invalid \n");
         return 1;
     }
@@ -15,7 +15,15 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    Vector *tokens = tokenize(argv[1]);
+    Vector *tokens;
+    if (!strcmp(argv[1], "-file")) {
+        char *buf = read_file(argv[2]);
+        tokens = tokenize(read_file(argv[2]));
+    }
+    else {
+        tokens = tokenize(argv[1]);
+    }
+    // Vector *tokens = tokenize(input);
 
     Program *prog = parse(tokens);
     sema(prog);

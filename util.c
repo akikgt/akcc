@@ -27,6 +27,32 @@ char *format(char *fmt, ...) {
     return strdup(buf);
 }
 
+// return specified file content
+char *read_file(char *path) {
+    // open file
+    FILE *fp = fopen(path, "r");
+    if (!fp)
+        error("cannot open %s: %s", path, strerror(errno));
+
+    // check file length
+    if (fseek(fp, 0, SEEK_END) == -1)
+        error("%s: fseek: %s", path, strerror(errno));
+    size_t size = ftell(fp);
+    if (fseek(fp, 0, SEEK_SET) == -1)
+        error("%s: fseek: %s", path, strerror(errno));
+
+    // read file content
+    char *buf = malloc(size + 2);
+    fread(buf, size, 1, fp);
+
+    // make file end with '\n\0'
+    if (size == 0 || buf[size - 1] != '\n')
+        buf[size++] = '\n';
+    buf[size] = '\0';
+    fclose(fp);
+    return buf;
+}
+
 /// Type
 Type *new_ty(int ty, int size) {
     Type *ret = malloc(sizeof(Type));

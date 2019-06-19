@@ -23,23 +23,7 @@ try 5 'int main() {
     *p = 5;
     return *p;
     }'
-#fizzbuzz test
-try 1 'char a; int main() {
-    printf("fizzbuzz test\n");
-    for (int i = 1; i <= 30; i = i + 1) {
-        if (i % 15 == 0)
-            printf("fizzbuzz\n");
-        else if (i % 3 == 0)
-            printf("fizz\n");
-        else if (i % 5 == 0)
-            printf("buzz\n");
-        else 
-            printf("%d\n", i);
-    }
 
-    return 1;
-}
-'
 #char test
 try 1 'int main() { char *a; a = "abc"; return 1;} '
 try 1 'int main() { printf("yattaze\n"); return 1;} '
