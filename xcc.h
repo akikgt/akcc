@@ -77,6 +77,8 @@ enum
     TK_MUL_EQ,    // *=
     TK_DIV_EQ,    // /=
     TK_MOD_EQ,    // %=
+    TK_INC,       // increment
+    TK_DEC,       // decrement
     TK_EOF,       // EOF
 };
 

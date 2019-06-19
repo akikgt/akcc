@@ -140,6 +140,19 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        if (strncmp(p, "++", 2) == 0) {
+            add_token(v, TK_INC, p);
+            i++;
+            p += 2;
+            continue;
+        }
+        if (strncmp(p, "--", 2) == 0) {
+            add_token(v, TK_DEC, p);
+            i++;
+            p += 2;
+            continue;
+        }
+
         if (
             *p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '%'
             || *p == '(' || *p == ')'
