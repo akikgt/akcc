@@ -132,8 +132,13 @@ Node *new_node_ident(char *name) {
 
 Node *assign() {
     Node *node = equality();
-    if (consume('='))
+    if (consume('=')) {
         node = new_node_binop('=', node, assign());
+    }
+    else if (consume(TK_ADD_EQ)) {
+        Node *rhs = new_node_binop('+', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
     return node;
 }
 

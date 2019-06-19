@@ -72,6 +72,11 @@ enum
     TK_NE,        // !=
     TK_LE,        // <=
     TK_GE,        // >=
+    TK_ADD_EQ,    // +=
+    TK_SUB_EQ,    // -=
+    TK_MUL_EQ,    // *=
+    TK_DIV_EQ,    // /=
+    TK_MOD_EQ,    // %=
     TK_EOF,       // EOF
 };
 

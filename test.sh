@@ -18,6 +18,8 @@ try() {
 
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
+try 1 'int main() { int a = 0; a += 1; return a;} '
+try 1 'int main() { int a = 2; a -= 1; return a;} '
 try 5 'int main() {
     int *p = malloc(sizeof(char));
     *p = 5;
