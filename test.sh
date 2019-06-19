@@ -21,8 +21,18 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 #post-increment/decrement test
 try 1 'int main() 
     {
-    int a = 1;
-    int b = a++;
+    int a[2];
+    a[1] = 1;
+    int b = a[1]++;
+    printf("a is %d\n", a[1]);
+    return b; 
+    } 
+'
+try 3 'int main() 
+    {
+    int a;
+    a = 3;
+    int b = a--;
     printf("a is %d\n", a);
     return b; 
     } 

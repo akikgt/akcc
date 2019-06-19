@@ -377,6 +377,8 @@ Node *term() {
                 if (map_get(prog->gvars, t->name) == NULL)
                     error_at(t->input, "undefined variable");
             }
+            
+            // Array
             if (consume('[')) {
                 node = new_node(ND_DEREF);
                 node->expr = new_node_binop('+', new_node_ident(t->name), add());
@@ -385,6 +387,7 @@ Node *term() {
             else
                 node = new_node_ident(t->name);
 
+            // Post increment/decrement
             Token *t = tokens->data[pos];
             if (t->ty == TK_INC) {
                 pos++;
@@ -392,8 +395,14 @@ Node *term() {
                 ret->expr = node;
                 return ret;
             }
-            else
-                return node;
+            else if (t->ty == TK_DEC) {
+                pos++;
+                Node *ret = new_node(ND_POST_DEC);
+                ret->expr = node;
+                return ret;
+            }
+
+            return node;
         }
 
         // Function call

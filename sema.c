@@ -100,7 +100,8 @@ Node *do_walk(Node *node, int decay) {
             node->expr = walk(node->expr);
             node->ty = node->expr->ty->ptr_to;
             return node;
-        case ND_POST_INC:
+        case ND_POST_INC: // post-increment/decrement
+        case ND_POST_DEC:
             node->expr = walk(node->expr);
             node->ty = node->expr->ty;
             return node;

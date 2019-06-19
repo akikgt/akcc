@@ -117,7 +117,8 @@ enum
     ND_LE,        // <=
     ND_GE,        // >=
     ND_TY_SIZE,   // size of specific types
-    ND_POST_INC   // post-increment
+    ND_POST_INC,  // post-increment
+    ND_POST_DEC   // post-decrement
 };
 
 /// AST Node

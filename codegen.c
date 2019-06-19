@@ -325,6 +325,12 @@ void gen(Node *node) {
             printf("  mov [rsi], rax\n"); // address of expr should be stored in rsi
             return;
         }
+        case ND_POST_DEC: {
+            gen(node->expr);
+            printf("  sub rax, 1\n");
+            printf("  mov [rsi], rax\n"); // address of expr should be stored in rsi
+            return;
+        }
 
         case '=':
             gen_lval(node->lhs);
