@@ -115,6 +115,12 @@ Vector *tokenize(char *p) {
             p += 2;
             continue;
         }
+        if (strncmp(p, "-=", 2) == 0) {
+            add_token(v, TK_SUB_EQ, p);
+            i++;
+            p += 2;
+            continue;
+        }
 
         if (
             *p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '%'
