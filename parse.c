@@ -384,7 +384,16 @@ Node *term() {
             }
             else
                 node = new_node_ident(t->name);
-            return node;
+
+            Token *t = tokens->data[pos];
+            if (t->ty == TK_INC) {
+                pos++;
+                Node *ret = new_node(ND_POST_INC);
+                ret->expr = node;
+                return ret;
+            }
+            else
+                return node;
         }
 
         // Function call

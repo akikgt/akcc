@@ -302,6 +302,7 @@ void gen(Node *node) {
         case ND_IDENT:
             gen_lval(node);
             printf("  pop rax\n");
+            printf("  mov rsi, rax\n"); // save address of identifier for later use
             emit_load(node);
             printf("  push rax\n");
             return;
@@ -309,13 +310,21 @@ void gen(Node *node) {
         case ND_DEREF:
             gen(node->expr);
             printf("  pop rax\n");
+            printf("  mov rsi, rax\n"); // save address of expr for later use
             emit_load(node);
             printf("  push rax\n");
             return;
 
         case ND_ADDR:
-            gen_lval(node->expr); /// RAX = address of IDENT
+            gen_lval(node->expr); // RAX = address of IDENT
             return;
+
+        case ND_POST_INC: {
+            gen(node->expr);
+            printf("  add rax, 1\n");
+            printf("  mov [rsi], rax\n"); // address of expr should be stored in rsi
+            return;
+        }
 
         case '=':
             gen_lval(node->lhs);
@@ -326,6 +335,7 @@ void gen(Node *node) {
             printf("  mov [rax], %s\n", get_reg(node->ty, 'd'));
             printf("  push rdi\n");
             return;
+        
         default:
             emit_binop(node);
             return;

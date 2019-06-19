@@ -100,6 +100,10 @@ Node *do_walk(Node *node, int decay) {
             node->expr = walk(node->expr);
             node->ty = node->expr->ty->ptr_to;
             return node;
+        case ND_POST_INC:
+            node->expr = walk(node->expr);
+            node->ty = node->expr->ty;
+            return node;
         case ND_SIZEOF: {
             if (node->expr->op == ND_TY_SIZE) {
                 node->val = node->expr->val;

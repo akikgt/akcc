@@ -18,6 +18,15 @@ try() {
 
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
+#post-increment/decrement test
+try 1 'int main() 
+    {
+    int a = 1;
+    int b = a++;
+    printf("a is %d\n", a);
+    return b; 
+    } 
+'
 try 2 'int main() { int a = 1; int b = ++a; return b;} '
 try 2 'int main() { int a = 3; int b = --a; return b;} '
 try 1 'int main() { int a = 0; a += 1; return a;} '
