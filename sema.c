@@ -97,7 +97,6 @@ Node *do_walk(Node *node, int decay) {
         case ND_DEREF: // pointer dereference ('*')
             node->expr = walk(node->expr);
             node->ty = node->expr->ty->ptr_to;
-            // TODO: apply array-to-pointer before return
             return maybe_decay(node, decay);
         case ND_POST_INC: // post-increment/decrement
         case ND_POST_DEC:
@@ -133,7 +132,10 @@ Node *do_walk(Node *node, int decay) {
         case ND_LE: // <=
         case ND_GE: // >=
         case '=':
-            node->lhs = walk_nodecay(node->lhs);
+            // TODO: check 9cc uses walk_nodecay to left hand side of '='
+            node->lhs = walk(node->lhs);
+            if (node->lhs->op == ND_ADDR)
+                error("ND_ADDR cannot be lval");
             node->rhs = walk(node->rhs);
             node->ty = node->lhs->ty;
             return node;
