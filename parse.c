@@ -129,39 +129,6 @@ Node *new_node_ident(char *name) {
     return node;
 }
 
-
-Node *assign() {
-    Node *node = equality();
-    if (consume('=')) {
-        node = new_node_binop('=', node, assign());
-    }
-    else if (consume(TK_ADD_EQ)) {
-        Node *rhs = new_node_binop('+', node, assign());
-        node = new_node_binop('=', node, rhs);
-    }
-    else if (consume(TK_SUB_EQ)) {
-        Node *rhs = new_node_binop('-', node, assign());
-        node = new_node_binop('=', node, rhs);
-    }
-    else if (consume(TK_MUL_EQ)) {
-        Node *rhs = new_node_binop('*', node, assign());
-        node = new_node_binop('=', node, rhs);
-    }
-    else if (consume(TK_DIV_EQ)) {
-        Node *rhs = new_node_binop('/', node, assign());
-        node = new_node_binop('=', node, rhs);
-    }
-    else if (consume(TK_MOD_EQ)) {
-        Node *rhs = new_node_binop('%', node, assign());
-        node = new_node_binop('=', node, rhs);
-    }
-    return node;
-}
-
-Node *expr() {
-    return assign();
-}
-
 Node *stmt() {
     Node *node;
 
@@ -242,6 +209,37 @@ Node *stmt() {
     }
 }
 
+Node *expr() {
+    return assign();
+}
+
+Node *assign() {
+    Node *node = equality();
+    if (consume('=')) {
+        node = new_node_binop('=', node, assign());
+    }
+    else if (consume(TK_ADD_EQ)) {
+        Node *rhs = new_node_binop('+', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
+    else if (consume(TK_SUB_EQ)) {
+        Node *rhs = new_node_binop('-', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
+    else if (consume(TK_MUL_EQ)) {
+        Node *rhs = new_node_binop('*', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
+    else if (consume(TK_DIV_EQ)) {
+        Node *rhs = new_node_binop('/', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
+    else if (consume(TK_MOD_EQ)) {
+        Node *rhs = new_node_binop('%', node, assign());
+        node = new_node_binop('=', node, rhs);
+    }
+    return node;
+}
 
 Node *equality() {
     Node *node = relational();
