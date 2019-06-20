@@ -195,6 +195,7 @@ Node *relational();
 Node *add();
 Node *mul();
 Node *unary();
+Node *postfix();
 Node *term();
 Node *param();
 Node *declaration();

@@ -369,7 +369,12 @@ Node *unary() {
         Node *rhs = new_node_binop('-', lhs, new_node_num(1));
         return new_node_binop('=', lhs, rhs);
     }
-    return term();
+    return postfix();
+}
+
+Node *postfix() {
+    Node *lhs = term();
+    return lhs;
 }
 
 Node *term() {
