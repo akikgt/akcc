@@ -374,6 +374,32 @@ Node *unary() {
 
 Node *postfix() {
     Node *lhs = term();
+
+    // Array
+    while(consume('[')) {
+        Node *node = new_node(ND_DEREF);
+        node->expr = new_node_binop('+', lhs, add());
+        lhs = node;
+        expect(']');
+    }
+
+    // Post increment/decrement
+    Token *t = tokens->data[pos];
+    if (t->ty == TK_INC)
+    {
+        pos++;
+        Node *ret = new_node(ND_POST_INC);
+        ret->expr = lhs;
+        return ret;
+    }
+    else if (t->ty == TK_DEC)
+    {
+        pos++;
+        Node *ret = new_node(ND_POST_DEC);
+        ret->expr = lhs;
+        return ret;
+    }
+
     return lhs;
 }
 
@@ -420,32 +446,7 @@ Node *term() {
                 if (map_get(prog->gvars, t->name) == NULL)
                     error_at(t->input, "undefined variable");
             }
-            
-            // Array
-            if (consume('[')) {
-                node = new_node(ND_DEREF);
-                node->expr = new_node_binop('+', new_node_ident(t->name), add());
-                expect(']');
-            }
-            else
-                node = new_node_ident(t->name);
-
-            // Post increment/decrement
-            Token *t = tokens->data[pos];
-            if (t->ty == TK_INC) {
-                pos++;
-                Node *ret = new_node(ND_POST_INC);
-                ret->expr = node;
-                return ret;
-            }
-            else if (t->ty == TK_DEC) {
-                pos++;
-                Node *ret = new_node(ND_POST_DEC);
-                ret->expr = node;
-                return ret;
-            }
-
-            return node;
+            return new_node_ident(t->name);
         }
 
         // Function call
