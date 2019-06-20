@@ -110,6 +110,12 @@ Node *new_node(int op) {
     return node;
 }
 
+Node *new_node_expr(int op, Node *expr) {
+    Node *node = new_node(op);
+    node->expr = expr;
+    return node;
+}
+
 Node *new_node_binop(int op, Node *lhs, Node *rhs) {
     Node *node = new_node(op);
     node->lhs = lhs;
@@ -377,9 +383,7 @@ Node *postfix() {
 
     // Array
     while(consume('[')) {
-        Node *node = new_node(ND_DEREF);
-        node->expr = new_node_binop('+', lhs, add());
-        lhs = node;
+        lhs = new_node_expr(ND_DEREF, new_node_binop('+', lhs, add()));
         expect(']');
     }
 
@@ -388,16 +392,14 @@ Node *postfix() {
     if (t->ty == TK_INC)
     {
         pos++;
-        Node *ret = new_node(ND_POST_INC);
-        ret->expr = lhs;
-        return ret;
+        lhs = new_node_expr(ND_POST_INC, lhs);
+        return lhs;
     }
     else if (t->ty == TK_DEC)
     {
         pos++;
-        Node *ret = new_node(ND_POST_DEC);
-        ret->expr = lhs;
-        return ret;
+        lhs = new_node_expr(ND_POST_DEC, lhs);
+        return lhs;
     }
 
     return lhs;
