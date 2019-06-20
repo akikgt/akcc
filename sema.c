@@ -98,7 +98,7 @@ Node *do_walk(Node *node, int decay) {
             node->expr = walk(node->expr);
             node->ty = node->expr->ty->ptr_to;
             // TODO: apply array-to-pointer before return
-            return node;
+            return maybe_decay(node, decay);
         case ND_POST_INC: // post-increment/decrement
         case ND_POST_DEC:
             node->expr = walk(node->expr);

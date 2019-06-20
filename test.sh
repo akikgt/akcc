@@ -38,13 +38,13 @@ try 3 'int main() { int i = 15; return i % 7 && 15 / 5;} '
 #     return b; 
 #     } 
 # '
-# try 10 'int main() 
-#     {
-#     int a[2][3];
-#     a[0][1] = 10;
-#     return a[0][1];
-#     } 
-# '
+try 10 'int main() 
+    {
+    int a[2][3];
+    a[1][2] = 10;
+    return a[1][2];
+    } 
+'
 try 10 'int main() 
     {
     int a[2];
