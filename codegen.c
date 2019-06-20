@@ -332,6 +332,19 @@ void gen(Node *node) {
             return;
         }
 
+        case ND_LOG_OR: {
+            int label_num = label_count++;
+            gen(node->lhs);
+            printf("  pop rax\n");
+            printf("  push rax\n");     // save lhs result for return value
+            printf("  cmp rax, 0\n");
+            printf("  jne .Lend%d\n", label_num);
+            printf("  pop rax\n");  // discard lhs result
+            gen(node->rhs);
+            printf(".Lend%d:\n", label_num);
+            return;
+        }
+
         case '=':
             gen_lval(node->lhs);
             gen(node->rhs);

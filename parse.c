@@ -246,7 +246,13 @@ Node *ternary() {
 }
 
 Node *log_or() {
-    return log_and();
+    Node *node = log_and();
+    for (;;) {
+        if (consume(TK_LOG_OR))
+            node = new_node_binop(ND_LOG_OR, node, log_or());
+        else
+            return node;
+    }
 }
 
 Node *log_and() {

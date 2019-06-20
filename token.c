@@ -154,13 +154,13 @@ Vector *tokenize(char *p) {
         }
 
         if (strncmp(p, "&&", 2) == 0) {
-            add_token(v, TK_DEC, p);
+            add_token(v, TK_LOG_AND, p);
             i++;
             p += 2;
             continue;
         }
         if (strncmp(p, "||", 2) == 0) {
-            add_token(v, TK_DEC, p);
+            add_token(v, TK_LOG_OR, p);
             i++;
             p += 2;
             continue;
