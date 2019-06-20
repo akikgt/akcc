@@ -214,7 +214,7 @@ Node *expr() {
 }
 
 Node *assign() {
-    Node *node = equality();
+    Node *node = ternary();
     if (consume('=')) {
         node = new_node_binop('=', node, assign());
     }
@@ -239,6 +239,18 @@ Node *assign() {
         node = new_node_binop('=', node, rhs);
     }
     return node;
+}
+
+Node *ternary() {
+    return log_or();
+}
+
+Node *log_or() {
+    return log_and();
+}
+
+Node *log_and() {
+    return equality();
 }
 
 Node *equality() {
