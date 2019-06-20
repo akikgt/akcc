@@ -242,7 +242,16 @@ Node *assign() {
 }
 
 Node *ternary() {
-    return log_or();
+    Node *node = log_or();
+    if (consume('?')) {
+        Node *ternary = new_node(ND_IF);
+        ternary->cond = node;
+        ternary->then = log_or();
+        expect(':');
+        ternary->els = log_or();
+        return ternary;
+    }
+    return node;
 }
 
 Node *log_or() {
