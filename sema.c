@@ -3,8 +3,8 @@
 static Map *vars;
 static Map *gvars;
 
-static Node *arr_to_ptr(Node *base) {
-    if (!(base->ty->ty == ARRAY))
+static Node *maybe_decay(Node *base, int decay) {
+    if (!(decay == 1 && base->ty->ty == ARRAY))
         return base;
 
     Node *ret = malloc(sizeof(Node));
@@ -51,9 +51,7 @@ Node *do_walk(Node *node, int decay) {
             if (!v)
                 v = map_get(gvars, node->name);
             node->ty = v->ty;
-            if (decay && node->ty->ty == ARRAY) {
-                node = arr_to_ptr(node);
-            }
+            node = maybe_decay(node, decay);
             return node;
         }  
         case ND_RETURN: // return
