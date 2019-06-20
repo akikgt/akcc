@@ -1,3 +1,8 @@
+// fizzbuzz test
+/* this is test
+this is test
+this is test
+*/
 int main() {
     printf("fizzbuzz test\n");
     for (int i = 1; i <= 30; i += 1) {
