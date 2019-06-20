@@ -486,6 +486,7 @@ Node *declaration() {
     offset += ty->size;
     var->offset = offset;
     var->ty = ty;
+    var->name = t->name;
 
     node->ty = ty;
 
@@ -515,6 +516,7 @@ Node *param()
     offset += ty->size;
     var->offset = offset;
     var->ty = ty;
+    var->name = t->name;
 
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;

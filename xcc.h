@@ -204,6 +204,10 @@ Program *parse(Vector *v);
 /// sema.c
 void sema(Program *prog);
 
+/// traverse.c
+void traverse(Program *prog);
+
+
 /// codegen.c
 void gen(Node *node);
 void gen_lval(Node *node);

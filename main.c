@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
     else {
         tokens = tokenize(argv[1]);
     }
-    // Vector *tokens = tokenize(input);
 
     Program *prog = parse(tokens);
+    // traverse(prog); // Node test
     sema(prog);
 
     gen_x86(prog);
