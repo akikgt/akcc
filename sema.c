@@ -93,13 +93,13 @@ Node *do_walk(Node *node, int decay) {
             return node;
         case ND_ADDR: // address of operator ('&')
             node->expr = walk(node->expr);
-            // TODO: pointer to specific type
             node->ty = new_ty(PTR, 8);
             node->ty->ptr_to = node->expr->ty;
             return node;
         case ND_DEREF: // pointer dereference ('*')
             node->expr = walk(node->expr);
             node->ty = node->expr->ty->ptr_to;
+            // TODO: apply array-to-pointer before return
             return node;
         case ND_POST_INC: // post-increment/decrement
         case ND_POST_DEC:
@@ -135,6 +135,10 @@ Node *do_walk(Node *node, int decay) {
         case ND_LE: // <=
         case ND_GE: // >=
         case '=':
+            node->lhs = walk_nodecay(node->lhs);
+            node->rhs = walk(node->rhs);
+            node->ty = node->lhs->ty;
+            return node;
         case '<':
         case '*':
         case '/':
