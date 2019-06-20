@@ -40,9 +40,11 @@ try 3 'int main() { int i = 15; return i % 7 && 15 / 5;} '
 # '
 try 10 'int main() 
     {
-    int a[2][3];
-    a[1][2] = 10;
-    return a[1][2];
+    int a[2][3][5];
+    a[1][1][3] = -256;
+    a[1][2][3] = 1000;
+    a[1][2][4] = 10;
+    return a[1][2][4];
     } 
 '
 try 10 'int main() 
