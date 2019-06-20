@@ -256,7 +256,13 @@ Node *log_or() {
 }
 
 Node *log_and() {
-    return equality();
+    Node *node = equality();
+    for (;;) {
+        if (consume(TK_LOG_AND))
+            node = new_node_binop(ND_LOG_AND, node, log_and());
+        else
+            return node;
+    }
 }
 
 Node *equality() {

@@ -20,6 +20,7 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 
 
 try 3 'int main() { return 1 * 100 * 0 || 0 || (1 + 5 * 3 - 15 + 2);} '
+try 3 'int main() { int i = 15; return i % 7 && 15 / 5;} '
 #post-increment/decrement test
 # try 1 'int main() 
 #     {
