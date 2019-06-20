@@ -79,6 +79,8 @@ enum
     TK_MOD_EQ,    // %=
     TK_INC,       // increment
     TK_DEC,       // decrement
+    TK_LOG_AND,   // &&
+    TK_LOG_OR,    // ||
     TK_EOF,       // EOF
 };
 
