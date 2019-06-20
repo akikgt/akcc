@@ -123,6 +123,7 @@ enum
     ND_POST_DEC,  // post-decrement
     ND_LOG_AND,   // &&
     ND_LOG_OR,    // ||
+    ND_LOG_NOT,    // !
 };
 
 /// AST Node

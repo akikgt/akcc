@@ -358,6 +358,20 @@ void gen(Node *node) {
             return;
         }
 
+        case ND_LOG_NOT: {
+            int label_num = label_count++;
+            gen(node->expr);
+            printf("  pop rax\n");
+            printf("  cmp rax, 0\n");
+            printf("  je .Lelse%d\n", label_num);
+            printf("  push 0\n");       // if result != 0, return 0
+            printf("  jmp .Lend%d\n", label_num);
+            printf(".Lelse%d:\n", label_num);
+            printf("  push 1\n");       // if result == 0, return 1
+            printf(".Lend%d:\n", label_num);
+            return;
+        }
+
         case '=':
             gen_lval(node->lhs);
             gen(node->rhs);

@@ -334,6 +334,11 @@ Node *unary() {
         node->expr = unary();
         return node;
     }
+    if (consume('!')) {
+        Node *node = new_node(ND_LOG_NOT);
+        node->expr = unary();
+        return node;
+    }
     if (consume(TK_SIZEOF)) {
         Node *node = new_node(ND_SIZEOF);
         node->expr = unary();

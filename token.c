@@ -174,8 +174,9 @@ Vector *tokenize(char *p) {
             || *p == '='    // assign
             || *p == '{' || *p == '}'   // block
             || *p == '[' || *p == ']'   // array
-            || *p == ','
+            || *p == ','        // separator for parameter 
             || *p == '&'        // address
+            || *p == '!'        // logical not
             ) {
             add_token(v, *p, p);
             i++;
