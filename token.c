@@ -68,6 +68,7 @@ Vector *tokenize(char *p) {
         if (*p == '"') {
             int len = 1;
             while (!(p[len] == '"')) {
+                // escape '"'
                 if (p[len] == '\\' && p[len + 1] == '"')
                     len += 2;
                 else

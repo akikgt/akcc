@@ -518,6 +518,8 @@ Node *param()
 
     // array check
     ty = arr_of(ty);
+    if (ty->ty == ARRAY)
+        ty = ptr_to(ty->arr_of);
 
     // variable setting
     Var *var = malloc(sizeof(Var));
