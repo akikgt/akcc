@@ -67,8 +67,12 @@ Vector *tokenize(char *p) {
         // String literal
         if (*p == '"') {
             int len = 1;
-            while (!(p[len] == '"'))
-                len++;
+            while (!(p[len] == '"')) {
+                if (p[len] == '\\' && p[len + 1] == '"')
+                    len += 2;
+                else
+                    len++;
+            }
             len++;
 
             char *str = strndup(p, len);

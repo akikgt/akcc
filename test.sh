@@ -24,6 +24,7 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 #     b[1][2] = 100;
 #     return b[1][2];
 # }'
+try 1 'int main() { char *name = "test\"aaa\"test\n"; printf(name); return 1;} '
 try 3 'int main() { int i = 100; return (i - 100) ? 2 : 3;} '
 try 3 'int main() { return !(3-2) || 3;} '
 try 3 'int main() { return 1 * 100 * 0 || 0 || (1 + 5 * 3 - 15 + 2);} '
