@@ -220,7 +220,7 @@ void gen(Node *node) {
             for (int i = 0; i < node->stmts->len; i++) {
                 Node *stmt = node->stmts->data[i];
                 /// if, for, while statement will not push any value at the end.
-                if (stmt->op == ND_IF || stmt->op == ND_FOR || stmt->op == ND_WHILE)
+                if (stmt->op == ND_IF || stmt->op == ND_FOR || stmt->op == ND_WHILE || stmt->op == ND_DO_WHILE)
                     gen(stmt);
                 else {
                     gen(stmt);
@@ -270,6 +270,7 @@ void gen(Node *node) {
             printf("  cmp rax, 0\n");
             printf("  je .Lend%d\n", label_num);
             gen(node->body);
+            printf("  pop rax\n");      // discard last value returned from body
             printf("  jmp .Lbegin%d\n", label_num);
             printf(".Lend%d:\n", label_num);
             return;
@@ -279,6 +280,7 @@ void gen(Node *node) {
             int label_num = label_count++;
             printf(".Lbegin%d:\n", label_num);
             gen(node->body);
+            printf("  pop rax\n");      // discard last value returned from body
             gen(node->cond);
             printf("  pop rax\n");
             printf("  cmp rax, 0\n");
@@ -301,6 +303,7 @@ void gen(Node *node) {
             printf("  cmp rax, 0\n");
             printf("  je .Lend%d\n", label_num);
             gen(node->body);
+            printf("  pop rax\n");      // discard last value returned from body
             if (node->inc)
                 gen(node->inc);
             printf("  jmp .Lbegin%d\n", label_num);

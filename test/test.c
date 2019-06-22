@@ -128,7 +128,7 @@ int main() {
   // EXPECT(3, ({ int x; int y; x=y=3; x; }));
   // EXPECT(3, ({ int x; int y; x=y=3; y; }));
 
-  EXPECT(45, ({ int x=0; int y=0; do { y=y+x; x=x+1; } while (x < 5); y; }));
+  EXPECT(45, ({ int x=0; int y=0; do { y=y+x; x=x+1; } while (x < 10); y; }));
   // EXPECT(1, ({ int x=0; do {x++; break;} while (1); x; }));
   // EXPECT(1, ({ int x=0; do {x++; continue;} while (0); x; }));
 
