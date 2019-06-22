@@ -514,7 +514,7 @@ Node *declaration() {
 
     node->init = NULL;
     if (consume('=')) {
-        node->init = assign();
+        node->init = expr();
     }
 
     return node;
