@@ -396,6 +396,11 @@ Node *unary() {
         node->expr = unary();
         return node;
     }
+    if (consume('~')) {
+        Node *node = new_node('~');
+        node->expr = unary();
+        return node;
+    }
     if (consume(TK_SIZEOF)) {
         Node *node = new_node(ND_SIZEOF);
         node->expr = unary();
@@ -514,7 +519,7 @@ Node *term() {
         return node;
     }
 
-    error("%s is invalid", t->input);
+    // error("%s is invalid", t->input);
     error_at(t->input, "non-number or opening parentheses Token found");
 
     return NULL;

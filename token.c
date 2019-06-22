@@ -201,7 +201,7 @@ Vector *tokenize(char *p) {
             || *p == '&'        // address or bit-and
             || *p == '!'        // logical not
             || *p == '?' || *p == ':'    // ternary
-            || *p == '|' || *p == '^'       // bit operations
+            || *p == '|' || *p == '^'  || *p == '~'      // bit operations
             ) {
             add_token(v, *p, p);
             i++;

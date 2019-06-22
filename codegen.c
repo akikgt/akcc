@@ -397,6 +397,13 @@ void gen(Node *node) {
             return;
         }
 
+        case '~':
+            gen(node->expr);
+            printf("  pop rax\n");
+            printf("  not rax\n");
+            printf("  push rax\n");
+            return;
+
         case '=':
             gen_lval(node->lhs);
             gen(node->rhs);
