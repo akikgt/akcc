@@ -198,9 +198,10 @@ Vector *tokenize(char *p) {
             || *p == '{' || *p == '}'   // block
             || *p == '[' || *p == ']'   // array
             || *p == ','        // separator for parameter 
-            || *p == '&'        // address
+            || *p == '&'        // address or bit-and
             || *p == '!'        // logical not
             || *p == '?' || *p == ':'    // ternary
+            || *p == '|' || *p == '^'       // bit operations
             ) {
             add_token(v, *p, p);
             i++;

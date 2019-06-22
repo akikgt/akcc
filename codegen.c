@@ -60,6 +60,15 @@ static void emit_binop(Node *node) {
         printf("  idiv rdi\n"); // reminder will be in rdx
         printf("  mov rax, rdx\n");
         break;
+    case '|':
+        printf("  or rax, rdi\n");
+        break;
+    case '^':
+        printf("  xor rax, rdi\n");
+        break;
+    case '&':
+        printf("  and rax, rdi\n");
+        break;
     case ND_EQ:
         printf("  cmp rax, rdi\n");
         printf("  sete al\n");
