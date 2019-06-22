@@ -19,6 +19,14 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 
 
+try 2 'int main() {
+        int i = 1;
+        do
+            i++;
+        while (i < 0);
+        return i;
+    }
+'
 # passing array test
 try 65 'int demo(char a[][2]) {
         return a[2][1];

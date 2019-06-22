@@ -65,6 +65,7 @@ enum
     TK_IF,        // if
     TK_ELSE,      // else
     TK_WHILE,     // while
+    TK_DO_WHILE,  // do while
     TK_FOR,       // for
     TK_INT,       // int
     TK_CHAR,      // char
@@ -108,6 +109,7 @@ enum
     ND_RETURN,    // return
     ND_IF,        // if
     ND_WHILE,     // while
+    ND_DO_WHILE,  // do-while
     ND_FOR,       // for
     ND_BLOCK,     // block
     ND_CALL,      // function call

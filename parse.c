@@ -167,6 +167,18 @@ Node *stmt() {
         node->body = stmt();
         return node;
     }
+    else if (consume(TK_DO_WHILE)) {
+        node = new_node(ND_DO_WHILE);
+
+        node->body = stmt();
+        expect(TK_WHILE);
+        expect('(');
+        node->cond = expr();
+        expect(')');
+        expect(';');
+
+        return node;
+    }
     else if (consume(TK_FOR)) {
         node = new_node(ND_FOR);
 

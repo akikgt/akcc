@@ -275,6 +275,19 @@ void gen(Node *node) {
             return;
         }
 
+        case ND_DO_WHILE: {
+            int label_num = label_count++;
+            printf(".Lbegin%d:\n", label_num);
+            gen(node->body);
+            gen(node->cond);
+            printf("  pop rax\n");
+            printf("  cmp rax, 0\n");
+            printf("  je .Lend%d\n", label_num);
+            printf("  jmp .Lbegin%d\n", label_num);
+            printf(".Lend%d:\n", label_num);
+            return;
+        }
+
         case ND_FOR: {
             int label_num = label_count++;
             if (node->init)
