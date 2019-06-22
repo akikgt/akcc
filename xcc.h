@@ -67,6 +67,7 @@ enum
     TK_WHILE,     // while
     TK_DO_WHILE,  // do while
     TK_FOR,       // for
+    TK_EXTERN,    // extern
     TK_INT,       // int
     TK_CHAR,      // char
     TK_EQ,        // ==
@@ -174,6 +175,9 @@ typedef struct Var {
 
     // for global variable initial data
     char *data;
+
+    // extern
+    int is_extern;
 } Var;
 
 typedef struct Program {
@@ -201,7 +205,7 @@ Node *postfix();
 Node *term();
 Node *param();
 Node *declaration();
-void add_gvar(Type *ty, char *name, char *data);
+void add_gvar(Type *ty, char *name, char *data, int is_extern);
 Program *parse(Vector *v);
 
 /// sema.c

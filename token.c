@@ -16,6 +16,7 @@
 
 Map *set_keywords() {
     Map *keywords = new_map();
+    map_put(keywords, "extern", (void *)TK_EXTERN);
     map_put(keywords, "int", (void *)TK_INT);
     map_put(keywords, "char", (void *)TK_CHAR);
     map_put(keywords, "return", (void *)TK_RETURN);

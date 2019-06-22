@@ -4,7 +4,7 @@ try() {
     input="$2"
 
     ./xcc "$input" > tmp.s
-    gcc -o tmp tmp.s tmp-plus.o test-alloc.o -no-pie
+    gcc -o tmp tmp.s tmp-plus.o test-alloc.o tmp-test2.o -no-pie 
     ./tmp
     actual="$?"
 
@@ -17,8 +17,9 @@ try() {
 }
 
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
+echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
-
+try 5 'extern int global_arr[1]; int main() { return global_arr[0]; }'
 try 2 'int main() {
         int i = 1;
         do

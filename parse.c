@@ -446,7 +446,7 @@ Node *term() {
         ty = arr_ty(ty, t->len);
 
         char *str_label = format(".LSTR%d", str_count++);
-        add_gvar(ty, str_label, t->name);
+        add_gvar(ty, str_label, t->name, 0);
         return new_node_ident(str_label);
     }
 
@@ -583,17 +583,19 @@ Function *function(Type *ty, char *name) {
     return fn;
 }
 
-void add_gvar(Type *ty, char *name, char *data) {
+void add_gvar(Type *ty, char *name, char *data, int is_extern) {
     Var *v = malloc(sizeof(Var));
     v->ty = ty;
     v->name = name;
     v->data = data;
+    v->is_extern = is_extern;
     map_put(prog->gvars, name, v);
 }
 
 void toplevel() {
 
     while (!peek(TK_EOF)) {
+        int is_extern = consume(TK_EXTERN);
 
         Type *ty = type_specifier();
 
@@ -606,7 +608,7 @@ void toplevel() {
         // Global variable
         else {
             ty = arr_of(ty);
-            add_gvar(ty, t->name, 0);
+            add_gvar(ty, t->name, 0, is_extern);
             expect(';');
         }
     }

@@ -402,6 +402,9 @@ void gen(Node *node) {
 }
 
 void gen_gvar(Var *v) {
+    if (v->is_extern)
+        return;
+
     printf("%s: \n", v->name);
     if (v->data == 0) {
         printf("  .zero  %d\n", v->ty->size);
