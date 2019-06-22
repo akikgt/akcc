@@ -25,6 +25,7 @@ Map *set_keywords() {
     map_put(keywords, "for", (void *)TK_FOR);
     map_put(keywords, "while", (void *)TK_WHILE);
     map_put(keywords, "do", (void *)TK_DO_WHILE);
+    map_put(keywords, "break", (void *)TK_BREAK);
     map_put(keywords, "sizeof", (void *)TK_SIZEOF);
     return keywords;
 }

@@ -273,6 +273,8 @@ void gen(Node *node) {
         
         case ND_WHILE: {
             int label_num = label_count++;
+            node->body->break_num = label_num;
+            node->body->continue_num = label_num;
             printf(".Lbegin%d:\n", label_num);
             gen(node->cond);
             printf("  pop rax\n");
@@ -287,6 +289,8 @@ void gen(Node *node) {
 
         case ND_DO_WHILE: {
             int label_num = label_count++;
+            node->body->break_num = label_num;
+            node->body->continue_num = label_num;
             printf(".Lbegin%d:\n", label_num);
             gen(node->body);
             printf("  pop rax\n");      // discard last value returned from body
@@ -301,6 +305,8 @@ void gen(Node *node) {
 
         case ND_FOR: {
             int label_num = label_count++;
+            node->body->break_num = label_num;
+            node->body->continue_num = label_num;
             if (node->init)
                 gen(node->init);
             printf(".Lbegin%d:\n", label_num);

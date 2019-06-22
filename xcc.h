@@ -67,6 +67,8 @@ enum
     TK_WHILE,     // while
     TK_DO_WHILE,  // do while
     TK_FOR,       // for
+    TK_BREAK,     // break
+    TK_CONTINUE,  // continue
     TK_EXTERN,    // extern
     TK_INT,       // int
     TK_CHAR,      // char
@@ -112,6 +114,8 @@ enum
     ND_WHILE,     // while
     ND_DO_WHILE,  // do-while
     ND_FOR,       // for
+    ND_BREAK,     // break
+    ND_CONTINUE,  // continue
     ND_BLOCK,     // block
     ND_CALL,      // function call
     ND_FUNC,      // function definition
@@ -142,6 +146,7 @@ typedef struct Node {
     // 'if' (cond) then 'else' body
     // 'for' (init; cond; inc) body
     // 'while' (cond) body;
+    // 'do' body 'while' (cond);
     // function (args) body
     struct Node *cond;
     struct Node *then;
@@ -149,6 +154,10 @@ typedef struct Node {
     struct Node *init;
     struct Node *inc;
     struct Node *body;
+
+    // for break; continue;
+    int break_num;
+    int continue_num;
 
     // block statement(compound statement)
     Vector *stmts;

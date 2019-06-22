@@ -214,6 +214,12 @@ Node *stmt() {
 
         return node;
     }
+    else if (consume(TK_BREAK)) {
+        return new_node(ND_BREAK);
+    }
+    else if (consume(TK_CONTINUE)) {
+        return new_node(ND_CONTINUE);
+    }
     else if (is_typename()) {
         node = declaration();
         expect(';');

@@ -117,6 +117,10 @@ Node *do_walk(Node *node, int decay) {
             node->expr = walk(node->expr);
             node->ty = node->expr->ty;
             return node;
+        case '~':
+            node->expr = walk(node->expr);
+            node->ty = node->expr->ty;
+            return node;
         case ND_SIZEOF: {
             if (node->expr->op == ND_TY_SIZE) {
                 node->val = node->expr->val;
@@ -147,6 +151,9 @@ Node *do_walk(Node *node, int decay) {
         case '*':
         case '/':
         case '%':
+        case '|':
+        case '^':
+        case '&':
             node->lhs = walk(node->lhs);
             node->rhs = walk(node->rhs);
             node->ty = node->lhs->ty;
