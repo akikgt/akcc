@@ -420,7 +420,11 @@ Node *postfix() {
 Node *term() {
     Token *t = tokens->data[pos];
     if (consume('(')) {
-        Node *node = expr();
+        Node *node;
+        if (peek('{'))
+            node = stmt();
+        else
+            node = expr();
         expect(')');
         return node;
     }
@@ -480,6 +484,7 @@ Node *term() {
         return node;
     }
 
+    error("%s is invalid", t->input);
     error_at(t->input, "non-number or opening parentheses Token found");
 
     return NULL;
@@ -550,8 +555,6 @@ Node *param()
 }
 
 Function *function(Type *ty, char *name) {
-
-    // Token *t = tokens->data[pos++];
 
     Node *node = new_node(ND_FUNC);
     node->ty = ty;
