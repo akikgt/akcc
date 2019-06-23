@@ -32,7 +32,7 @@ Map *set_keywords() {
 }
 
 Token *add_token(Vector *vec, int ty, char *input) {
-    Token *token = malloc(sizeof(Token));
+    Token *token = calloc(1, sizeof(Token));
     token->ty = ty;
     token->input = input;
     vec_push(vec, token);

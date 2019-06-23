@@ -46,7 +46,7 @@ int sizeof_types(int ty) {
 }
 
 static Type *type_specifier() {
-    Type *ty = malloc(sizeof(Type));
+    Type *ty = calloc(1, sizeof(Type));
 
     Token *t = tokens->data[pos++];
     switch (t->ty) {
@@ -68,7 +68,7 @@ static Type *type_specifier() {
 }
 
 Type *ptr_to(Type *base) {
-    Type *new_ty = malloc(sizeof(Type));
+    Type *new_ty = calloc(1, sizeof(Type));
     new_ty->ty = PTR;
     new_ty->size = 8;
     new_ty->ptr_to = base;
@@ -92,7 +92,7 @@ static Type *arr_of(Type *base) {
     }
 
     for (int i = stack->len - 1; i >= 0; i--) {
-        Type *new_ty = malloc(sizeof(Type));
+        Type *new_ty = calloc(1, sizeof(Type));
         new_ty->ty = ARRAY;        
         new_ty->array_size = stack->data[i];
         new_ty->size = new_ty->array_size * ret->size;
@@ -105,7 +105,7 @@ static Type *arr_of(Type *base) {
 }
 
 Node *new_node(int op) {
-    Node *node = malloc(sizeof(Node));
+    Node *node = calloc(1, sizeof(Node));
     node->op = op;
     return node;
 }
@@ -562,7 +562,7 @@ Node *declaration() {
     ty = arr_of(ty);
 
     // variable setting
-    Var *var = malloc(sizeof(Var));
+    Var *var = calloc(1, sizeof(Var));
     offset += ty->size;
     var->offset = offset;
     var->ty = ty;
@@ -594,7 +594,7 @@ Node *param()
         ty = ptr_to(ty->arr_of);
 
     // variable setting
-    Var *var = malloc(sizeof(Var));
+    Var *var = calloc(1, sizeof(Var));
     offset += ty->size;
     var->offset = offset;
     var->ty = ty;
@@ -617,7 +617,7 @@ Function *function(Type *ty, char *name) {
     node->name = name;
     node->args = new_vector();
 
-    Function *fn = malloc(sizeof(Function));
+    Function *fn = calloc(1, sizeof(Function));
     fn->node = node;
     fn->ty = ty;
 
@@ -643,7 +643,7 @@ Function *function(Type *ty, char *name) {
 }
 
 void add_gvar(Type *ty, char *name, char *data, int is_extern) {
-    Var *v = malloc(sizeof(Var));
+    Var *v = calloc(1, sizeof(Var));
     v->ty = ty;
     v->name = name;
     v->data = data;
@@ -678,7 +678,7 @@ Program *parse(Vector *v) {
     tokens = v;
     pos = 0;
 
-    prog = malloc(sizeof(Program));
+    prog = calloc(1, sizeof(Program));
     prog->gvars = new_map();
     prog->fns = new_vector();
 

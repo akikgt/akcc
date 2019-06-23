@@ -7,7 +7,7 @@ static Node *maybe_decay(Node *base, int decay) {
     if (!(decay == 1 && base->ty->ty == ARRAY))
         return base;
 
-    Node *ret = malloc(sizeof(Node));
+    Node *ret = calloc(1, sizeof(Node));
     ret->op = ND_ADDR;
     ret->ty = ptr_to(base->ty->arr_of);
     ret->expr = base;
