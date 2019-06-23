@@ -182,10 +182,13 @@ Node *do_walk(Node *node, int decay) {
             node->rhs = walk(node->rhs);
 
             if (node->rhs->ty->ty == PTR) {
-                if (node->lhs->ty->ty == PTR)
+                if (node->lhs->ty->ty == PTR) {
                 // 'pointer - pointer' is allowed
+                int size = node->lhs->ty->ptr_to->size;
+                node = new_node_binop('/', node, new_node_num(size));
                 node->ty = int_ty();
                 return node;
+                }
             }
 
             /// pointer arithmetic
