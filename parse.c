@@ -485,6 +485,14 @@ Node *term() {
         return new_node_num(t->val);
     }
 
+    // Ascii character
+    if (t->ty == TK_ASCII) {
+        pos++;
+        Node *node = new_node_num(t->val);
+        node->ty = char_ty();
+        return node;
+    }
+
     // String literal
     if (t->ty == TK_STRING) {
         pos++;

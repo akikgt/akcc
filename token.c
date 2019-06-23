@@ -67,6 +67,18 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        // Ascii character
+        if (*p == '\'') {
+            //TODO: escape '
+            if (p[2] != '\'')
+                error_at(p, " ' is not closed");
+            Token *t = add_token(v, TK_ASCII, p);
+            t->val = p[1];
+            i++;
+            p += 3;
+            continue;
+        }
+
         // String literal
         if (*p == '"') {
             int len = 1;

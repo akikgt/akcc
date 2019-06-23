@@ -59,6 +59,7 @@ enum
 {
     TK_NUM = 256, // integers
     TK_STRING,    // string literal
+    TK_ASCII,     // ascii character
     TK_IDENT,     // identifier
     TK_SIZEOF,    // sizeof
     TK_RETURN,    // return

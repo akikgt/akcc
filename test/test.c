@@ -190,10 +190,10 @@ int main() {
   // EXPECT(255, "\xffxyz"[0]);
   // EXPECT('x', "\xffxyz"[1]);
 
-  // EXPECT('a', ({ char *p = "abc"; p[0]; }));
-  // EXPECT('b', ({ char *p = "abc"; p[1]; }));
-  // EXPECT('c', ({ char *p = "abc"; p[2]; }));
-  // EXPECT(0, ({ char *p = "abc"; p[3]; }));
+  EXPECT('a', ({ char *p = "abc"; p[0]; }));
+  EXPECT('b', ({ char *p = "abc"; p[1]; }));
+  EXPECT('c', ({ char *p = "abc"; p[2]; }));
+  EXPECT(0, ({ char *p = "abc"; p[3]; }));
 
   // EXPECT(1, ({ int x = 1; { int x = 2; } x; }));
 
