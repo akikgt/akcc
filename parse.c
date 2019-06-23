@@ -215,6 +215,7 @@ Node *stmt() {
         return node;
     }
     else if (consume(TK_BREAK)) {
+        // TODO, add expect(';');
         return new_node(ND_BREAK);
     }
     else if (consume(TK_CONTINUE)) {
@@ -541,8 +542,9 @@ Node *declaration() {
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;
 
-    if (map_get(vars, node->name) != NULL)
-        error("'%s' is already defined", node->name);
+    // TODO: block scope
+    // if (map_get(vars, node->name) != NULL)
+    //     error("'%s' is already defined", node->name);
 
     // array check
     ty = arr_of(ty);

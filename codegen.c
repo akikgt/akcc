@@ -228,13 +228,8 @@ void gen(Node *node) {
 
             for (int i = 0; i < node->stmts->len; i++) {
                 Node *stmt = node->stmts->data[i];
-                /// if, for, while statement will not push any value at the end.
-                if (stmt->op == ND_IF || stmt->op == ND_FOR || stmt->op == ND_WHILE || stmt->op == ND_DO_WHILE)
-                    gen(stmt);
-                else {
                     gen(stmt);
                     printf("  pop rax\n");
-                }
             }
 
             printf("  push rax\n");
@@ -253,20 +248,14 @@ void gen(Node *node) {
             gen(node->cond);
             printf("  pop rax\n");
             printf("  cmp rax, 0\n");
-
-            if (!node->els)
-            {
-                printf("  je .Lend%d\n", label_num);
-                gen(node->then);
-                printf(".Lend%d:\n", label_num);
-                return;
-            }
-
             printf("  je .Lelse%d\n", label_num);
             gen(node->then);
             printf("  jmp .Lend%d\n", label_num);
             printf(".Lelse%d:\n", label_num);
-            gen(node->els);
+            if (node->els)
+                gen(node->els);
+            else
+                printf(" push rax\n"); // because when there is no 'else', 'if' leaves nothing on the stack
             printf(".Lend%d:\n", label_num);
             return;
         }
@@ -284,6 +273,7 @@ void gen(Node *node) {
             printf("  pop rax\n");      // discard last value returned from body
             printf("  jmp .Lbegin%d\n", label_num);
             printf(".Lend%d:\n", label_num);
+            printf(" push rax\n"); // TODO: leave some value on tha stack for block statement
             return;
         }
 
@@ -300,6 +290,7 @@ void gen(Node *node) {
             printf("  je .Lend%d\n", label_num);
             printf("  jmp .Lbegin%d\n", label_num);
             printf(".Lend%d:\n", label_num);
+            printf(" push rax\n"); // TODO: leave some value on tha stack for block statement
             return;
         }
 
@@ -307,8 +298,10 @@ void gen(Node *node) {
             int label_num = label_count++;
             node->body->break_num = label_num;
             node->body->continue_num = label_num;
-            if (node->init)
+            if (node->init) {
                 gen(node->init);
+                printf("  pop rax\n"); // TODO:discard last value returned from body
+            }
             printf(".Lbegin%d:\n", label_num);
             if (node->cond)
                 gen(node->cond);
@@ -319,10 +312,13 @@ void gen(Node *node) {
             printf("  je .Lend%d\n", label_num);
             gen(node->body);
             printf("  pop rax\n");      // discard last value returned from body
-            if (node->inc)
+            if (node->inc) {
                 gen(node->inc);
+                printf("  pop rax\n"); // TODO:discard last value returned from body
+            }
             printf("  jmp .Lbegin%d\n", label_num);
             printf(".Lend%d:\n", label_num);
+            printf("  push rax\n"); // TODO: leave some value on tha stack for block statement
             return;
         }
 
