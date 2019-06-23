@@ -158,8 +158,7 @@ Node *do_walk(Node *node, int decay) {
             node->rhs = walk(node->rhs);
             node->ty = node->lhs->ty;
             return node;
-        case '+':
-        case '-': {
+        case '+': {
             node->lhs = walk(node->lhs);
             node->rhs = walk(node->rhs);
 
@@ -178,6 +177,27 @@ Node *do_walk(Node *node, int decay) {
             node->ty = node->lhs->ty;
             return node;
         }
+        case '-': {
+            node->lhs = walk(node->lhs);
+            node->rhs = walk(node->rhs);
+
+            if (node->rhs->ty->ty == PTR) {
+                if (node->lhs->ty->ty == PTR)
+                // 'pointer - pointer' is allowed
+                node->ty = int_ty();
+                return node;
+            }
+
+            /// pointer arithmetic
+            if (node->lhs->ty->ty == PTR)
+            {
+                int size = node->lhs->ty->ptr_to->size;
+                node->rhs = new_node_binop('*', node->rhs, new_node_num(size));
+            }
+            node->ty = node->lhs->ty;
+            return node;
+        }
+
         default:
             return node;
         }
