@@ -134,10 +134,10 @@ int main() {
 
   EXPECT(60, ({ int sum=0; int i; for (i=10; i<15; i=i+1) sum = sum + i; sum;}));
   EXPECT(89, ({ int i=1; int j=1; for (int k=0; k<10; k=k+1) { int m=i+j; i=j; j=m; } i;}));
-  // EXPECT(5, ({ int i=0; for (; i < 10; i++) if (i==5) break; i; }));
-  // EXPECT(10, ({ int i=0; for (;;) { i++; if (i==10) break; } i; }));
+  EXPECT(5, ({ int i=0; for (; i < 10; i++) if (i==5) break; i; }));
+  EXPECT(10, ({ int i=0; for (;;) { i++; if (i==10) break; } i; }));
 
-  // EXPECT(7, ({ int i=0; for (int j=0; j < 10; j++) { if (j<3) continue; i++; } i; }));
+  EXPECT(7, ({ int i=0; for (int j=0; j < 10; j++) { if (j<3) continue; i++; } i; }));
 
   EXPECT(45, ({ int i=0; int j=0; while (i<10) { j=j+i; i=i+1; } j;}));
 
