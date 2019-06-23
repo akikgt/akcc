@@ -69,13 +69,18 @@ Vector *tokenize(char *p) {
 
         // Ascii character
         if (*p == '\'') {
-            //TODO: escape '
-            if (p[2] != '\'')
+            p++;
+            // escape char
+            if (*p == '\\')
+                p++;
+
+            if (p[1] != '\'')
                 error_at(p, " ' is not closed");
+
             Token *t = add_token(v, TK_ASCII, p);
-            t->val = p[1];
+            t->val = *p;
             i++;
-            p += 3;
+            p += 2;
             continue;
         }
 
