@@ -129,8 +129,8 @@ int main() {
   EXPECT(3, ({ int x; int y; x=y=3; y; }));
 
   EXPECT(45, ({ int x=0; int y=0; do { y=y+x; x=x+1; } while (x < 10); y; }));
-  // EXPECT(1, ({ int x=0; do {x++; break;} while (1); x; }));
-  // EXPECT(1, ({ int x=0; do {x++; continue;} while (0); x; }));
+  EXPECT(1, ({ int x=0; do {x++; break;} while (1); x; }));
+  EXPECT(1, ({ int x=0; do {x++; continue;} while (0); x; }));
 
   EXPECT(60, ({ int sum=0; int i; for (i=10; i<15; i=i+1) sum = sum + i; sum;}));
   EXPECT(89, ({ int i=1; int j=1; for (int k=0; k<10; k=k+1) { int m=i+j; i=j; j=m; } i;}));

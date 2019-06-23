@@ -156,7 +156,8 @@ typedef struct Node {
     struct Node *inc;
     struct Node *body;
 
-    // for break; continue;
+    // For break and continue
+    struct Node *target;
     int break_num;
     int continue_num;
 

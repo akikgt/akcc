@@ -65,9 +65,11 @@ Node *do_walk(Node *node, int decay) {
             return node;
         case ND_WHILE: // while
             node->cond = walk(node->cond);
+            node->body->target = node;
             node->body = walk(node->body);
             return node;
         case ND_DO_WHILE: // do while
+            node->body->target = node;
             node->body = walk(node->body);
             node->cond = walk(node->cond);
             return node;
@@ -78,11 +80,15 @@ Node *do_walk(Node *node, int decay) {
                 node->cond = walk(node->cond);
             if (node->inc)
                 node->inc = walk(node->inc);
+            node->body->target = node;
             node->body = walk(node->body);
             return node;
         case ND_BLOCK: // block
-            for (int i = 0; i < node->stmts->len; i++)
-                node->stmts->data[i] = walk(node->stmts->data[i]); 
+            for (int i = 0; i < node->stmts->len; i++) {
+                Node *stmt = node->stmts->data[i];
+                stmt->target = node->target;
+                node->stmts->data[i] = walk(stmt); 
+            }
             return node;
         case ND_CALL: // function call
             for (int i = 0; i < node->args->len; i++)
@@ -116,6 +122,9 @@ Node *do_walk(Node *node, int decay) {
         case ND_LOG_NOT:
             node->expr = walk(node->expr);
             node->ty = node->expr->ty;
+            return node;
+        case ND_BREAK:
+        case ND_CONTINUE:
             return node;
         case '~':
             node->expr = walk(node->expr);

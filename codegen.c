@@ -262,14 +262,15 @@ void gen(Node *node) {
         
         case ND_WHILE: {
             int label_num = label_count++;
-            node->body->break_num = label_num;
-            node->body->continue_num = label_num;
+            node->break_num = label_num;
+            node->continue_num = label_num;
             printf(".Lbegin%d:\n", label_num);
             gen(node->cond);
             printf("  pop rax\n");
             printf("  cmp rax, 0\n");
             printf("  je .Lend%d\n", label_num);
             gen(node->body);
+            printf(".Lcontinue%d:\n", label_num);
             printf("  pop rax\n");      // discard last value returned from body
             printf("  jmp .Lbegin%d\n", label_num);
             printf(".Lend%d:\n", label_num);
@@ -279,10 +280,11 @@ void gen(Node *node) {
 
         case ND_DO_WHILE: {
             int label_num = label_count++;
-            node->body->break_num = label_num;
-            node->body->continue_num = label_num;
+            node->break_num = label_num;
+            node->continue_num = label_num;
             printf(".Lbegin%d:\n", label_num);
             gen(node->body);
+            printf(".Lcontinue%d:\n", label_num);
             printf("  pop rax\n");      // discard last value returned from body
             gen(node->cond);
             printf("  pop rax\n");
@@ -296,8 +298,8 @@ void gen(Node *node) {
 
         case ND_FOR: {
             int label_num = label_count++;
-            node->body->break_num = label_num;
-            node->body->continue_num = label_num;
+            node->break_num = label_num;
+            node->continue_num = label_num;
             if (node->init) {
                 gen(node->init);
                 printf("  pop rax\n"); // TODO:discard last value returned from body
@@ -311,6 +313,7 @@ void gen(Node *node) {
             printf("  cmp rax, 0\n");
             printf("  je .Lend%d\n", label_num);
             gen(node->body);
+            printf(".Lcontinue%d:\n", label_num);
             printf("  pop rax\n");      // discard last value returned from body
             if (node->inc) {
                 gen(node->inc);
@@ -321,6 +324,14 @@ void gen(Node *node) {
             printf("  push rax\n"); // TODO: leave some value on tha stack for block statement
             return;
         }
+
+        case ND_BREAK:
+            printf("  jmp .Lend%d\n", node->target->break_num);
+            return;
+        case ND_CONTINUE:
+            printf("  push rax\n"); // TODO: leave some value on tha stack for block statement
+            printf("  jmp .Lcontinue%d\n", node->target->continue_num);
+            return;
 
         case ND_NUM:
             printf("  push %d\n", node->val);
