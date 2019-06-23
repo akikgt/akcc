@@ -215,11 +215,14 @@ Node *stmt() {
         return node;
     }
     else if (consume(TK_BREAK)) {
-        // TODO, add expect(';');
-        return new_node(ND_BREAK);
+        node = new_node(ND_BREAK);
+        expect(';');
+        return node;
     }
     else if (consume(TK_CONTINUE)) {
-        return new_node(ND_CONTINUE);
+        node =  new_node(ND_CONTINUE);
+        expect(';');
+        return node;
     }
     else if (is_typename()) {
         node = declaration();

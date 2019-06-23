@@ -20,7 +20,7 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
 # try 8 'int main() { plus(1,2) + plus(2,3); }'
-try 0 'int main() {int e = ({ int ary[2][2]; ary[0][0]=3; ary[1][0]=5;});}'
+# try 0 'int main() {int e = ({ int ary[2][2]; ary[0][0]=3; ary[1][0]=5;});}'
 try 3 'int main() {int e = ({ int j = 3; j--;}); }'
 try 11 'int main() { ({return 9 | 3;}); }'
 # try 3 'int main() { int e2 = (({ int x=0; int y=0; do { x=x+1; } while (x < 10); y;})); }'
