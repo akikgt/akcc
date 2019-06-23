@@ -513,6 +513,7 @@ Node *term() {
         node = new_node(ND_CALL);
         node->name = t->name;
         node->args = new_vector();
+        node->ty = int_ty();    // TODO: specify accurate type for function call
 
         if (consume(')'))
             return node;
@@ -591,6 +592,7 @@ Node *param()
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;
     node->ty = ty;
+    node->init = NULL;
 
     map_put(vars, node->name, var);
 
