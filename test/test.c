@@ -173,8 +173,8 @@ int main() {
   // EXPECT(4, ({ int x[4]; _Alignof x; }));
   // EXPECT(8, ({ int *x[4]; _Alignof x; }));
 
-  // EXPECT(5, ({ char x = 5; x; }));
-  // EXPECT(42, ({ int x = 0; char *p = &x; p[0] = 42; x; }));
+  EXPECT(5, ({ char x = 5; x; }));
+  EXPECT(42, ({ int x = 0; char *p = &x; p[0] = 42; x; }));
 
   // EXPECT(0, '\0');
   // EXPECT(0, '\00');
@@ -197,11 +197,11 @@ int main() {
 
   // EXPECT(1, ({ int x = 1; { int x = 2; } x; }));
 
-  // EXPECT(0, var1);
-  // EXPECT(5, ({ var1 = 5; var1; }));
-  // EXPECT(20, sizeof(var2));
-  // EXPECT(15, ({ var2[0] = 5; var2[4] = 10; var2[0] + var2[4]; }));
-  // EXPECT(5, global_arr[0]);
+  EXPECT(0, var1);
+  EXPECT(5, ({ var1 = 5; var1; }));
+  EXPECT(20, sizeof(var2));
+  EXPECT(15, ({ var2[0] = 5; var2[4] = 10; var2[0] + var2[4]; }));
+  EXPECT(5, global_arr[0]);
 
   // EXPECT(4, ({ struct { int a; } x; sizeof(x); }));
   // EXPECT(8, ({ struct { char a; int b; } x; sizeof(x); }));

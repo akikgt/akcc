@@ -142,8 +142,8 @@ Node *do_walk(Node *node, int decay) {
         case '=':
             // TODO: check 9cc uses walk_nodecay to left hand side of '='
             node->lhs = walk(node->lhs);
-            if (node->lhs->op == ND_ADDR)
-                error("ND_ADDR cannot be lval");
+            // if (node->lhs->op == ND_ADDR)
+            //     error("ND_ADDR cannot be lval");
             node->rhs = walk(node->rhs);
             node->ty = node->lhs->ty;
             return node;
@@ -163,8 +163,9 @@ Node *do_walk(Node *node, int decay) {
             node->rhs = walk(node->rhs);
 
             if (node->rhs->ty->ty == PTR) {
-                if (node->lhs->ty->ty == PTR)
-                    error("pointer %c pointer is not defined", node->op);
+                if (node->lhs->ty->ty == PTR) {
+                    error("pointer %c pointer is not defined, %d", node->op, node->lhs->ty->size);
+                }
                 swap(&node->lhs, &node->rhs);
             }
 

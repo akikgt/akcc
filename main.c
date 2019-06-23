@@ -26,7 +26,6 @@ int main(int argc, char **argv) {
     Program *prog = parse(tokens);
     // traverse(prog); // Node test
     sema(prog);
-
     gen_x86(prog);
 
     return 0;
