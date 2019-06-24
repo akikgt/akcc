@@ -190,8 +190,7 @@ Node *string_literal(Token *t) {
     char *str_label = format(".LSTR%d", str_count++);
     Node *node = new_node_ident(str_label);
 
-    Type *ty = char_ty();
-    ty = arr_ty(ty, t->len);
+    Type *ty = arr_ty(char_ty(), t->len + 1);    // +1 means null terminating character
     Var *var = add_gvar(ty, str_label, t->name, 0);
 
     node->var = var;

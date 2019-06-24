@@ -97,13 +97,13 @@ Vector *tokenize(char *p) {
             }
             len++;
 
-            char *str = strndup(p, len);
+            char *str = strndup(p + 1, len - 2);
             Token *t = add_token(v, TK_STRING, p);
             t->name = str;
-            t->len = len;
+            t->len = len - 2;
 
             i++;
-            p += t->len;
+            p += len;
             continue;
         }
 

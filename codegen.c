@@ -414,7 +414,7 @@ void gen_gvar(Var *v) {
         printf("  .zero  %d\n", v->ty->size);
     }
     else {
-        printf(" .string %s\n", v->data);
+        printf(" .string \"%s\"\n", v->data);
     }
 
 }
