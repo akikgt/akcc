@@ -21,6 +21,21 @@ typedef struct Type {
     int array_size;  // TODO: use size_t
 } Type;
 
+/// variable
+typedef struct Var {
+    Type *ty;
+    int offset;
+    char *name;
+    int is_local;
+
+    // for global variable initial data
+    char *data;
+
+    // extern
+    int is_extern;
+
+} Var;
+
 /// util.c
 char *format(char *fmt, ...);
 char *read_file(char *path);
@@ -167,39 +182,29 @@ typedef struct Node {
     // function call
     Vector *args;
 
+    // Variable reference
+    Var *var;
+
 } Node;
 
+typedef struct Env {
+    Map *vars;
+    struct Env *prev;
+} Env;
+
 typedef struct Function {
-    // int ty;
     Type *ty;   // C type
     char *name;
     Node *node;
-    Map *vars;
+    Env *env;
+    Vector *lvars;
 } Function;
-
-
-/// variable
-typedef struct Var {
-    Type *ty;
-    int offset;
-    char *name;
-
-    // for global variable initial data
-    char *data;
-
-    // extern
-    int is_extern;
-} Var;
 
 typedef struct Program {
     Map *gvars;
     Vector *fns;
 } Program;
 
-typedef struct Env {
-    Map *vars;
-    struct Env *prev;
-} Env;
 
 
 Node *new_node(int op);
@@ -224,7 +229,7 @@ Node *postfix();
 Node *term();
 Node *param();
 Node *declaration();
-void add_gvar(Type *ty, char *name, char *data, int is_extern);
+Var *add_gvar(Type *ty, char *name, char *data, int is_extern);
 Program *parse(Vector *v);
 
 /// sema.c

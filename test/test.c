@@ -195,7 +195,7 @@ int main() {
   EXPECT('c', ({ char *p = "abc"; p[2]; }));
   EXPECT(0, ({ char *p = "abc"; p[3]; }));
 
-  // EXPECT(1, ({ int x = 1; { int x = 2; } x; }));
+  EXPECT(1, ({ int x = 1; { int x = 2; } x; }));
 
   EXPECT(0, var1);
   EXPECT(5, ({ var1 = 5; var1; }));

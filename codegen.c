@@ -1,7 +1,6 @@
 #include "xcc.h"
 
 static int label_count;
-static Map *vars;
 static Map *gvars;
 
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
@@ -99,10 +98,6 @@ static void emit_binop(Node *node) {
 }
 
 void gen_func(Function *fn) {
-    /// currently, we use function scope
-    /// TODO: block scope
-    vars = fn->vars;
-
     Node *node = fn->node;
     if (node->op != ND_FUNC) 
         error("This is not function node");
@@ -115,9 +110,10 @@ void gen_func(Function *fn) {
 
     // count total variable size
     int var_size = 0;
-    for (int i = 0; i < vars->keys->len; i++) {
-        Var *v = vars->vals->data[i];
-        var_size += v->ty->size; 
+    for (int i = 0; i < fn->lvars->len; i++) {
+        // TODO: alighnment for each local variable
+        Var *var = fn->lvars->data[i];
+        var_size += var->ty->size;
     }
 
     // Alignment RSP
@@ -171,12 +167,13 @@ void gen_lval(Node *node) {
     if (node->op != ND_IDENT && node->op != ND_VARDEF) 
         error("lval is not valid variable. op: %d", node->op);
 
-    Var *var = map_get(vars, node->name);
+    Var *var = node->var;
 
     // Global variable
-    if (var == NULL) {
+    if (!var->is_local) {
+        // TODO: use var's member is_local to detect global variable
         if (!map_get(gvars, node->name))
-            error("cannot find variable");
+            error("cannot find variable, %s", node->name);
 
         // printf("global variable\n");
         printf("  lea eax, %s[rip]\n", node->name);
@@ -452,8 +449,8 @@ void gen_x86(Program *prog) {
     printf(".intel_syntax noprefix\n");
     printf(".data\n");
 
-    gvars = prog->gvars;
     // Global variables
+    gvars = prog->gvars;
     for (int i = 0; i < prog->gvars->keys->len; i++) {
         Var *v = prog->gvars->vals->data[i];
         gen_gvar(v);

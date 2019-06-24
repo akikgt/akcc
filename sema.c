@@ -1,7 +1,6 @@
 #include "xcc.h"
 
-static Map *vars;
-static Map *gvars;
+// static Env *env;
 
 static Node *maybe_decay(Node *base, int decay) {
     if (!(decay == 1 && base->ty->ty == ARRAY))
@@ -38,19 +37,12 @@ Node *do_walk(Node *node, int decay) {
             return node;
         case ND_VARDEF: // variable definition
         {
-            Var *v = map_get(vars, node->name);
-            node->ty = v->ty;
             if (node->init)
                 node->init = walk(node->init);
             return node;
         }
         case ND_IDENT:  // identifier 
         {
-            Var *v = map_get(vars, node->name);
-            // lookup global variable
-            if (!v)
-                v = map_get(gvars, node->name);
-            node->ty = v->ty;
             node = maybe_decay(node, decay);
             return node;
         }  
@@ -221,10 +213,8 @@ Node *do_walk(Node *node, int decay) {
 
 void sema(Program *prog)
 {
-    gvars = prog->gvars;
     for (int i = 0; i < prog->fns->len - 1; i++) {
         Function *fn = prog->fns->data[i];
-        vars = fn->vars;
         Node *node = fn->node;
 
         walk(node);

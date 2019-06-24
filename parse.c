@@ -4,8 +4,9 @@ static Vector *tokens;
 static int pos;
 static Program *prog;
 
-static Map *vars;
+// static Map *vars;
 
+static Vector *lvars;
 static int offset;
 static int str_count;
 
@@ -16,6 +17,16 @@ static Env *new_env(Env *prev) {
     ret->vars = new_map();
     ret->prev = prev;
     return ret;
+}
+
+static Var *find_var(char *name) {
+    for (Env *cur = env; cur; cur = cur->prev) {
+        Var *var = map_get(cur->vars, name);
+        if (var)
+            return var;
+    }
+    error("undefined variable, %s", name);
+    return NULL;
 }
 
 
@@ -216,11 +227,13 @@ Node *stmt() {
     else if (consume('{')) {
         node = new_node(ND_BLOCK);
         node->stmts = new_vector();
+        env = new_env(env);
 
         while (!consume('}')) {
             vec_push(node->stmts, stmt());
         }
 
+        env = env->prev;
         return node;
     }
     else if (consume(TK_BREAK)) {
@@ -512,8 +525,11 @@ Node *term() {
         ty = arr_ty(ty, t->len);
 
         char *str_label = format(".LSTR%d", str_count++);
-        add_gvar(ty, str_label, t->name, 0);
-        return new_node_ident(str_label);
+        Var *var = add_gvar(ty, str_label, t->name, 0);
+        Node *node = new_node_ident(str_label);
+        node->var = var;
+        node->ty = ty;
+        return node;
     }
 
     if (t->ty == TK_IDENT) {
@@ -522,11 +538,11 @@ Node *term() {
 
         // Identifier
         if (!consume('(')) {
-            if (map_get(vars, t->name) == NULL) {
-                if (map_get(prog->gvars, t->name) == NULL)
-                    error_at(t->input, "undefined variable");
-            }
-            return new_node_ident(t->name);
+            Var *var = find_var(t->name);
+            node = new_node_ident(t->name);
+            node->ty = var->ty;
+            node->var = var;
+            return node;
         }
 
         // Function call
@@ -576,10 +592,13 @@ Node *declaration() {
     var->offset = offset;
     var->ty = ty;
     var->name = t->name;
+    var->is_local = 1;
 
     node->ty = ty;
+    node->var = var;
 
-    map_put(vars, node->name, var);
+    map_put(env->vars, node->name, var);
+    vec_push(lvars, var);
 
     node->init = NULL;
     if (consume('=')) {
@@ -608,13 +627,16 @@ Node *param()
     var->offset = offset;
     var->ty = ty;
     var->name = t->name;
+    var->is_local = 1;
 
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;
     node->ty = ty;
     node->init = NULL;
+    node->var = var;
 
-    map_put(vars, node->name, var);
+    map_put(env->vars, node->name, var);
+    vec_push(lvars, var);
 
     return node;
 }
@@ -630,13 +652,15 @@ Function *function(Type *ty, char *name) {
     fn->node = node;
     fn->ty = ty;
 
-    // make space for local variables every time in function definition
-    vars = new_map();
+    // make new env
+    env = new_env(env);
+    fn->env = env;
+    fn->lvars = new_vector();
+    lvars = fn->lvars;
+    // reset offset
     offset = 0;
-    fn->vars = vars;
 
     expect('(');
-
     if (!consume(')'))
     {
         vec_push(node->args, param());
@@ -648,13 +672,15 @@ Function *function(Type *ty, char *name) {
     }
 
     node->body = stmt();
+    env = env->prev;
     return fn;
 }
 
-void add_gvar(Type *ty, char *name, char *data, int is_extern) {
+Var *add_gvar(Type *ty, char *name, char *data, int is_extern) {
     Var *v = calloc(1, sizeof(Var));
     v->ty = ty;
     v->name = name;
+    v->is_local = 0;
     v->data = data;
     v->is_extern = is_extern;
     map_put(prog->gvars, name, v);

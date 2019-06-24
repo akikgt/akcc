@@ -1,8 +1,5 @@
 #include "xcc.h"
 
-static Map *vars;
-static Map *gvars;
-
 void traverse_and_print(Node *node, int depth) {
     switch (node->op) {
         case ND_NUM:
@@ -10,8 +7,7 @@ void traverse_and_print(Node *node, int depth) {
             return;
         case ND_VARDEF: // variable definition
         {
-            Var *v = map_get(vars, node->name);
-            printf("%*s ND_VARDEF:%s\n", depth, "", v->name);
+            printf("%*s ND_VARDEF:%s\n", depth, "", node->var->name);
             if (node->init) {
                 printf("%*s ND_ASSIGN:\n", depth, "");
                 traverse_and_print(node->init, ++depth);
@@ -20,11 +16,7 @@ void traverse_and_print(Node *node, int depth) {
         }
         case ND_IDENT:  // identifier 
         {
-            Var *v = map_get(vars, node->name);
-            // lookup global variable
-            if (!v)
-                v = map_get(gvars, node->name);
-            printf("%*s ND_IDENT:%s\n", depth, "", v->name);
+            printf("%*s ND_IDENT:%s\n", depth, "", node->var->name);
             return;
         }  
         case ND_RETURN: // return
@@ -59,7 +51,7 @@ void traverse_and_print(Node *node, int depth) {
                 traverse_and_print(node->stmts->data[i], ++depth); 
             return;
         case ND_CALL: // function call
-            printf("%*s ND_CALL\n", depth, "");
+            printf("%*s ND_CALL: %s\n", depth, "", node->name);
             for (int i = 0; i < node->args->len; i++)
                 traverse_and_print(node->args->data[i], ++depth);
             return;
@@ -125,10 +117,8 @@ void traverse_and_print(Node *node, int depth) {
 
 void traverse(Program *prog)
 {
-    gvars = prog->gvars;
     for (int i = 0; i < prog->fns->len - 1; i++) {
         Function *fn = prog->fns->data[i];
-        vars = fn->vars;
         Node *node = fn->node;
 
         traverse_and_print(node, 0);
