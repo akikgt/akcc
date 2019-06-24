@@ -642,35 +642,34 @@ Node *param()
     return node;
 }
 
-Function *function(Type *ty, char *name) {
+Vector *params() {
+    Vector *params = new_vector();
+    expect('(');
+    if (!consume(')')) {
+        vec_push(params, param());
+        while (consume(',')) {
+            vec_push(params, param());
+        }
+        expect(')');
+    }
+    return params;
+}
 
+Function *function(Type *ty, char *name) {
     Node *node = new_node(ND_FUNC);
     node->ty = ty;
     node->name = name;
-    node->args = new_vector();
 
     Function *fn = calloc(1, sizeof(Function));
     fn->node = node;
     fn->ty = ty;
-
-    // make new env
-    env = new_env(env);
     fn->lvars = new_vector();
     lvars = fn->lvars;
     // reset offset
     offset = 0;
 
-    expect('(');
-    if (!consume(')'))
-    {
-        vec_push(node->args, param());
-        while (consume(','))
-        {
-            vec_push(node->args, param());
-        }
-        expect(')');
-    }
-
+    env = new_env(env);
+    node->args = params();
     node->body = stmt();
     env = env->prev;
     return fn;
