@@ -154,15 +154,15 @@ int main() {
   EXPECT(8, ({ int ary[2][2]; ary[0][0]=3; ary[1][0]=5; add3(ary);}));
   EXPECT(8, ({ int ary[2][2]; ary[0][0]=3; ary[1][0]=5; add4(ary);}));
 
-  // EXPECT(3, ({ int ary[2]; ary[0]=1; ary[1]=2; ary[0] + ary[0+1];}));
-  // EXPECT(5, ({ int x; int *p = &x; x = 5; p[0];}));
-  // EXPECT(1, ({ int ary[2]; ary[0]=1; ary[1]=2; int *p=ary; *p++;}));
-  // EXPECT(2, ({ int ary[2]; ary[0]=1; ary[1]=2; int *p=ary; *++p;}));
+  EXPECT(3, ({ int ary[2]; ary[0]=1; ary[1]=2; ary[0] + ary[0+1];}));
+  EXPECT(5, ({ int x; int *p = &x; x = 5; p[0];}));
+  EXPECT(1, ({ int ary[2]; ary[0]=1; ary[1]=2; int *p=ary; *p++;}));
+  EXPECT(2, ({ int ary[2]; ary[0]=1; ary[1]=2; int *p=ary; *++p;}));
 
-  // EXPECT(1, ({ char x; sizeof x; }));
-  // EXPECT(4, ({ int x; sizeof(x); }));
-  // EXPECT(8, ({ int *x; sizeof x; }));
-  // EXPECT(16, ({ int x[4]; sizeof x; }));
+  EXPECT(1, ({ char x; sizeof x; }));
+  EXPECT(4, ({ int x; sizeof(x); }));
+  EXPECT(8, ({ int *x; sizeof x; }));
+  EXPECT(16, ({ int x[4]; sizeof x; }));
   // EXPECT(4, sizeof("abc"));
   // EXPECT(7, sizeof("abc" "def"));
   // EXPECT(9, sizeof("ab\0c" "\0def"));

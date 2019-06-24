@@ -249,24 +249,6 @@ void gen(Node *node) {
             printf(".Lend%d:\n", label_num);
             return;
         }
-        
-        case ND_WHILE: {
-            int label_num = label_count++;
-            node->break_num = label_num;
-            node->continue_num = label_num;
-            printf(".Lbegin%d:\n", label_num);
-            gen(node->cond);
-            printf("  pop rax\n");
-            printf("  cmp rax, 0\n");
-            printf("  je .Lend%d\n", label_num);
-            gen(node->body);
-            printf(".Lcontinue%d:\n", label_num);
-            printf("  pop rax\n");      // discard last value returned from body
-            printf("  jmp .Lbegin%d\n", label_num);
-            printf(".Lend%d:\n", label_num);
-            printf(" push rax\n"); // TODO: leave some value on tha stack for block statement
-            return;
-        }
 
         case ND_DO_WHILE: {
             int label_num = label_count++;

@@ -30,11 +30,6 @@ void traverse_and_print(Node *node, int depth) {
             if (node->els)
                 traverse_and_print(node->els, ++depth);
             return;
-        case ND_WHILE: // while
-            printf("%*s ND_WHILE\n", depth, "");
-            traverse_and_print(node->cond, ++depth);
-            traverse_and_print(node->body, ++depth);
-            return;
         case ND_FOR: // for
             printf("%*s ND_FOR\n", depth, "");
             if (node->init)

@@ -247,7 +247,7 @@ Node *stmt() {
         return node;
     }
     else if (consume(TK_WHILE)) {
-        node = new_node(ND_WHILE);
+        node = new_node(ND_FOR);
         vec_push(breaks, node);
         vec_push(continues, node);
 
