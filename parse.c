@@ -193,6 +193,23 @@ Node *local_variable(Token *t) {
     return node;
 }
 
+Node *function_call(Token *t) {
+    Node *node = new_node(ND_CALL);
+    node->name = t->name;
+    node->args = new_vector();
+    node->ty = int_ty(); // TODO: specify accurate type for function call
+
+    if (consume(')'))
+        return node;
+
+    do {
+        vec_push(node->args, expr());
+    } while (consume(','));
+    expect(')');
+
+    return node;
+}
+
 Node *stmt() {
     Node *node;
 
@@ -573,29 +590,10 @@ Node *term() {
 
     if (t->ty == TK_IDENT) {
         pos++;
-        Node *node;
-
-        // Identifier
         if (!consume('(')) {
             return local_variable(t);
         }
-
-        // Function call
-        node = new_node(ND_CALL);
-        node->name = t->name;
-        node->args = new_vector();
-        node->ty = int_ty();    // TODO: specify accurate type for function call
-
-        if (consume(')'))
-            return node;
-
-        vec_push(node->args, expr());
-        while (consume(',')) {
-            vec_push(node->args, expr());
-        }
-        expect(')');
-
-        return node;
+        return function_call(t);
     }
 
     // error("%s is invalid", t->input);
