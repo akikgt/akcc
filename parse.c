@@ -10,6 +10,15 @@ static int offset;
 static int str_count;
 
 
+static Env *env;
+static Env *new_env(Env *prev) {
+    Env *ret = calloc(1, sizeof(Env));
+    ret->vars = new_map();
+    ret->prev = prev;
+    return ret;
+}
+
+
 int consume(int ty) {
     Token *t = tokens->data[pos];
     if (t->ty != ty)
@@ -680,6 +689,8 @@ Program *parse(Vector *v) {
 
     prog = calloc(1, sizeof(Program));
     prog->gvars = new_map();
+    env = new_env(NULL);
+    env->vars = prog->gvars;
     prog->fns = new_vector();
 
     toplevel();
