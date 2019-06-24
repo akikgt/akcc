@@ -96,10 +96,12 @@ static Type *type_specifier() {
         case TK_CHAR:
             ty->ty = CHAR;
             ty->size = 1;
+            ty->align = 1;
             break;
         case TK_INT:
             ty->ty = INT;
             ty->size = 4;
+            ty->align = 4;
             break;
     }
 
@@ -114,6 +116,7 @@ Type *ptr_to(Type *base) {
     Type *new_ty = calloc(1, sizeof(Type));
     new_ty->ty = PTR;
     new_ty->size = 8;
+    new_ty->align = 8;
     new_ty->ptr_to = base;
     return new_ty;
 }

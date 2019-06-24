@@ -58,6 +58,7 @@ Type *new_ty(int ty, int size) {
     Type *ret = malloc(sizeof(Type));
     ret->ty = ty;
     ret->size = size;
+    ret->align = size;
     return ret;
 }
 

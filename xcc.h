@@ -10,8 +10,9 @@ extern char *user_input;
 
 /// type
 typedef struct Type {
-    enum { INT, CHAR, PTR, ARRAY } ty;
+    enum { INT, CHAR, PTR, ARRAY, STRUCT } ty;
     int size;
+    int align;
 
     // Pointer
     struct Type *ptr_to;
@@ -88,6 +89,7 @@ enum
     TK_BREAK,     // break
     TK_CONTINUE,  // continue
     TK_EXTERN,    // extern
+    TK_STRUCT,    // struct
     TK_INT,       // int
     TK_CHAR,      // char
     TK_EQ,        // ==
