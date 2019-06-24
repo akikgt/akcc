@@ -196,7 +196,6 @@ typedef struct Function {
     Type *ty;   // C type
     char *name;
     Node *node;
-    Env *env;
     Vector *lvars;
 } Function;
 

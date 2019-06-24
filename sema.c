@@ -1,7 +1,5 @@
 #include "xcc.h"
 
-// static Env *env;
-
 static Node *maybe_decay(Node *base, int decay) {
     if (!(decay == 1 && base->ty->ty == ARRAY))
         return base;

@@ -19,6 +19,28 @@ static Env *new_env(Env *prev) {
     return ret;
 }
 
+Var *add_lvar(Type *ty, char *name) {
+    Var *v = calloc(1, sizeof(Var));
+    v->ty = ty;
+    v->name = name;
+    v->is_local = 1;
+
+    offset += ty->size;
+    v->offset = offset;
+    map_put(env->vars, name, v);
+    vec_push(lvars, v);
+}
+
+Var *add_gvar(Type *ty, char *name, char *data, int is_extern) {
+    Var *v = calloc(1, sizeof(Var));
+    v->ty = ty;
+    v->name = name;
+    v->is_local = 0;
+    v->data = data;
+    v->is_extern = is_extern;
+    map_put(prog->gvars, name, v);
+}
+
 static Var *find_var(char *name) {
     for (Env *cur = env; cur; cur = cur->prev) {
         Var *var = map_get(cur->vars, name);
@@ -579,26 +601,14 @@ Node *declaration() {
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;
 
-    // TODO: block scope
-    // if (map_get(vars, node->name) != NULL)
-    //     error("'%s' is already defined", node->name);
-
     // array check
     ty = arr_of(ty);
 
     // variable setting
-    Var *var = calloc(1, sizeof(Var));
-    offset += ty->size;
-    var->offset = offset;
-    var->ty = ty;
-    var->name = t->name;
-    var->is_local = 1;
+    Var *var = add_lvar(ty, t->name);
 
     node->ty = ty;
     node->var = var;
-
-    map_put(env->vars, node->name, var);
-    vec_push(lvars, var);
 
     node->init = NULL;
     if (consume('=')) {
@@ -622,21 +632,12 @@ Node *param()
         ty = ptr_to(ty->arr_of);
 
     // variable setting
-    Var *var = calloc(1, sizeof(Var));
-    offset += ty->size;
-    var->offset = offset;
-    var->ty = ty;
-    var->name = t->name;
-    var->is_local = 1;
+    Var *var = add_lvar(ty, t->name);
 
     Node *node = new_node(ND_VARDEF);
     node->name = t->name;
     node->ty = ty;
-    node->init = NULL;
     node->var = var;
-
-    map_put(env->vars, node->name, var);
-    vec_push(lvars, var);
 
     return node;
 }
@@ -654,7 +655,6 @@ Function *function(Type *ty, char *name) {
 
     // make new env
     env = new_env(env);
-    fn->env = env;
     fn->lvars = new_vector();
     lvars = fn->lvars;
     // reset offset
@@ -676,15 +676,6 @@ Function *function(Type *ty, char *name) {
     return fn;
 }
 
-Var *add_gvar(Type *ty, char *name, char *data, int is_extern) {
-    Var *v = calloc(1, sizeof(Var));
-    v->ty = ty;
-    v->name = name;
-    v->is_local = 0;
-    v->data = data;
-    v->is_extern = is_extern;
-    map_put(prog->gvars, name, v);
-}
 
 void toplevel() {
 
