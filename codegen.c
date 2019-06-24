@@ -1,7 +1,6 @@
 #include "xcc.h"
 
 static int label_count;
-static Map *gvars;
 
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 char *regs32[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
@@ -168,14 +167,8 @@ void gen_lval(Node *node) {
         error("lval is not valid variable. op: %d", node->op);
 
     Var *var = node->var;
-
     // Global variable
     if (!var->is_local) {
-        // TODO: use var's member is_local to detect global variable
-        if (!map_get(gvars, node->name))
-            error("cannot find variable, %s", node->name);
-
-        // printf("global variable\n");
         printf("  lea eax, %s[rip]\n", node->name);
         printf("  push rax\n");
         return;
@@ -450,7 +443,6 @@ void gen_x86(Program *prog) {
     printf(".data\n");
 
     // Global variables
-    gvars = prog->gvars;
     for (int i = 0; i < prog->gvars->keys->len; i++) {
         Var *v = prog->gvars->vals->data[i];
         gen_gvar(v);
