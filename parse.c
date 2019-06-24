@@ -185,6 +185,19 @@ Node *new_node_vardef(Var *var) {
     return node;
 }
 
+Node *string_literal(Token *t) {
+    char *str_label = format(".LSTR%d", str_count++);
+    Node *node = new_node_ident(str_label);
+
+    Type *ty = char_ty();
+    ty = arr_ty(ty, t->len);
+    Var *var = add_gvar(ty, str_label, t->name, 0);
+
+    node->var = var;
+    node->ty = ty;
+    return node;
+}
+
 Node *local_variable(Token *t) {
     Var *var = find_var(t->name);
     Node *node = new_node_ident(t->name);
@@ -574,18 +587,9 @@ Node *term() {
         return node;
     }
 
-    // String literal
     if (t->ty == TK_STRING) {
         pos++;
-        Type *ty = char_ty();
-        ty = arr_ty(ty, t->len);
-
-        char *str_label = format(".LSTR%d", str_count++);
-        Var *var = add_gvar(ty, str_label, t->name, 0);
-        Node *node = new_node_ident(str_label);
-        node->var = var;
-        node->ty = ty;
-        return node;
+        return string_literal(t);
     }
 
     if (t->ty == TK_IDENT) {
