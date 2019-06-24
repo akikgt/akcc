@@ -185,6 +185,14 @@ Node *new_node_vardef(Var *var) {
     return node;
 }
 
+Node *local_variable(Token *t) {
+    Var *var = find_var(t->name);
+    Node *node = new_node_ident(t->name);
+    node->ty = var->ty;
+    node->var = var;
+    return node;
+}
+
 Node *stmt() {
     Node *node;
 
@@ -568,11 +576,7 @@ Node *term() {
 
         // Identifier
         if (!consume('(')) {
-            Var *var = find_var(t->name);
-            node = new_node_ident(t->name);
-            node->ty = var->ty;
-            node->var = var;
-            return node;
+            return local_variable(t);
         }
 
         // Function call
