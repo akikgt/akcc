@@ -196,6 +196,11 @@ typedef struct Program {
     Vector *fns;
 } Program;
 
+typedef struct Env {
+    Map *vars;
+    struct Env *prev;
+} Env;
+
 
 Node *new_node(int op);
 Node *new_node_binop(int op, Node *lhs, Node *rhs);
