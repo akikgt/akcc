@@ -524,7 +524,8 @@ Node *postfix() {
 
 Node *term() {
     Token *t = tokens->data[pos];
-    if (consume('(')) {
+    if (t->ty == '(') {
+        pos++;
         Node *node;
         if (peek('{'))
             node = stmt();
