@@ -177,6 +177,14 @@ Node *new_node_ident(char *name) {
     return node;
 }
 
+Node *new_node_vardef(Var *var) {
+    Node *node = new_node(ND_VARDEF);
+    node->name = var->name;
+    node->ty = var->ty;
+    node->var = var;
+    return node;
+}
+
 Node *stmt() {
     Node *node;
 
@@ -598,23 +606,16 @@ Node *declaration() {
     if (!consume(TK_IDENT))
         error_at(t->input, "not variable declaration");
 
-    Node *node = new_node(ND_VARDEF);
-    node->name = t->name;
 
     // array check
     ty = arr_of(ty);
 
-    // variable setting
     Var *var = add_lvar(ty, t->name);
 
-    node->ty = ty;
-    node->var = var;
-
-    node->init = NULL;
+    Node *node = new_node_vardef(var);
     if (consume('=')) {
         node->init = expr();
     }
-
     return node;
 }
 
@@ -634,11 +635,7 @@ Node *param()
     // variable setting
     Var *var = add_lvar(ty, t->name);
 
-    Node *node = new_node(ND_VARDEF);
-    node->name = t->name;
-    node->ty = ty;
-    node->var = var;
-
+    Node *node = new_node_vardef(var);
     return node;
 }
 
