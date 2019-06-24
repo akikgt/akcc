@@ -98,6 +98,19 @@ void vec_push(Vector *vec, void *elem) {
     vec->data[vec->len++] = elem;
 }
 
+void *vec_top(Vector *vec) {
+    if (!vec->len)
+        error("empty vector");
+    return vec->data[vec->len - 1];
+}
+
+void *vec_pop(Vector *vec) {
+    if (!vec->len)
+        error("pop from empty vector");
+    vec->len--;
+    return vec->data[vec->len];
+}
+
 static int expect(int line, int expected, int actual) {
     if (expected == actual) 
         return 1;
@@ -120,6 +133,8 @@ void test_vector() {
     expect(__LINE__, 0, (long)vec->data[0]);
     expect(__LINE__, 50, (long)vec->data[50]);
     expect(__LINE__, 99, (long)vec->data[99]);
+    expect(__LINE__, 99, (long)vec_pop(vec));
+    expect(__LINE__, 98, (long)vec_top(vec));
 
     printf("OK\n");
 }

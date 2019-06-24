@@ -53,6 +53,8 @@ typedef struct {
 
 Vector *new_vector();
 void vec_push(Vector *vec, void *elem);
+void *vec_pop(Vector *vec);
+void *vec_top(Vector *vec);
 void runtest();
 
 // map

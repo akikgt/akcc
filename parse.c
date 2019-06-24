@@ -4,11 +4,12 @@ static Vector *tokens;
 static int pos;
 static Program *prog;
 
-// static Map *vars;
-
 static Vector *lvars;
 static int offset;
 static int str_count;
+
+static Vector *breaks;
+static Vector *continues;
 
 
 static Env *env;
@@ -247,16 +248,22 @@ Node *stmt() {
     }
     else if (consume(TK_WHILE)) {
         node = new_node(ND_WHILE);
+        vec_push(breaks, node);
+        vec_push(continues, node);
 
         expect('(');
         node->cond = expr();
         expect(')');
-
         node->body = stmt();
+
+        vec_pop(breaks);
+        vec_pop(continues);
         return node;
     }
     else if (consume(TK_DO_WHILE)) {
         node = new_node(ND_DO_WHILE);
+        vec_push(breaks, node);
+        vec_push(continues, node);
 
         node->body = stmt();
         expect(TK_WHILE);
@@ -265,10 +272,14 @@ Node *stmt() {
         expect(')');
         expect(';');
 
+        vec_pop(breaks);
+        vec_pop(continues);
         return node;
     }
     else if (consume(TK_FOR)) {
         node = new_node(ND_FOR);
+        vec_push(breaks, node);
+        vec_push(continues, node);
 
         expect('(');
         if (!consume(';')) {
@@ -278,18 +289,19 @@ Node *stmt() {
                 node->init = expr();
             expect(';');
         }
-
         if (!consume(';')) {
             node->cond = expr();
             expect(';');
         }
-
         if (!consume(')')) {
             node->inc = expr();
             expect(')');
         }
 
         node->body = stmt();
+
+        vec_pop(breaks);
+        vec_pop(continues);
         return node;
     }
     else if (consume('{')) {
@@ -306,11 +318,13 @@ Node *stmt() {
     }
     else if (consume(TK_BREAK)) {
         node = new_node(ND_BREAK);
+        node->target = vec_top(breaks);
         expect(';');
         return node;
     }
     else if (consume(TK_CONTINUE)) {
         node =  new_node(ND_CONTINUE);
+        node->target = vec_top(continues);
         expect(';');
         return node;
     }
@@ -706,6 +720,8 @@ void toplevel() {
 Program *parse(Vector *v) {
     tokens = v;
     pos = 0;
+    breaks = new_vector();
+    continues = new_vector();
 
     prog = calloc(1, sizeof(Program));
     prog->gvars = new_map();
