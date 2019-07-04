@@ -28,7 +28,8 @@ Var *add_lvar(Type *ty, char *name) {
     v->is_local = 1;
 
     offset += ty->size;
-    v->offset = offset;
+    v->offset = roundup(offset, ty->align);
+
     map_put(env->vars, name, v);
     vec_push(lvars, v);
 }
@@ -148,6 +149,7 @@ static Type *arr_of(Type *base) {
         new_ty->ty = ARRAY;        
         new_ty->array_size = stack->data[i];
         new_ty->size = new_ty->array_size * ret->size;
+        new_ty->align = base->align;
         new_ty->arr_of = ret;
         new_ty->ptr_to = ret;
         ret = new_ty;

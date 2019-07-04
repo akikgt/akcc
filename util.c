@@ -81,6 +81,7 @@ Type *char_ty() {
 
 Type *arr_ty(Type *base, int len) {
     Type *ty = new_ty(ARRAY, base->size * len);
+    ty->align = base->align;
     ty->array_size = len;
     ty->arr_of = base;
     ty->ptr_to = base;

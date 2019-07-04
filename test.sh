@@ -19,11 +19,11 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
-try 8 'int main() { struct { int a;} x; sizeof(x); }'
+# try 8 'int main() { struct { int a;} x; sizeof(x); }'
 try 0 'int main() 
 { int x=0; switch(3) case 1: x=5; x; }
 '
-try 8 'int main() {
+try 7 'int main() {
 int e = ({ int x=0; switch(3) { case 2: x=5; case 3: x=6; case 4: x=7; } x; });
 }
 '

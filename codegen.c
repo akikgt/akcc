@@ -105,13 +105,17 @@ void gen_func(Function *fn) {
     printf("  push rbp\n");
     printf("  mov rbp, rsp\n");
 
-    // count total variable size
+    // calculate total local variable size
     int var_size = 0;
-    for (int i = 0; i < fn->lvars->len; i++) {
-        // TODO: alighnment for each local variable
-        Var *var = fn->lvars->data[i];
-        var_size += var->ty->size;
+    if (fn->lvars->len != 0) {
+        Var *last_var = vec_top(fn->lvars);
+        var_size = last_var->offset + last_var->ty->size;
     }
+    // for (int i = 0; i < fn->lvars->len; i++) {
+    //     // TODO: alighnment for each local variable
+    //     Var *var = fn->lvars->data[i];
+    //     var_size += var->ty->size;
+    // }
 
     // Alignment RSP
     // For x86-64 ABI, roundup RSP to multiplies of 16
