@@ -121,19 +121,24 @@ Type *ptr_to(Type *base) {
     return new_ty;
 }
 
+static int *const_expr() {
+    Token *t = tokens->data[pos];
+    Node *node = expr();
+    if (node->op != ND_NUM)
+        error("constant expression expected");
+    return node->val;
+}
+
 static Type *arr_of(Type *base) {
     Type *ret = base;
     Vector *stack = new_vector();
 
     while (consume('[')) {
-        Token *t = tokens->data[pos];
-        if (!(t->ty == TK_NUM)) {
+        if (consume(']')) {
             vec_push(stack, (void *)0);
+            continue;
         }
-        else {
-            vec_push(stack, (void *)t->val);
-            pos++;
-        }
+        vec_push(stack, (void *)const_expr());
         expect(']');
     }
 
