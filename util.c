@@ -53,7 +53,12 @@ char *read_file(char *path) {
     return buf;
 }
 
+
 /// Type
+int roundup(int x, int align) {
+    return (x + align - 1) & ~(align - 1);
+}
+
 Type *new_ty(int ty, int size) {
     Type *ret = malloc(sizeof(Type));
     ret->ty = ty;

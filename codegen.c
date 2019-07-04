@@ -5,9 +5,7 @@ static int label_count;
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 char *regs32[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
-int roundup(int x, int align) {
-    return (x + align - 1) & ~(align - 1);
-}
+
 
 static char *get_reg(Type *ty, char r) {
     switch (ty->size) {

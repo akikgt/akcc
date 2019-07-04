@@ -44,6 +44,7 @@ Type *new_ty(int ty, int size);
 Type *int_ty();
 Type *char_ty();
 Type *arr_ty(Type *base, int len);
+int roundup(int x, int align); 
 
 // vector
 typedef struct {
@@ -254,7 +255,6 @@ void gen(Node *node);
 void gen_lval(Node *node);
 void gen_func(Function *fn);
 void gen_x86(Program *prog);
-int roundup(int x, int align); 
 
 
 
