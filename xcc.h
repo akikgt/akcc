@@ -86,6 +86,8 @@ enum
     TK_WHILE,     // while
     TK_DO_WHILE,  // do while
     TK_FOR,       // for
+    TK_SWITCH,    // switch
+    TK_CASE,      // case
     TK_BREAK,     // break
     TK_CONTINUE,  // continue
     TK_EXTERN,    // extern
