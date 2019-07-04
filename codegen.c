@@ -299,14 +299,26 @@ void gen(Node *node) {
 
         case ND_SWITCH: {
             int label_num = label_count++;
-            node->switch_num = label_num;
             node->break_num = label_num;
-            /// TODO
+            gen(node->cond);
+            printf("  pop rax\n");
+            // emit cases
+            for (int i = 0; i < node->cases->len; i++) {
+                Node *c = node->cases->data[i];
+                c->switch_num = label_num;
+                printf("  cmp rax, %d\n", c->val);
+                printf("  je .Lcase%d_%d\n", c->val, label_num);
+            }
+
+            gen(node->body);
+            printf(".Lend%d:\n", label_num);
+            printf("  push rax\n"); // TODO: leave some value on tha stack for block statement
             return;
         }
 
         case ND_CASE:
-            /// TODO
+            printf(".Lcase%d_%d:\n", node->val, node->switch_num);
+            gen(node->body);
             return;
 
         case ND_BREAK:
