@@ -297,6 +297,18 @@ void gen(Node *node) {
             return;
         }
 
+        case ND_SWITCH: {
+            int label_num = label_count++;
+            node->switch_num = label_num;
+            node->break_num = label_num;
+            /// TODO
+            return;
+        }
+
+        case ND_CASE:
+            /// TODO
+            return;
+
         case ND_BREAK:
             printf("  jmp .Lend%d\n", node->target->break_num);
             return;

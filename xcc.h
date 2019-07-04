@@ -180,6 +180,7 @@ typedef struct Node {
 
     // For switch
     Vector *cases;
+    int switch_num;
 
     // For break and continue
     struct Node *target;
