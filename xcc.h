@@ -135,6 +135,8 @@ enum
     ND_IF,        // if
     ND_DO_WHILE,  // do-while
     ND_FOR,       // for
+    ND_SWITCH,    // switch
+    ND_CASE,      // case
     ND_BREAK,     // break
     ND_CONTINUE,  // continue
     ND_BLOCK,     // block
@@ -175,6 +177,9 @@ typedef struct Node {
     struct Node *init;
     struct Node *inc;
     struct Node *body;
+
+    // For switch
+    Vector *cases;
 
     // For break and continue
     struct Node *target;

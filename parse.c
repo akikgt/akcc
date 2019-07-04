@@ -8,6 +8,7 @@ static Vector *lvars;
 static int offset;
 static int str_count;
 
+static Vector *switches;
 static Vector *breaks;
 static Vector *continues;
 
@@ -309,6 +310,31 @@ Node *stmt() {
 
         vec_pop(breaks);
         vec_pop(continues);
+        return node;
+    }
+    else if (consume(TK_SWITCH)) {
+        node = new_node(ND_SWITCH);
+        vec_push(switches, node);
+        vec_push(breaks, node);
+        node->cases = new_vector();
+
+        expect('(');
+        node->cond = expr();
+        expect(')');
+        node->body = stmt();
+
+        vec_pop(switches);
+        vec_pop(breaks);
+        return node;
+    }
+    else if (consume(TK_CASE)) {
+        node = new_node(ND_CASE);
+        node->val = const_expr();
+        expect(':');
+        node->body = stmt();
+
+        Node *n = vec_top(switches);
+        vec_push(n->cases, node);
         return node;
     }
     else if (consume('{')) {
@@ -727,6 +753,7 @@ void toplevel() {
 Program *parse(Vector *v) {
     tokens = v;
     pos = 0;
+    switches = new_vector();
     breaks = new_vector();
     continues = new_vector();
 

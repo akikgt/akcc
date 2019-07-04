@@ -30,6 +30,20 @@ void traverse_and_print(Node *node, int depth) {
             if (node->els)
                 traverse_and_print(node->els, ++depth);
             return;
+        case ND_DO_WHILE: // do while
+            printf("%*s ND_DO_WHILE\n", depth, "");
+            traverse_and_print(node->body, ++depth);
+            traverse_and_print(node->cond, ++depth);
+            return;
+        case ND_SWITCH: // switch
+            printf("%*s ND_SWITCH\n", depth, "");
+            traverse_and_print(node->cond, ++depth);
+            traverse_and_print(node->body, ++depth);
+            return;
+        case ND_CASE: // case
+            printf("%*s ND_CASE: %d\n", depth, "", node->val);
+            traverse_and_print(node->body, ++depth);
+            return;
         case ND_FOR: // for
             printf("%*s ND_FOR\n", depth, "");
             if (node->init)
@@ -39,6 +53,12 @@ void traverse_and_print(Node *node, int depth) {
             if (node->inc)
                 traverse_and_print(node->inc, ++depth);
             traverse_and_print(node->body, ++depth);
+            return;
+        case ND_BREAK: // break
+            printf("%*s ND_BREAK:\n", depth, "");
+            return;
+        case ND_CONTINUE: // continue
+            printf("%*s ND_CONTINUE:\n", depth, "");
             return;
         case ND_BLOCK: // block
             printf("%*s ND_BLOCK\n", depth, "");
@@ -106,7 +126,7 @@ void traverse_and_print(Node *node, int depth) {
             traverse_and_print(node->rhs, ++depth);
             return;
         default:
-            return node;
+            return;
         }
 }
 

@@ -55,8 +55,12 @@ Node *do_walk(Node *node, int decay) {
             }
             return node;
         case ND_DO_WHILE: // do while
+        case ND_SWITCH: // switch
             node->body = walk(node->body);
             node->cond = walk(node->cond);
+            return node;
+        case ND_CASE: // case
+            node->body = walk(node->body);
             return node;
         case ND_FOR: // for
             if (node->init)
