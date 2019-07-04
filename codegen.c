@@ -309,8 +309,11 @@ void gen(Node *node) {
                 printf("  cmp rax, %d\n", c->val);
                 printf("  je .Lcase%d_%d\n", c->val, label_num);
             }
+            printf("  jmp .Lend%d\n", label_num);
 
             gen(node->body);
+
+            printf("  pop rax\n"); 
             printf(".Lend%d:\n", label_num);
             printf("  push rax\n"); // TODO: leave some value on tha stack for block statement
             return;
