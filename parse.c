@@ -113,16 +113,26 @@ static Type *type_specifier() {
         int off = 0;
         while (!consume('}')) {
             Node *node = declaration();
+            consume(';');
+
             Type *t = node->ty;
-            map_put(ty->members, node->name, node->ty);
+            map_put(ty->members, node->name, t);
+
             off = roundup(off, t->align);
             off += t->size;
-            consume(';');
+            t->offset = off;
 
             // struct alignment is the same as its largest member's align
             if (t->align > ty->align)
                 ty->align = t->align;
         }
+
+        /* For alingment check */
+        // for (int i = 0; i < ty->members->keys->len; i++) {
+        //     Type *t = ty->members->vals->data[i];
+        //     printf("%s, %d\n", ty->members->keys->data[i], t->offset);
+        // }
+
         ty->size = roundup(off, ty->align);
         return ty;
     }

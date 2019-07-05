@@ -47,6 +47,7 @@ typedef struct Type {
 
     // Struct
     Map *members;
+    int offset;
 } Type;
 
 /// variable
