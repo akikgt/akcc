@@ -8,6 +8,30 @@
 
 extern char *user_input;
 
+// vector
+typedef struct {
+    void **data;
+    int capacity;
+    int len;
+} Vector;
+
+Vector *new_vector();
+void vec_push(Vector *vec, void *elem);
+void *vec_pop(Vector *vec);
+void *vec_top(Vector *vec);
+void runtest();
+
+// map
+typedef struct {
+    Vector *keys;
+    Vector *vals;
+} Map;
+
+Map *new_map();
+void map_put(Map *map, char *key, void *val);
+void *map_get(Map *map, char *key);
+void test_map();
+
 /// type
 typedef struct Type {
     enum { INT, CHAR, PTR, ARRAY, STRUCT } ty;
@@ -20,6 +44,9 @@ typedef struct Type {
     // Array
     struct Type *arr_of;
     int array_size;  // TODO: use size_t
+
+    // Struct
+    Map *members;
 } Type;
 
 /// variable
@@ -46,31 +73,6 @@ Type *char_ty();
 Type *arr_ty(Type *base, int len);
 int roundup(int x, int align); 
 
-// vector
-typedef struct {
-    void **data;
-    int capacity;
-    int len;
-} Vector;
-
-Vector *new_vector();
-void vec_push(Vector *vec, void *elem);
-void *vec_pop(Vector *vec);
-void *vec_top(Vector *vec);
-void runtest();
-
-// map
-typedef struct {
-    Vector *keys;
-    Vector *vals;
-} Map;
-
-Map *new_map();
-void map_put(Map *map, char *key, void *val);
-void *map_get(Map *map, char *key);
-void test_map();
-
-// extern Map* map;
 
 
 /// token.c

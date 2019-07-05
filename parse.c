@@ -76,7 +76,7 @@ static int peek(int ty) {
 
 static int is_typename() {
     Token *t = tokens->data[pos];
-    return t->ty == TK_INT || t->ty == TK_CHAR;
+    return t->ty == TK_INT || t->ty == TK_CHAR || t->ty == TK_STRUCT;
 }
 
 int sizeof_types(int ty) {
@@ -91,22 +91,38 @@ int sizeof_types(int ty) {
 }
 
 static Type *type_specifier() {
-    Type *ty = calloc(1, sizeof(Type));
+    Type *ty;
 
     Token *t = tokens->data[pos++];
     switch (t->ty) {
         case TK_CHAR:
-            ty->ty = CHAR;
-            ty->size = 1;
-            ty->align = 1;
+            ty = char_ty();
             break;
         case TK_INT:
-            ty->ty = INT;
-            ty->size = 4;
-            ty->align = 4;
+            ty = int_ty();
             break;
     }
 
+    if (t->ty == TK_STRUCT) {
+        ty = new_ty(STRUCT, 1);
+        ty->members = new_map();
+        // TODO: check struct tag
+
+        expect('{');
+        int off = 0;
+        while (!consume('}')) {
+            Node *node = declaration();
+            map_put(ty->members, node->name, node->ty);
+            off = roundup(off, node->ty->align);
+            off += node->ty->size;
+            consume(';');
+        }
+        ty->size = off;
+        ty->align = off;
+        return ty;
+    }
+
+    // TODO: move pointer check to outside of this function
     while (consume('*')) {
         ty = ptr_to(ty);
     }

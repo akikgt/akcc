@@ -203,9 +203,9 @@ int main() {
   EXPECT(15, ({ var2[0] = 5; var2[4] = 10; var2[0] + var2[4]; }));
   EXPECT(5, global_arr[0]);
 
-  // EXPECT(4, ({ struct { int a; } x; sizeof(x); }));
-  // EXPECT(8, ({ struct { char a; int b; } x; sizeof(x); }));
-  // EXPECT(12, ({ struct { char a; char b; int c; char d; } x; sizeof(x); }));
+  EXPECT(4, ({ struct { int a; } x; sizeof(x); }));
+  EXPECT(8, ({ struct { char a; int b; } x; sizeof(x); }));
+  EXPECT(12, ({ struct { char a; char b; int c; char d; } x; sizeof(x); }));
   // EXPECT(3, ({ struct { int a; } x; x.a=3; x.a; }));
   // EXPECT(8, ({ struct { char a; int b; } x; x.a=3; x.b=5; x.a+x.b; }));
   // EXPECT(8, ({ struct { char a; int b; } x; struct { char a; int b; } *p = &x; x.a=3; x.b=5; p->a+p->b; }));

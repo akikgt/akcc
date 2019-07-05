@@ -60,7 +60,7 @@ int roundup(int x, int align) {
 }
 
 Type *new_ty(int ty, int size) {
-    Type *ret = malloc(sizeof(Type));
+    Type *ret = calloc(1, sizeof(Type));
     ret->ty = ty;
     ret->size = size;
     ret->align = size;
