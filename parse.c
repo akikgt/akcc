@@ -112,14 +112,17 @@ static Type *type_specifier() {
         int off = 0;
         while (!consume('}')) {
             Node *node = declaration();
+            Type *t = node->ty;
             map_put(ty->members, node->name, node->ty);
-            off = roundup(off, node->ty->align);
-            off += node->ty->size;
+            off = roundup(off, t->align);
+            off += t->size;
             consume(';');
+
+            if (t->align > ty->align)
+                ty->align = t->align;
         }
-        ty->size = off;
         // TODO align struct to its largest member
-        ty->align = off;
+        ty->size = roundup(off, ty->align);
         return ty;
     }
 
