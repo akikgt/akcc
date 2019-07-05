@@ -118,6 +118,7 @@ static Type *type_specifier() {
             consume(';');
         }
         ty->size = off;
+        // TODO align struct to its largest member
         ty->align = off;
         return ty;
     }
