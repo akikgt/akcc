@@ -109,7 +109,7 @@ void gen_func(Function *fn) {
     int var_size = 0;
     if (fn->lvars->len != 0) {
         Var *last_var = vec_top(fn->lvars);
-        var_size = last_var->offset + last_var->ty->size;
+        var_size = last_var->offset;
     }
     // for (int i = 0; i < fn->lvars->len; i++) {
     //     // TODO: alighnment for each local variable
