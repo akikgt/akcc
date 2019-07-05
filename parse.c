@@ -104,6 +104,7 @@ static Type *type_specifier() {
     }
 
     if (t->ty == TK_STRUCT) {
+        // TODO: refactor inside this 'if' to separate function
         ty = new_ty(STRUCT, 1);
         ty->members = new_map();
         // TODO: check struct tag
@@ -118,10 +119,10 @@ static Type *type_specifier() {
             off += t->size;
             consume(';');
 
+            // struct alignment is the same as its largest member's align
             if (t->align > ty->align)
                 ty->align = t->align;
         }
-        // TODO align struct to its largest member
         ty->size = roundup(off, ty->align);
         return ty;
     }
