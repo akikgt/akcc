@@ -23,11 +23,16 @@ static Env *new_env(Env *prev) {
     return ret;
 }
 
-Var *add_lvar(Type *ty, char *name) {
+static Var *new_var(Type *ty, char *name, int is_local) {
     Var *v = calloc(1, sizeof(Var));
     v->ty = ty;
     v->name = name;
-    v->is_local = 1;
+    v->is_local = is_local;
+    return v;
+}
+
+Var *add_lvar(Type *ty, char *name) {
+    Var *v = new_var(ty, name, 1);
 
     offset += ty->size;
     v->offset = roundup(offset, ty->align);
@@ -37,10 +42,7 @@ Var *add_lvar(Type *ty, char *name) {
 }
 
 Var *add_gvar(Type *ty, char *name, char *data, int is_extern) {
-    Var *v = calloc(1, sizeof(Var));
-    v->ty = ty;
-    v->name = name;
-    v->is_local = 0;
+    Var *v = new_var(ty, name, 0);
     v->data = data;
     v->is_extern = is_extern;
     map_put(prog->gvars, name, v);
@@ -631,26 +633,17 @@ Node *postfix() {
         return lhs;
     }
 
+    // dot operaotr for struct
     if (t->ty == '.') {
         pos++;
         t = tokens->data[pos++];
-        Var *var = find_var(lhs->name);
-        Type *ty = var->ty;
-        // error("%s\n", var->name);
-        // error("%d", ty->ty);
-        Type *member = map_get(ty->members, t->name);
-        
-        // TODO make it to the new function
-        // make variable for member
-        Var *v = calloc(1, sizeof(Var));
-        v->ty = member;
-        v->name = t->name;
-        v->is_local = 1;
-        v->offset = var->offset - var->ty->size + member->offset;
+        Var *var_struct = find_var(lhs->name);
+        Type *member = map_get(var_struct->ty->members, t->name);
 
         Node *node = new_node_ident(t->name);
-        node->var = v;
-        node->ty = v->ty;
+        node->var = new_var(member, t->name, 1);
+        node->var->offset = var_struct->offset - var_struct->ty->size + member->offset;
+        node->ty = node->var->ty;
         return node;
     }
 
