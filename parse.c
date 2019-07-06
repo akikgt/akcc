@@ -650,6 +650,17 @@ Node *postfix() {
         return node;
     }
 
+    if (t->ty == TK_ARROW) {
+        pos++;
+        t = tokens->data[pos++];
+        Var *var_struct = find_var(lhs->name);
+        Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
+
+        // make rhs be just offset from parent struct
+        Node *rhs = new_node_num(member->offset);
+        Node *node = new_node_binop('.', lhs, rhs);
+        return node;
+    }
     return lhs;
 }
 
