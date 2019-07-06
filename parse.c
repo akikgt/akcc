@@ -639,25 +639,16 @@ Node *postfix() {
         Var *var_struct = find_var(lhs->name);
         Type *member = map_get(var_struct->ty->members, t->name);
 
-        Node *node = new_node_ident(t->name);
-        node->var = new_var(member, t->name, 1);
-        node->var->offset = var_struct->offset - var_struct->ty->size + member->offset;
-        node->ty = node->var->ty;
+        // make lhs be address node
+        Node *tmp = lhs;
+        lhs = new_node(ND_ADDR);
+        lhs->expr = tmp;
+
+        // make rhs be just offset from parent struct
+        Node *rhs = new_node_num(member->offset);
+        Node *node = new_node_binop('.', lhs, rhs);
         return node;
     }
-
-    // if (t->ty == TK_ARROW) {
-    //     pos++;
-    //     t = tokens->data[pos++];
-    //     Var *var_struct = find_var(lhs->name);
-    //     Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
-
-    //     Node *node = new_node_ident(t->name);
-    //     node->var = new_var(member, t->name, 1);
-    //     node->var->offset = var_struct->offset - var_struct->ty->size + member->offset;
-    //     node->ty = node->var->ty;
-    //     return node;
-    // }
 
     return lhs;
 }

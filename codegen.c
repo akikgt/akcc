@@ -85,6 +85,12 @@ static void emit_binop(Node *node) {
         printf("  setl al\n");
         printf("  movzb rax, al\n");
         break;
+    case '.':
+        printf("  add rax, %d\n", node->lhs->expr->ty->size);
+        printf("  sub rax, rdi\n");
+        printf("   \n");
+        emit_load(node->rhs);
+        break;
 
     default:
         error("Unknown operator");
@@ -111,11 +117,6 @@ void gen_func(Function *fn) {
         Var *last_var = vec_top(fn->lvars);
         var_size = last_var->offset;
     }
-    // for (int i = 0; i < fn->lvars->len; i++) {
-    //     // TODO: alighnment for each local variable
-    //     Var *var = fn->lvars->data[i];
-    //     var_size += var->ty->size;
-    // }
 
     // Alignment RSP
     // For x86-64 ABI, roundup RSP to multiplies of 16
@@ -127,11 +128,11 @@ void gen_func(Function *fn) {
         gen_lval(param);
         // set each parameters to local variable address
         printf("  pop rax\n");
-        if (param->ty->ty == ARRAY) {
-            /// TODO: array parameter
-            printf("  mov [rax], %s\n", regs[i]);
-            continue;
-        }
+        // if (param->ty->ty == ARRAY) {
+        //     /// TODO: array parameter
+        //     printf("  mov [rax], %s\n", regs[i]);
+        //     continue;
+        // }
         switch (param->ty->size) {
             case 1:
             // TODO: make regs8 array and modify dil -> regs8[i]
@@ -162,6 +163,17 @@ void gen_func(Function *fn) {
 void gen_lval(Node *node) {
     if (node->op == ND_DEREF) {
         gen(node->expr);
+        return;
+    }
+
+    if (node->op == '.') {
+        gen(node->lhs);
+        gen(node->rhs);
+        printf("  pop rdi\n");
+        printf("  pop rax\n");
+        printf("  add rax, %d\n", node->lhs->expr->ty->size);
+        printf("  sub rax, rdi\n");
+        printf("  push rax\n");
         return;
     }
 
