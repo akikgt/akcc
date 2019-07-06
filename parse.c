@@ -12,6 +12,8 @@ static Vector *switches;
 static Vector *breaks;
 static Vector *continues;
 
+Node *declaration_type();
+
 
 static Env *env;
 static Env *new_env(Env *prev) {
@@ -112,7 +114,7 @@ static Type *type_specifier() {
         expect('{');
         int off = 0;
         while (!consume('}')) {
-            Node *node = declaration();
+            Node *node = declaration_type();
             consume(';');
 
             Type *t = node->ty;
@@ -693,7 +695,6 @@ Node *declaration() {
     if (!consume(TK_IDENT))
         error_at(t->input, "not variable declaration");
 
-
     // array check
     ty = arr_of(ty);
 
@@ -703,6 +704,22 @@ Node *declaration() {
     if (consume('=')) {
         node->init = expr();
     }
+    return node;
+}
+
+Node *declaration_type() {
+    Type *ty = type_specifier();
+    Token *t = tokens->data[pos];
+
+    // TODO declarator
+    if (!consume(TK_IDENT))
+        error_at(t->input, "not variable declaration");
+    // array check
+    ty = arr_of(ty);
+
+    Node *node = new_node(ND_VARDEF);
+    node->name = t->name;
+    node->ty = ty;
     return node;
 }
 
