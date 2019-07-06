@@ -98,6 +98,7 @@ enum
     TK_STRUCT,    // struct
     TK_INT,       // int
     TK_CHAR,      // char
+    TK_ARROW,     // ->
     TK_EQ,        // ==
     TK_NE,        // !=
     TK_LE,        // <=
