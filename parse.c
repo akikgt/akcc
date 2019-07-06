@@ -709,17 +709,16 @@ Node *declaration() {
 
 Node *declaration_type() {
     Type *ty = type_specifier();
-    Token *t = tokens->data[pos];
+    Token *t = tokens->data[pos++];
 
     // TODO declarator
-    if (!consume(TK_IDENT))
-        error_at(t->input, "not variable declaration");
     // array check
     ty = arr_of(ty);
 
     Node *node = new_node(ND_VARDEF);
-    node->name = t->name;
     node->ty = ty;
+    if (t->ty == TK_IDENT)
+        node->name = t->name;
     return node;
 }
 
