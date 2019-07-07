@@ -605,53 +605,54 @@ Node *unary() {
 Node *postfix() {
     Node *lhs = term();
 
-    // for (;;) {
+    for (;;) {
+        Token *t = tokens->data[pos];
 
-    // }
+        // Post increment/decrement
+        if (consume(TK_INC)) {
+            lhs = new_node_expr(ND_POST_INC, lhs);
+            continue;
+        }
+        if (consume(TK_DEC)) {
+            lhs = new_node_expr(ND_POST_DEC, lhs);
+            continue;
+        }
 
-    // Array
-    while(consume('[')) {
-        lhs = new_node_expr(ND_DEREF, new_node_binop('+', lhs, add()));
-        expect(']');
-    }
+        // dot operaotr for struct
+        if (consume('.')) {
+            t = tokens->data[pos++];
+            Var *var_struct = find_var(lhs->name);
+            Type *member = map_get(var_struct->ty->members, t->name);
+            lhs = new_node_expr(ND_DOT, lhs);
+            lhs->name = t->name;
+            lhs->ty = member;
+            continue;
+        }
 
-    // Post increment/decrement
-    Token *t = tokens->data[pos];
-    if (consume(TK_INC))
-    {
-        lhs = new_node_expr(ND_POST_INC, lhs);
+        if (consume(TK_ARROW)) {
+            t = tokens->data[pos++];
+            Var *var_struct = find_var(lhs->name);
+            Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
+
+            // make a->b to (*a).b
+            lhs = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, lhs));
+            lhs->name = t->name;
+            lhs->ty = member;
+            continue;
+        }
+
+        // Array
+        if (consume('[')) {
+            char *arr_name = lhs->name;
+            lhs = new_node_expr(ND_DEREF, new_node_binop('+', lhs, add()));
+            lhs->name = arr_name;
+            expect(']');
+            continue;
+        }
+
         return lhs;
     }
 
-    if (consume(TK_DEC))
-    {
-        lhs = new_node_expr(ND_POST_DEC, lhs);
-        return lhs;
-    }
-
-    // dot operaotr for struct
-    if (consume('.')) {
-        t = tokens->data[pos++];
-        Var *var_struct = find_var(lhs->name);
-        Type *member = map_get(var_struct->ty->members, t->name);
-        lhs = new_node_expr(ND_DOT, lhs);
-        lhs->name = t->name;
-        lhs->ty = member;
-        return lhs;
-    }
-
-    if (consume(TK_ARROW)) {
-        t = tokens->data[pos++];
-        Var *var_struct = find_var(lhs->name);
-        Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
-
-        // make a->b to (*a).b
-        lhs = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, lhs));
-        lhs->name = t->name;
-        lhs->ty = member;
-        return lhs;
-    }
-    return lhs;
 }
 
 Node *term() {
