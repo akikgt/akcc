@@ -123,8 +123,8 @@ static Type *type_specifier() {
             map_put(ty->members, node->name, t);
 
             off = roundup(off, t->align);
-            off += t->size;
             t->offset = off;
+            off += t->size;
 
             // struct alignment is the same as its largest member's align
             if (t->align > ty->align)

@@ -86,11 +86,7 @@ static void emit_binop(Node *node) {
         printf("  movzb rax, al\n");
         break;
     case '.': {
-        if (node->lhs->op == ND_IDENT)
-            printf("  add rax, %d\n", node->lhs->ty->ptr_to->size);
-        else
-            printf("  add rax, %d\n", node->lhs->expr->ty->size);
-        printf("  sub rax, rdi\n");
+        printf("  add rax, rdi\n");
         emit_load(node->rhs);
         break;
     }
@@ -175,11 +171,7 @@ void gen_lval(Node *node) {
         gen(node->rhs);
         printf("  pop rdi\n");
         printf("  pop rax\n");
-        if (node->lhs->op == ND_IDENT)  // for pointer-to-struct
-            printf("  add rax, %d\n", node->lhs->ty->ptr_to->size);
-        else // for instance of struct
-            printf("  add rax, %d\n", node->lhs->expr->ty->size);
-        printf("  sub rax, rdi\n");
+        printf("  add rax, rdi\n");
         printf("  push rax\n");
         return;
     }
