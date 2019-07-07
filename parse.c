@@ -620,25 +620,16 @@ Node *postfix() {
 
         // dot operaotr for struct
         if (consume('.')) {
-            t = tokens->data[pos++];
-            Type *ty = lhs->ty;
-            // TODO: assert ty->ty == STRUCT
-            Type *member = map_get(ty->members, t->name);
             lhs = new_node_expr(ND_DOT, lhs);
+            t = tokens->data[pos++];
             lhs->name = t->name;
-            lhs->ty = member;
             continue;
         }
 
         if (consume(TK_ARROW)) {
-            t = tokens->data[pos++];
-            Type *ty = lhs->ty;
-            Type *member = map_get(ty->ptr_to->members, t->name);
-
-            // make a->b to (*a).b
             lhs = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, lhs));
+            t = tokens->data[pos++];
             lhs->name = t->name;
-            lhs->ty = member;
             continue;
         }
 

@@ -212,17 +212,17 @@ int main() {
   // EXPECT(8, ({ struct tag { char a; int b; } x; struct tag *p = &x; x.a=3; x.b=5; p->a+p->b; }));
   EXPECT(48, ({ struct { struct { int b; int c[5]; } a[2]; } x; sizeof(x); }));
 
-  // EXPECT(8, ({
-	// struct {
-	//   struct {
-	//     int b;
-	//     int c[5];
-	//   } a[2];
-	// } x;
-	// x.a[0].b = 3;
-	// x.a[0].c[1] = 5;
-	// x.a[0].b + x.a[0].c[1];
-  //     }));
+  EXPECT(8, ({
+	struct {
+	  struct {
+	    int b;
+	    int c[5];
+	  } a[2];
+	} x;
+	x.a[0].b = 3;
+	x.a[0].c[1] = 5;
+	x.a[0].b + x.a[0].c[1];
+      }));
 
   // EXPECT(3, ({ typedef int foo; foo x = 3; x; }));
   // EXPECT(4, ({ myint foo = 3; sizeof(foo); }));
