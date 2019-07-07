@@ -131,12 +131,6 @@ static Type *type_specifier() {
                 ty->align = t->align;
         }
 
-        /* For alingment check */
-        // for (int i = 0; i < ty->members->keys->len; i++) {
-        //     Type *t = ty->members->vals->data[i];
-        //     printf("%s, %d\n", ty->members->keys->data[i], t->offset);
-        // }
-
         ty->size = roundup(off, ty->align);
     }
 
@@ -646,7 +640,7 @@ Node *postfix() {
 
         // make rhs be just offset from parent struct
         Node *rhs = new_node_num(member->offset);
-        Node *node = new_node_binop('.', lhs, rhs);
+        Node *node = new_node_binop(ND_DOT, lhs, rhs);
         return node;
     }
 
@@ -658,7 +652,7 @@ Node *postfix() {
 
         // make rhs be just offset from parent struct
         Node *rhs = new_node_num(member->offset);
-        Node *node = new_node_binop('.', lhs, rhs);
+        Node *node = new_node_binop(ND_DOT, lhs, rhs);
         return node;
     }
     return lhs;

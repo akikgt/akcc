@@ -159,6 +159,7 @@ enum
     ND_LOG_AND,   // &&
     ND_LOG_OR,    // ||
     ND_LOG_NOT,   // !
+    ND_DOT,       // . operator for struct
 };
 
 /// AST Node

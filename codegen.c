@@ -85,7 +85,7 @@ static void emit_binop(Node *node) {
         printf("  setl al\n");
         printf("  movzb rax, al\n");
         break;
-    case '.': {
+    case ND_DOT: {
         printf("  add rax, rdi\n");
         emit_load(node->rhs);
         break;
@@ -166,7 +166,7 @@ void gen_lval(Node *node) {
         return;
     }
 
-    if (node->op == '.') {
+    if (node->op == ND_DOT) {
         gen(node->lhs);
         gen(node->rhs);
         printf("  pop rdi\n");
