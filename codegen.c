@@ -85,12 +85,6 @@ static void emit_binop(Node *node) {
         printf("  setl al\n");
         printf("  movzb rax, al\n");
         break;
-    case ND_DOT: {
-        printf("  add rax, rdi\n");
-        emit_load(node->rhs);
-        break;
-    }
-
 
     default:
         error("Unknown operator");
@@ -167,11 +161,9 @@ void gen_lval(Node *node) {
     }
 
     if (node->op == ND_DOT) {
-        gen(node->lhs);
-        gen(node->rhs);
-        printf("  pop rdi\n");
+        gen_lval(node->expr);
         printf("  pop rax\n");
-        printf("  add rax, rdi\n");
+        printf("  add rax, %d\n", node->ty->offset);
         printf("  push rax\n");
         return;
     }
@@ -356,6 +348,16 @@ void gen(Node *node) {
             emit_load(node);
             printf("  push rax\n");
             return;
+
+        case ND_DOT: {
+            gen_lval(node->expr);
+            printf("  pop rax\n");
+            printf("  add rax, %d\n", node->ty->offset);
+            printf("  mov rsi, rax\n"); // save address of identifier for later use
+            emit_load(node);
+            printf("  push rax\n");
+            break;
+        }
 
         case ND_DEREF:
             gen(node->expr);

@@ -135,11 +135,13 @@ Node *do_walk(Node *node, int decay) {
         case ND_NE: // !=
         case ND_LE: // <=
         case ND_GE: // >=
-        case ND_DOT:
             node->lhs = walk(node->lhs);
             node->rhs = walk(node->rhs);
-            node->ty = node->rhs->ty;
+            node->ty = node->lhs->ty;
             return node;
+        case ND_DOT: // '.' operator. It's kind of identifier, so need maybe_decay
+            node->expr = walk(node->expr);
+            return maybe_decay(node, decay);
         case '=':
             // TODO: check 9cc uses walk_nodecay to left hand side of '='
             node->lhs = walk(node->lhs);

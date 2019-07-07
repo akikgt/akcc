@@ -114,7 +114,10 @@ void traverse_and_print(Node *node, int depth) {
             traverse_and_print(node->lhs, depth + 1);
             traverse_and_print(node->rhs, depth + 1);
             return;
-        case '.':
+        case ND_DOT:
+            printf("%*s ND_DOT\n", depth, "");
+            traverse_and_print(node->expr, depth + 1);
+            return;
         case '=':
         case '<':
         case '*':

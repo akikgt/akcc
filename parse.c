@@ -632,16 +632,10 @@ Node *postfix() {
         t = tokens->data[pos++];
         Var *var_struct = find_var(lhs->name);
         Type *member = map_get(var_struct->ty->members, t->name);
-
-        // make lhs be address node
-        Node *tmp = lhs;
-        lhs = new_node(ND_ADDR);
-        lhs->expr = tmp;
-
-        // make rhs be just offset from parent struct
-        Node *rhs = new_node_num(member->offset);
-        Node *node = new_node_binop(ND_DOT, lhs, rhs);
-        return node;
+        lhs = new_node_expr(ND_DOT, lhs);
+        lhs->name = t->name;
+        lhs->ty = member;
+        return lhs;
     }
 
     if (t->ty == TK_ARROW) {
@@ -650,10 +644,14 @@ Node *postfix() {
         Var *var_struct = find_var(lhs->name);
         Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
 
-        // make rhs be just offset from parent struct
-        Node *rhs = new_node_num(member->offset);
-        Node *node = new_node_binop(ND_DOT, lhs, rhs);
-        return node;
+        // make a->b to (*a).b
+        Node *tmp = new_node(ND_DEREF);
+        tmp->expr = lhs;
+
+        lhs = new_node_expr(ND_DOT, tmp);
+        lhs->name = t->name;
+        lhs->ty = member;
+        return lhs;
     }
     return lhs;
 }
