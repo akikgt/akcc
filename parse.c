@@ -621,8 +621,9 @@ Node *postfix() {
         // dot operaotr for struct
         if (consume('.')) {
             t = tokens->data[pos++];
-            Var *var_struct = find_var(lhs->name);
-            Type *member = map_get(var_struct->ty->members, t->name);
+            Type *ty = lhs->ty;
+            // TODO: assert ty->ty == STRUCT
+            Type *member = map_get(ty->members, t->name);
             lhs = new_node_expr(ND_DOT, lhs);
             lhs->name = t->name;
             lhs->ty = member;
@@ -631,8 +632,8 @@ Node *postfix() {
 
         if (consume(TK_ARROW)) {
             t = tokens->data[pos++];
-            Var *var_struct = find_var(lhs->name);
-            Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
+            Type *ty = lhs->ty;
+            Type *member = map_get(ty->ptr_to->members, t->name);
 
             // make a->b to (*a).b
             lhs = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, lhs));
