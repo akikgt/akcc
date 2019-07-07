@@ -645,10 +645,7 @@ Node *postfix() {
         Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
 
         // make a->b to (*a).b
-        Node *tmp = new_node(ND_DEREF);
-        tmp->expr = lhs;
-
-        lhs = new_node_expr(ND_DOT, tmp);
+        lhs = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, lhs));
         lhs->name = t->name;
         lhs->ty = member;
         return lhs;
