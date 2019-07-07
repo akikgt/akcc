@@ -605,6 +605,10 @@ Node *unary() {
 Node *postfix() {
     Node *lhs = term();
 
+    // for (;;) {
+
+    // }
+
     // Array
     while(consume('[')) {
         lhs = new_node_expr(ND_DEREF, new_node_binop('+', lhs, add()));
@@ -613,22 +617,20 @@ Node *postfix() {
 
     // Post increment/decrement
     Token *t = tokens->data[pos];
-    if (t->ty == TK_INC)
+    if (consume(TK_INC))
     {
-        pos++;
         lhs = new_node_expr(ND_POST_INC, lhs);
         return lhs;
     }
-    else if (t->ty == TK_DEC)
+
+    if (consume(TK_DEC))
     {
-        pos++;
         lhs = new_node_expr(ND_POST_DEC, lhs);
         return lhs;
     }
 
     // dot operaotr for struct
-    if (t->ty == '.') {
-        pos++;
+    if (consume('.')) {
         t = tokens->data[pos++];
         Var *var_struct = find_var(lhs->name);
         Type *member = map_get(var_struct->ty->members, t->name);
@@ -638,8 +640,7 @@ Node *postfix() {
         return lhs;
     }
 
-    if (t->ty == TK_ARROW) {
-        pos++;
+    if (consume(TK_ARROW)) {
         t = tokens->data[pos++];
         Var *var_struct = find_var(lhs->name);
         Type *member = map_get(var_struct->ty->ptr_to->members, t->name);
