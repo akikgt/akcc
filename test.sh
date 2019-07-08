@@ -23,7 +23,7 @@ try 8 'int main() { struct tag { char a; int b; } x; struct tag *p = &x; x.a=3; 
 try 8 'int main() {
 	struct {
 	  struct {
-	    int b;
+	    int b; 
 	    int c[5];
 	  } a[2];
 	} x;
