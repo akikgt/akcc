@@ -19,6 +19,7 @@ static Env *env;
 static Env *new_env(Env *prev) {
     Env *ret = calloc(1, sizeof(Env));
     ret->vars = new_map();
+    ret->tags = new_map();
     ret->prev = prev;
     return ret;
 }
@@ -55,6 +56,15 @@ static Var *find_var(char *name) {
             return var;
     }
     error("undefined variable, %s", name);
+    return NULL;
+}
+
+static Type *find_tag(char *name) {
+    for (Env *cur = env; cur; cur = cur->prev) {
+        Type *ty = map_get(cur->tags, name);
+        if (ty)
+            return ty;
+    }
     return NULL;
 }
 
@@ -111,27 +121,45 @@ static Type *type_specifier() {
         // TODO: refactor inside this 'if' to separate function
         ty = new_ty(STRUCT, 1);
         ty->members = new_map();
+
         // TODO: check struct tag
-
-        expect('{');
-        int off = 0;
-        while (!consume('}')) {
-            Node *node = declaration_type();
-            consume(';');
-
-            Type *t = node->ty;
-            map_put(ty->members, node->name, t);
-
-            off = roundup(off, t->align);
-            t->offset = off;
-            off += t->size;
-
-            // struct alignment is the same as its largest member's align
-            if (t->align > ty->align)
-                ty->align = t->align;
+        Token *t = tokens->data[pos];
+        char *tag_name = NULL;
+        Type *tag_type = NULL;
+        if (t->ty == TK_IDENT) {
+            pos++;
+            tag_name = t->name;
+            // TODO: find_tag
+            tag_type = find_tag(tag_name);
         }
 
-        ty->size = roundup(off, ty->align);
+        if (tag_type)
+            ty = tag_type;
+        else {
+            expect('{');
+            int off = 0;
+            while (!consume('}'))
+            {
+                Node *node = declaration_type();
+                consume(';');
+
+                Type *t = node->ty;
+                map_put(ty->members, node->name, t);
+
+                off = roundup(off, t->align);
+                t->offset = off;
+                off += t->size;
+
+                // struct alignment is the same as its largest member's align
+                if (t->align > ty->align)
+                    ty->align = t->align;
+            }
+
+            ty->size = roundup(off, ty->align);
+
+            if (tag_name)
+                map_put(env->tags, tag_name, ty);
+        }
     }
 
     // TODO: move pointer check to outside of this function
@@ -727,6 +755,7 @@ Node *declaration() {
 
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
+
         error_at(t->input, "not variable declaration");
 
     // array check

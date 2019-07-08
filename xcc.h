@@ -206,6 +206,7 @@ typedef struct Node {
 
 typedef struct Env {
     Map *vars;
+    Map *tags;
     struct Env *prev;
 } Env;
 

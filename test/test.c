@@ -209,7 +209,7 @@ int main() {
   EXPECT(3, ({ struct { int a; } x; x.a=3; x.a; }));
   EXPECT(8, ({ struct { char a; int b; } x; x.a=3; x.b=5; x.a+x.b; }));
   EXPECT(8, ({ struct { char a; int b; } x; struct { char a; int b; } *p = &x; x.a=3; x.b=5; p->a+p->b; }));
-  // EXPECT(8, ({ struct tag { char a; int b; } x; struct tag *p = &x; x.a=3; x.b=5; p->a+p->b; }));
+  EXPECT(8, ({ struct tag { char a; int b; } x; struct tag *p = &x; x.a=3; x.b=5; p->a+p->b; }));
   EXPECT(48, ({ struct { struct { int b; int c[5]; } a[2]; } x; sizeof(x); }));
 
   EXPECT(8, ({
