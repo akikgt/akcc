@@ -129,7 +129,6 @@ static Type *type_specifier() {
         if (t->ty == TK_IDENT) {
             pos++;
             tag_name = t->name;
-            // TODO: find_tag
             tag_type = find_tag(tag_name);
         }
 
@@ -162,10 +161,6 @@ static Type *type_specifier() {
         }
     }
 
-    // TODO: move pointer check to outside of this function
-    while (consume('*')) {
-        ty = ptr_to(ty);
-    }
 
     return ty;
 }
@@ -752,6 +747,10 @@ Node *term() {
 
 Node *declaration() {
     Type *ty = type_specifier();
+    // TODO: move pointer check to outside of this function
+    while (consume('*')) {
+        ty = ptr_to(ty);
+    }
 
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
@@ -772,6 +771,10 @@ Node *declaration() {
 
 Node *declaration_type() {
     Type *ty = type_specifier();
+    // TODO: move pointer check to outside of this function
+    while (consume('*')) {
+        ty = ptr_to(ty);
+    }
     Token *t = tokens->data[pos++];
 
     // TODO declarator
@@ -788,6 +791,10 @@ Node *declaration_type() {
 Node *param()
 {
     Type *ty = type_specifier();
+    // TODO: move pointer check to outside of this function
+    while (consume('*')) {
+        ty = ptr_to(ty);
+    }
 
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
@@ -845,6 +852,10 @@ void toplevel() {
         int is_extern = consume(TK_EXTERN);
 
         Type *ty = type_specifier();
+        // TODO: move pointer check to outside of this function
+        while (consume('*')) {
+            ty = ptr_to(ty);
+        }
 
         Token *t = tokens->data[pos];
         expect(TK_IDENT);
