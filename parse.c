@@ -243,7 +243,7 @@ Node *new_node_assign_eq(int op, Node *lhs, Node *rhs) {
 
     // *z = *z op y;
     vec_push(node->stmts, new_node_binop('=', new_node_expr(ND_DEREF, new_node_varref(var)),
-        new_node_binop('+', new_node_expr(ND_DEREF, new_node_varref(var)), rhs)));
+        new_node_binop(op, new_node_expr(ND_DEREF, new_node_varref(var)), rhs)));
 
     return node;
 }
@@ -437,26 +437,19 @@ Node *assign() {
         node = new_node_binop('=', node, assign());
     }
     else if (consume(TK_ADD_EQ)) {
-        // Node *rhs = new_node_binop('+', node, assign());
-        // node = new_node_binop('=', node, rhs);
         node = new_node_assign_eq('+', node, assign());
-        // printf("aaa\n");
     }
     else if (consume(TK_SUB_EQ)) {
-        Node *rhs = new_node_binop('-', node, assign());
-        node = new_node_binop('=', node, rhs);
+        node = new_node_assign_eq('-', node, assign());
     }
     else if (consume(TK_MUL_EQ)) {
-        Node *rhs = new_node_binop('*', node, assign());
-        node = new_node_binop('=', node, rhs);
+        node = new_node_assign_eq('*', node, assign());
     }
     else if (consume(TK_DIV_EQ)) {
-        Node *rhs = new_node_binop('/', node, assign());
-        node = new_node_binop('=', node, rhs);
+        node = new_node_assign_eq('/', node, assign());
     }
     else if (consume(TK_MOD_EQ)) {
-        Node *rhs = new_node_binop('%', node, assign());
-        node = new_node_binop('=', node, rhs);
+        node = new_node_assign_eq('%', node, assign());
     }
     return node;
 }

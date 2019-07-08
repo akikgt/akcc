@@ -229,11 +229,11 @@ int main() {
 
   // EXPECT(1, ({ typedef struct foo_ foo; 1; }));
 
-  // EXPECT(15, ({ int i=5; i*=3; i; }));
-  // EXPECT(1, ({ int i=5; i/=3; i; }));
-  // EXPECT(2, ({ int i=5; i%=3; i; }));
-  // EXPECT(8, ({ int i=5; i+=3; i; }));
-  // EXPECT(2, ({ int i=5; i-=3; i; }));
+  EXPECT(15, ({ int i=5; i*=3; i; }));
+  EXPECT(1, ({ int i=5; i/=3; i; }));
+  EXPECT(2, ({ int i=5; i%=3; i; }));
+  EXPECT(8, ({ int i=5; i+=3; i; }));
+  EXPECT(2, ({ int i=5; i-=3; i; }));
   // EXPECT(40, ({ int i=5; i<<=3; i; }));
   // EXPECT(0, ({ int i=5; i>>=3; i; }));
   // EXPECT(1, ({ int i=5; i&=3; i; }));
