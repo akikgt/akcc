@@ -105,64 +105,60 @@ int sizeof_types(int ty) {
 }
 
 static Type *type_specifier() {
-    Type *ty;
 
     Token *t = tokens->data[pos++];
     switch (t->ty) {
         case TK_CHAR:
-            ty = char_ty();
-            break;
+            return char_ty();
         case TK_INT:
-            ty = int_ty();
-            break;
+            return int_ty();
     }
 
     if (t->ty == TK_STRUCT) {
-        // TODO: refactor inside this 'if' to separate function
-        ty = new_ty(STRUCT, 1);
-        ty->members = new_map();
-
-        // TODO: check struct tag
         Token *t = tokens->data[pos];
         char *tag_name = NULL;
-        Type *tag_type = NULL;
+        Type *ty = NULL;
         if (t->ty == TK_IDENT) {
             pos++;
             tag_name = t->name;
-            tag_type = find_tag(tag_name);
+            ty = find_tag(tag_name);
         }
 
-        if (tag_type)
-            ty = tag_type;
-        else {
-            expect('{');
-            int off = 0;
-            while (!consume('}'))
-            {
-                Node *node = declaration_type();
-                consume(';');
+        // tag has already been defined
+        if (ty)
+            return ty;
 
-                Type *t = node->ty;
-                map_put(ty->members, node->name, t);
+        ty = new_ty(STRUCT, 1);
+        ty->members = new_map();
 
-                off = roundup(off, t->align);
-                t->offset = off;
-                off += t->size;
+        expect('{');
+        int off = 0;
+        while (!consume('}'))
+        {
+            // TODO: make this block to the function
+            Node *node = declaration_type();
+            consume(';');
 
-                // struct alignment is the same as its largest member's align
-                if (t->align > ty->align)
-                    ty->align = t->align;
-            }
+            Type *t = node->ty;
+            map_put(ty->members, node->name, t);
 
-            ty->size = roundup(off, ty->align);
+            off = roundup(off, t->align);
+            t->offset = off;
+            off += t->size;
 
-            if (tag_name)
-                map_put(env->tags, tag_name, ty);
+            // struct alignment is the same as its largest member's align
+            if (t->align > ty->align)
+                ty->align = t->align;
         }
+
+        ty->size = roundup(off, ty->align);
+
+        if (tag_name)
+            map_put(env->tags, tag_name, ty);
+
+        return ty;
     }
 
-
-    return ty;
 }
 
 Type *ptr_to(Type *base) {
