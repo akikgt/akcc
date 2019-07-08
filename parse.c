@@ -217,11 +217,34 @@ Node *new_node_ident(char *name) {
     return node;
 }
 
+Node *new_node_varref(Var *var) {
+    Node *node = new_node(ND_IDENT);
+    node->var = var;
+    node->ty = var->ty;
+    return node;
+}
+
 Node *new_node_vardef(Var *var) {
     Node *node = new_node(ND_VARDEF);
     node->name = var->name;
     node->ty = var->ty;
     node->var = var;
+    return node;
+}
+
+// replace 'x op=y' with 'Type *z = x; *z = *z op + y'
+Node *new_node_assign_eq(int op, Node *lhs, Node *rhs) {
+    Node *node = new_node(ND_BLOCK);
+    node->stmts = new_vector();
+
+    // Type *z = x;
+    Var *var = add_lvar(ptr_to(lhs->ty), "tmp");
+    vec_push(node->stmts, new_node_binop('=', new_node_varref(var), new_node_expr(ND_ADDR, lhs)));
+
+    // *z = *z op y;
+    vec_push(node->stmts, new_node_binop('=', new_node_expr(ND_DEREF, new_node_varref(var)),
+        new_node_binop('+', new_node_expr(ND_DEREF, new_node_varref(var)), rhs)));
+
     return node;
 }
 
@@ -414,8 +437,10 @@ Node *assign() {
         node = new_node_binop('=', node, assign());
     }
     else if (consume(TK_ADD_EQ)) {
-        Node *rhs = new_node_binop('+', node, assign());
-        node = new_node_binop('=', node, rhs);
+        // Node *rhs = new_node_binop('+', node, assign());
+        // node = new_node_binop('=', node, rhs);
+        node = new_node_assign_eq('+', node, assign());
+        // printf("aaa\n");
     }
     else if (consume(TK_SUB_EQ)) {
         Node *rhs = new_node_binop('-', node, assign());

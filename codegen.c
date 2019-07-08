@@ -432,6 +432,7 @@ void gen(Node *node) {
             return;
 
         case '=':
+            printf("#Assignment\n");
             gen_lval(node->lhs);
             gen(node->rhs);
 
