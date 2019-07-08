@@ -137,7 +137,6 @@ static Type *type_specifier() {
         {
             // TODO: make this block to the function
             Node *node = declaration_type();
-            consume(';');
 
             Type *t = node->ty;
             map_put(ty->members, node->name, t);
@@ -368,9 +367,10 @@ Node *stmt() {
         if (!consume(';')) {
             if (is_typename())
                 node->init = declaration();
-            else
+            else {
                 node->init = expr();
-            expect(';');
+                expect(';');
+            }
         }
         if (!consume(';')) {
             node->cond = expr();
@@ -438,7 +438,6 @@ Node *stmt() {
     }
     else if (is_typename()) {
         node = declaration();
-        expect(';');
         return node;
     }
     else {
@@ -762,6 +761,8 @@ Node *declaration() {
     if (consume('=')) {
         node->init = expr();
     }
+
+    expect(';');
     return node;
 }
 
@@ -781,6 +782,8 @@ Node *declaration_type() {
     node->ty = ty;
     if (t->ty == TK_IDENT)
         node->name = t->name;
+
+    expect(';');
     return node;
 }
 
