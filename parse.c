@@ -364,13 +364,11 @@ Node *stmt() {
         vec_push(continues, node);
 
         expect('(');
-        if (!consume(';')) {
-            if (is_typename())
-                node->init = declaration();
-            else {
-                node->init = expr();
-                expect(';');
-            }
+        if (is_typename())
+            node->init = declaration();
+        else if (!consume(';')) {
+            node->init = expr();
+            expect(';');
         }
         if (!consume(';')) {
             node->cond = expr();
