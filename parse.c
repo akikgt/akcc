@@ -211,6 +211,7 @@ Node *new_node_num(int val) {
     return node;
 }
 
+// TODO: delete it and integrate with new_node_varref
 Node *new_node_ident(char *name) {
     Node *node = new_node(ND_IDENT);
     node->name = name;
@@ -219,6 +220,7 @@ Node *new_node_ident(char *name) {
 
 Node *new_node_varref(Var *var) {
     Node *node = new_node(ND_IDENT);
+    node->name = var->name;
     node->var = var;
     node->ty = var->ty;
     return node;
@@ -262,9 +264,10 @@ Node *string_literal(Token *t) {
 
 Node *local_variable(Token *t) {
     Var *var = find_var(t->name);
-    Node *node = new_node_ident(t->name);
-    node->ty = var->ty;
-    node->var = var;
+    // Node *node = new_node_ident(t->name);
+    Node *node = new_node_varref(var);
+    // node->ty = var->ty;
+    // node->var = var;
     return node;
 }
 
