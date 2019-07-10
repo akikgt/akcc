@@ -76,6 +76,7 @@ Node *do_walk(Node *node, int decay) {
                 Node *stmt = node->stmts->data[i];
                 node->stmts->data[i] = walk(stmt); 
             }
+            // TODO: type setting for block statement
             return node;
         case ND_CALL: // function call
             for (int i = 0; i < node->args->len; i++)

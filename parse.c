@@ -269,6 +269,7 @@ Node *new_node_assign_eq(int op, Node *lhs, Node *rhs) {
     vec_push(node->stmts, new_node_binop('=', new_node_expr(ND_DEREF, new_node_varref(var)),
         new_node_binop(op, new_node_expr(ND_DEREF, new_node_varref(var)), rhs)));
 
+    node->ty = lhs->ty;
     return node;
 }
 
@@ -286,10 +287,7 @@ Node *string_literal(Token *t) {
 
 Node *local_variable(Token *t) {
     Var *var = find_var(t->name);
-    // Node *node = new_node_ident(t->name);
     Node *node = new_node_varref(var);
-    // node->ty = var->ty;
-    // node->var = var;
     return node;
 }
 
@@ -631,14 +629,10 @@ Node *unary() {
     
     // pre-increment/decrement
     if (consume(TK_INC)) {
-        Node *lhs = term();
-        Node *rhs = new_node_binop('+', lhs, new_node_num(1));
-        return new_node_binop('=', lhs, rhs);
+        return new_node_assign_eq('+', term(), new_node_num(1));
     }
     if (consume(TK_DEC)) {
-        Node *lhs = term();
-        Node *rhs = new_node_binop('-', lhs, new_node_num(1));
-        return new_node_binop('=', lhs, rhs);
+        return new_node_assign_eq('-', term(), new_node_num(1));
     }
     return postfix();
 }
@@ -736,7 +730,6 @@ Node *term() {
         return function_call(t);
     }
 
-    // error("%s is invalid", t->input);
     error_at(t->input, "non-number or opening parentheses Token found");
 
     return NULL;
