@@ -85,6 +85,10 @@ static void emit_binop(Node *node) {
         printf("  setl al\n");
         printf("  movzb rax, al\n");
         break;
+    case ',':
+        printf("# ',' operator\n");
+        printf("  mov rax, rdi\n"); // save rhs result
+        break;
 
     default:
         error("Unknown operator");

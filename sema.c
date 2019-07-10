@@ -167,6 +167,11 @@ Node *do_walk(Node *node, int decay) {
             node->rhs = walk(node->rhs);
             node->ty = node->lhs->ty;
             return node;
+        case ',':
+            node->lhs = walk(node->lhs);
+            node->rhs = walk(node->rhs);
+            node->ty = node->rhs->ty;
+            return node;
         case '+': {
             node->lhs = walk(node->lhs);
             node->rhs = walk(node->rhs);

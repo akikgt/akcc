@@ -301,7 +301,7 @@ Node *function_call(Token *t) {
         return node;
 
     do {
-        vec_push(node->args, expr());
+        vec_push(node->args, assign());
     } while (consume(','));
     expect(')');
 
@@ -451,7 +451,10 @@ Node *stmt() {
 }
 
 Node *expr() {
-    return assign();
+    Node *lhs = assign();
+    if (!consume(','))
+        return lhs;
+    return new_node_binop(',', lhs, expr());
 }
 
 Node *assign() {

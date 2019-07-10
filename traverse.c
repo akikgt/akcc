@@ -121,6 +121,7 @@ void traverse_and_print(Node *node, int depth) {
             printf("%*s ND_DOT\n", depth, "");
             traverse_and_print(node->expr, depth + 1);
             return;
+        case ',':
         case '=':
         case '<':
         case '*':
