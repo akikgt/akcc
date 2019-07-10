@@ -854,6 +854,10 @@ void toplevel() {
             ty = ptr_to(ty);
         }
 
+        // For struct, union, enum without identifier
+        if (consume(';'))
+            continue;
+
         Token *t = tokens->data[pos];
         expect(TK_IDENT);
 

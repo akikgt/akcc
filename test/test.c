@@ -32,6 +32,8 @@ int var2[5];
 extern int global_arr[1];
 // typedef int myint;
 
+struct global_struct { int a; };
+
 // Single-line comment test
 
 /***************************
@@ -205,6 +207,7 @@ int main() {
   EXPECT(5, global_arr[0]);
 
   EXPECT(4, ({ struct { int a; } x; sizeof(x); }));
+  EXPECT(4, ({ struct global_struct x; sizeof(x); }));
   EXPECT(8, ({ struct { char a; int b; } x; sizeof(x); }));
   EXPECT(12, ({ struct { char a; char b; int c; char d; } x; sizeof(x); }));
   EXPECT(3, ({ struct { int a; } x; x.a=3; x.a; }));
