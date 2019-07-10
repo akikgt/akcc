@@ -45,7 +45,7 @@ int conflict(int *board, int row, int col) {
   return 0;
 }
 
-int solve(int *board, int row) {
+void solve(int *board, int row) {
   if (row > 9) {
     print_board(board);
     return 0;
@@ -63,6 +63,7 @@ int solve(int *board, int row) {
 void print_demo() {
   void *test_ptr;
   printf("void pointer size test %d\n", sizeof(test_ptr));
+  return;
 }
 
 int main() {

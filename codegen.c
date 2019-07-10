@@ -231,8 +231,10 @@ void gen(Node *node) {
             return;
 
         case ND_RETURN:
-            gen(node->expr);
-            printf("  pop rax\n");
+            if (node->expr) {
+                gen(node->expr);
+                printf("  pop rax\n");
+            }
             printf("  mov rsp, rbp\n");
             printf("  pop rbp\n");
             printf("  ret\n");

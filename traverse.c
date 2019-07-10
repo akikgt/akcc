@@ -21,7 +21,10 @@ void traverse_and_print(Node *node, int depth) {
         }  
         case ND_RETURN: // return
             printf("%*s ND_RETURN\n", depth, "");
-            traverse_and_print(node->expr, depth + 1);
+            if (node->expr)
+                traverse_and_print(node->expr, depth + 1);
+            else
+                printf("%*s ND_VOID\n", depth, "");
             return;
         case ND_IF: // if
             printf("%*s ND_IF\n", depth, "");

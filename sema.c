@@ -45,7 +45,8 @@ Node *do_walk(Node *node, int decay) {
             return node;
         }  
         case ND_RETURN: // return
-            node->expr = walk(node->expr);
+            if (node->expr)
+                node->expr = walk(node->expr);
             return node;
         case ND_IF: // if
             node->cond = walk(node->cond);

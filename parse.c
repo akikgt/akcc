@@ -313,8 +313,10 @@ Node *stmt() {
 
     if (consume(TK_RETURN)) {
         node = new_node(ND_RETURN);
-        node->expr = expr();
-        expect(';');
+        if (!consume(';')) {
+            node->expr = expr();
+            expect(';');
+        }
         return node;
     }
     else if (consume(TK_IF)) {
