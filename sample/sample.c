@@ -60,10 +60,16 @@ int solve(int *board, int row) {
   }
 }
 
+void print_demo() {
+  void *test_ptr;
+  printf("void pointer size test %d\n", sizeof(test_ptr));
+}
+
 int main() {
   int board[100];
   for (int i = 0; i < 100; i=i+1)
     board[i] = 0;
   solve(board, 0);
+  print_demo();
   return 0;
 }

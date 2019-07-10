@@ -25,7 +25,7 @@ int add(int a, int b, int c, int d, int e, int f) { return a+b+c+d+e+f; }
 // int add2(int (*a)[2]) { return a[0][0] + a[1][0]; }
 int add3(int a[][2]) { return a[0][0] + a[1][0]; }
 int add4(int a[2][2]) { return a[0][0] + a[1][0]; }
-// void nop() {}
+void nop() {}
 
 int var1;
 int var2[5];
@@ -162,6 +162,7 @@ int main() {
   EXPECT(1, ({ char x; sizeof x; }));
   EXPECT(4, ({ int x; sizeof(x); }));
   EXPECT(8, ({ int *x; sizeof x; }));
+  EXPECT(8, ({ void *x; sizeof x; }));
   EXPECT(16, ({ int x[4]; sizeof x; }));
   EXPECT(4, sizeof("abc"));
   // EXPECT(7, sizeof("abc" "def"));

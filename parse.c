@@ -90,11 +90,13 @@ static int peek(int ty) {
 
 static int is_typename() {
     Token *t = tokens->data[pos];
-    return t->ty == TK_INT || t->ty == TK_CHAR || t->ty == TK_STRUCT;
+    return t->ty == TK_INT || t->ty == TK_CHAR || t->ty == TK_STRUCT
+            || t->ty == TK_VOID;
 }
 
 int sizeof_types(int ty) {
     switch (ty) {
+        case TK_VOID: return 1;  // sizeof(void) returns 1 (not 0)
         case TK_CHAR: return 1;
         case TK_INT: return 4;
         default:
@@ -108,6 +110,8 @@ static Type *type_specifier() {
 
     Token *t = tokens->data[pos++];
     switch (t->ty) {
+        case TK_VOID:
+            return void_ty();
         case TK_CHAR:
             return char_ty();
         case TK_INT:
@@ -823,6 +827,7 @@ Vector *params() {
 }
 
 Function *function(Type *ty, char *name) {
+    // TODO: save function names already defined
     Node *node = new_node(ND_FUNC);
     node->ty = ty;
     node->name = name;

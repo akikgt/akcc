@@ -82,8 +82,8 @@ Type *new_ty(int ty, int size) {
     return ret;
 }
 
-Type *int_ty() {
-    Type *ty = new_ty(INT, 4);
+Type *void_ty() {
+    Type *ty = new_ty(VOID, 0);
     ty->ptr_to = NULL;
     return ty;
 }
@@ -93,6 +93,13 @@ Type *char_ty() {
     ty->ptr_to = NULL;
     return ty;
 }
+
+Type *int_ty() {
+    Type *ty = new_ty(INT, 4);
+    ty->ptr_to = NULL;
+    return ty;
+}
+
 
 Type *arr_ty(Type *base, int len) {
     Type *ty = new_ty(ARRAY, base->size * len);
