@@ -97,8 +97,8 @@ int main() {
   EXPECT(1, 5 >= 5);
   EXPECT(1, 6 >= 5);
 
-  // // EXPECT(8, 1 << 3);
-  // // EXPECT(4, 16 >> 2);
+  EXPECT(8, 1 << 3);
+  EXPECT(4, 16 >> 2);
 
   EXPECT(4, 19 % 5);
   EXPECT(0, 9 % 3);

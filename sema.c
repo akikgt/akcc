@@ -137,6 +137,8 @@ Node *do_walk(Node *node, int decay) {
         case ND_NE: // !=
         case ND_LE: // <=
         case ND_GE: // >=
+        case ND_SHL: // <<
+        case ND_SHR: // >>
             node->lhs = walk(node->lhs);
             node->rhs = walk(node->rhs);
             node->ty = node->lhs->ty;

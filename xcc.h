@@ -113,6 +113,8 @@ enum
     TK_DEC,       // decrement
     TK_LOG_AND,   // &&
     TK_LOG_OR,    // ||
+    TK_SHL,       // <<
+    TK_SHR,       // >>
     TK_EOF,       // EOF
 };
 
@@ -161,6 +163,8 @@ enum
     ND_LOG_OR,    // ||
     ND_LOG_NOT,   // !
     ND_DOT,       // . operator for struct
+    ND_SHL,       // <<
+    ND_SHR,       // >>
 };
 
 /// AST Node
@@ -240,6 +244,7 @@ Node *bit_xor();
 Node *bit_and();
 Node *equality();
 Node *relational();
+Node *shift();
 Node *add();
 Node *mul();
 Node *unary();

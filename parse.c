@@ -557,19 +557,32 @@ Node *equality() {
 }
 
 Node *relational() {
-    Node *node = add();
+    Node *node = shift();
     
     for (;;) {
         if (consume(TK_LE))
-            node = new_node_binop(ND_LE, node, add());
+            node = new_node_binop(ND_LE, node, shift());
         else if (consume(TK_GE))
-            node = new_node_binop(ND_LE, add(), node);
+            node = new_node_binop(ND_LE, shift(), node);
         else if (consume('<'))
-            node = new_node_binop('<', node, add());
+            node = new_node_binop('<', node, shift());
         else if (consume('>'))
-            node = new_node_binop('<', add(), node);
+            node = new_node_binop('<', shift(), node);
         else
             return node;        
+    }
+}
+
+Node *shift() {
+    Node *node = add();
+
+    for (;;) {
+        if (consume(TK_SHL))
+            node = new_node_binop(ND_SHL, node, add());
+        else if (consume(TK_SHR))
+            node = new_node_binop(ND_SHR, node, add());
+        else
+            return node;
     }
 }
 

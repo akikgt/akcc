@@ -80,6 +80,16 @@ static void emit_binop(Node *node) {
         printf("  setle al\n");
         printf("  movzb rax, al\n");
         break;
+    case ND_SHL:
+        printf("# Shift left\n");
+        printf("  mov cl, dil\n");
+        printf("  shl rax, cl\n");
+        break;
+    case ND_SHR:
+        printf("# Shift right\n");
+        printf("  mov cl, dil\n");
+        printf("  shr rax, cl\n");
+        break;
     case '<':
         printf("  cmp rax, rdi\n");
         printf("  setl al\n");

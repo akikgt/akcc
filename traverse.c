@@ -113,6 +113,8 @@ void traverse_and_print(Node *node, int depth) {
         case ND_NE: // !=
         case ND_LE: // <=
         case ND_GE: // >=
+        case ND_SHL: // <<
+        case ND_SHR: // >>
             printf("%*s ND_BINARY_OPs:%d\n", depth, "", node->op);
             traverse_and_print(node->lhs, depth + 1);
             traverse_and_print(node->rhs, depth + 1);

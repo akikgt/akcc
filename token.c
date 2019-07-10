@@ -137,6 +137,18 @@ Vector *tokenize(char *p) {
             p += 2;
             continue;
         }
+        if (strncmp(p, "<<", 2) == 0) {
+            add_token(v, TK_SHL, p);
+            i++;
+            p += 2;
+            continue;
+        }
+        if (strncmp(p, ">>", 2) == 0) {
+            add_token(v, TK_SHR, p);
+            i++;
+            p += 2;
+            continue;
+        }
         if (strncmp(p, "==", 2) == 0) {
             add_token(v, TK_EQ, p);
             i++;
