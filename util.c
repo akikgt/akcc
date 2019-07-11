@@ -14,8 +14,9 @@ void error_at(char *loc, char *msg) {
     while (user_input < line && line[-1] != '\n')
         line--;
 
+
     char *end = loc;
-    while (*end != '\n')
+    while (*end && *end != '\n')
         end++;
 
     int line_num = 1;
