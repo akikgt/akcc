@@ -135,6 +135,10 @@ static Type *type_specifier() {
         ty = new_ty(STRUCT, 1);
         ty->members = new_map();
 
+        // For struct which has itself as member, save the tag_name and type first
+        if (tag_name)
+            map_put(env->tags, tag_name, ty);
+
         expect('{');
         int off = 0;
         while (!consume('}'))
@@ -155,9 +159,6 @@ static Type *type_specifier() {
         }
 
         ty->size = roundup(off, ty->align);
-
-        if (tag_name)
-            map_put(env->tags, tag_name, ty);
 
         return ty;
     }
