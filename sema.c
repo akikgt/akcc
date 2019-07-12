@@ -218,6 +218,8 @@ Node *do_walk(Node *node, int decay) {
             return node;
         }
 
+        case ND_VARARGS:
+            return node;
         default:
             return node;
         }

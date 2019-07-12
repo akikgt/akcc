@@ -803,6 +803,10 @@ Node *declaration_type() {
 
 Node *param()
 {
+    if (consume(TK_VARARGS)) {
+        return new_node(ND_VARARGS);
+    }
+
     Type *ty = type_specifier();
     // TODO: move pointer check to outside of this function
     while (consume('*')) {

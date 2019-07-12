@@ -133,14 +133,12 @@ void gen_func(Function *fn) {
     // set parameters
     for (int i = 0; i < node->args->len; i++) {
         Node *param = node->args->data[i];
+        // ignore varargs. TODO: some processing for variadic function
+        if (param->op == ND_VARARGS)
+            continue;
         gen_lval(param);
         // set each parameters to local variable address
         printf("  pop rax\n");
-        // if (param->ty->ty == ARRAY) {
-        //     /// TODO: array parameter
-        //     printf("  mov [rax], %s\n", regs[i]);
-        //     continue;
-        // }
         switch (param->ty->size) {
             case 1:
             // TODO: make regs8 array and modify dil -> regs8[i]

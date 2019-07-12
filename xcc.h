@@ -115,6 +115,7 @@ enum
     TK_LOG_OR,    // ||
     TK_SHL,       // <<
     TK_SHR,       // >>
+    TK_VARARGS,   // ...
     TK_EOF,       // EOF
 };
 
@@ -165,6 +166,7 @@ enum
     ND_DOT,       // . operator for struct
     ND_SHL,       // <<
     ND_SHR,       // >>
+    ND_VARARGS,   // ...
 };
 
 /// AST Node

@@ -131,6 +131,12 @@ Vector *tokenize(char *p) {
             continue;
         }
 
+        if (strncmp(p, "...", 3) == 0) {
+            add_token(v, TK_VARARGS, p);
+            i++;
+            p += 3;
+            continue;
+        }
         if (strncmp(p, "->", 2) == 0) {
             add_token(v, TK_ARROW, p);
             i++;

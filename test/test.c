@@ -47,6 +47,9 @@ struct Vector *new_vec() {
   return v;
 }
 
+// variadic function test
+char *format(char *fmt, ...) { return 1; }
+
 // Single-line comment test
 
 /***************************
