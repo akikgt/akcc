@@ -34,7 +34,7 @@ void test_map();
 
 /// type
 typedef struct Type {
-    enum { VOID, CHAR, INT, PTR, ARRAY, STRUCT } ty;
+    enum { VOID, CHAR, INT, PTR, ARRAY, STRUCT, ENUM } ty;
     int size;
     int align;
 
@@ -97,6 +97,7 @@ enum
     TK_CONTINUE,  // continue
     TK_EXTERN,    // extern
     TK_STRUCT,    // struct
+    TK_ENUM,      // enum
     TK_VOID,      // void
     TK_CHAR,      // char
     TK_INT,       // int

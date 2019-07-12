@@ -19,6 +19,7 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
+# try 0 'int main() { enum {A}; A;}'
 try 9 'int main() {
     int x = 1;
     int result = (int **)x + x;
