@@ -133,6 +133,10 @@ Node *do_walk(Node *node, int decay) {
             node->ty = int_ty();
             return node;
         }
+        case ND_CAST: {
+            node->expr = walk(node->expr);
+            return node;
+        }
         case ND_EQ: // ==
         case ND_NE: // !=
         case ND_LE: // <=

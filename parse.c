@@ -654,17 +654,31 @@ Node *unary() {
         node->expr = unary();
         return node;
     }
+    // cast
+    if (consume('(')) {
+        if (!is_typename()) {
+            pos--;
+            return postfix();
+        }
+        Type *ty = type_specifier();
+        while (consume('*'))
+            ty = ptr_to(ty);
+        expect(')');
+        Node *node = new_node(ND_CAST);
+        node->ty = ty;
+        node->expr = unary();
+        return node;
+    }
     if (consume('+'))
-        return term();
+        return postfix();
     if (consume('-'))
-        return new_node_binop('-', new_node_num(0), term());
-    
+        return new_node_binop('-', new_node_num(0), postfix());
     // pre-increment/decrement
     if (consume(TK_INC)) {
-        return new_node_assign_eq('+', term(), new_node_num(1));
+        return new_node_assign_eq('+', postfix(), new_node_num(1));
     }
     if (consume(TK_DEC)) {
-        return new_node_assign_eq('-', term(), new_node_num(1));
+        return new_node_assign_eq('-', postfix(), new_node_num(1));
     }
     return postfix();
 }

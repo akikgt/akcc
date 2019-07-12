@@ -109,6 +109,11 @@ void traverse_and_print(Node *node, int depth) {
             traverse_and_print(node->expr, depth + 1);
             return;
         }
+        case ND_CAST: {
+            printf("%*s ND_CAST:%d\n", depth, "", node->ty->ty);
+            traverse_and_print(node->expr, depth + 1);
+            return;
+        }
         case ND_EQ: // ==
         case ND_NE: // !=
         case ND_LE: // <=

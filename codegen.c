@@ -385,6 +385,10 @@ void gen(Node *node) {
             gen_lval(node->expr); // RAX = address of IDENT
             return;
 
+        case ND_CAST:
+            gen(node->expr);
+            return;
+
         case ND_POST_INC: {
             gen(node->expr);
             printf("  add rax, 1\n");
