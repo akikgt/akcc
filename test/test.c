@@ -40,7 +40,7 @@ struct Vector {
   int len;
 };
 struct Vector *new_vec() {
-  struct Vector *v = malloc(sizeof(16));
+  struct Vector *v = malloc(sizeof(struct Vector));
   v->data = malloc(8 * 16);
   v->capacity = 16;
   v->len = 0;
@@ -183,6 +183,11 @@ int main() {
   EXPECT(8, ({ void *x; sizeof x; }));
   EXPECT(16, ({ int x[4]; sizeof x; }));
   EXPECT(4, sizeof("abc"));
+  EXPECT(4, sizeof(int));
+  EXPECT(8, sizeof(int *));
+  EXPECT(1, sizeof(void));
+  EXPECT(1, sizeof(char));
+  EXPECT(16, sizeof(struct Vector));
   // EXPECT(7, sizeof("abc" "def"));
   // EXPECT(9, sizeof("ab\0c" "\0def"));
 

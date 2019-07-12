@@ -84,7 +84,7 @@ Type *new_ty(int ty, int size) {
 }
 
 Type *void_ty() {
-    Type *ty = new_ty(VOID, 0);
+    Type *ty = new_ty(VOID, 1);
     ty->ptr_to = NULL;
     return ty;
 }

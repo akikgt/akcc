@@ -638,6 +638,19 @@ Node *unary() {
     }
     if (consume(TK_SIZEOF)) {
         Node *node = new_node(ND_SIZEOF);
+        if (consume('(')) {
+            if (is_typename()) {
+                Type *ty = type_specifier();
+                while(consume('*'))
+                    ty = ptr_to(ty);
+                node->expr = new_node(ND_TY_SIZE);
+                node->expr->val = ty->size;
+                expect(')');
+                return node;
+            }
+            // undo consume('(')
+            pos--;
+        }
         node->expr = unary();
         return node;
     }
@@ -711,15 +724,6 @@ Node *term() {
         else
             node = expr();
         expect(')');
-        return node;
-    }
-
-    // For sizeof 
-    if (is_typename()) {
-        pos++;
-        int size = sizeof_types(t->ty);
-        Node *node = new_node(ND_TY_SIZE);
-        node->val = size;
         return node;
     }
 

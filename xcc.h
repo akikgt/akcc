@@ -69,8 +69,9 @@ typedef struct Var {
 char *format(char *fmt, ...);
 char *read_file(char *path);
 Type *new_ty(int ty, int size);
-Type *int_ty();
+Type *void_ty();
 Type *char_ty();
+Type *int_ty();
 Type *arr_ty(Type *base, int len);
 int roundup(int x, int align); 
 
