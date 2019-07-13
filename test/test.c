@@ -30,7 +30,7 @@ void nop() {}
 int var1;
 int var2[5];
 extern int global_arr[1];
-// typedef int myint;
+typedef int myint;
 
 struct global_struct { int a; };
 
@@ -260,10 +260,9 @@ int main() {
 	x.a[0].b + x.a[0].c[1];
       }));
 
-  // EXPECT(3, ({ typedef int foo; foo x = 3; x; }));
-  // EXPECT(4, ({ myint foo = 3; sizeof(foo); }));
-
-  // EXPECT(1, ({ typedef struct foo_ foo; 1; }));
+  EXPECT(3, ({ typedef int foo; foo x = 3; x; }));
+  EXPECT(4, ({ myint foo = 3; sizeof(foo); }));
+  EXPECT(1, ({ typedef struct foo_ {int x;} foo; 1; }));
 
   EXPECT(15, ({ int i=5; i*=3; i; }));
   EXPECT(1, ({ int i=5; i/=3; i; }));

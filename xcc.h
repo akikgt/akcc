@@ -92,6 +92,7 @@ enum
     TK_ASCII,     // ascii character
     TK_IDENT,     // identifier
     TK_SIZEOF,    // sizeof
+    TK_TYPEDEF,   // typedef
     TK_RETURN,    // return
     TK_IF,        // if
     TK_ELSE,      // else
@@ -226,6 +227,7 @@ typedef struct Node {
 typedef struct Env {
     Map *vars;
     Map *tags;
+    Map *typedefs;
     Map *enums;
     struct Env *prev;
 } Env;

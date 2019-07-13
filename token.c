@@ -34,6 +34,7 @@ Map *set_keywords() {
     map_put(keywords, "break", (void *)TK_BREAK);
     map_put(keywords, "continue", (void *)TK_CONTINUE);
     map_put(keywords, "sizeof", (void *)TK_SIZEOF);
+    map_put(keywords, "typedef", (void *)TK_TYPEDEF);
     return keywords;
 }
 

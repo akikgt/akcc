@@ -20,6 +20,7 @@ static Env *new_env(Env *prev) {
     Env *ret = calloc(1, sizeof(Env));
     ret->vars = new_map();
     ret->tags = new_map();
+    ret->typedefs = new_map();
     ret->enums = new_map();
     ret->prev = prev;
     return ret;
@@ -78,6 +79,15 @@ static Type *find_enum(char *name) {
     return NULL;
 }
 
+static Type *find_typedef(char *name) {
+    for (Env *cur = env; cur; cur = cur->prev) {
+        Type *ty = map_get(cur->typedefs, name);
+        if (ty)
+            return ty;
+    }
+    return NULL;
+};
+
 int consume(int ty) {
     Token *t = tokens->data[pos];
     if (t->ty != ty)
@@ -99,6 +109,8 @@ static int peek(int ty) {
 
 static int is_typename() {
     Token *t = tokens->data[pos];
+    if (t->ty == TK_IDENT)
+        return find_typedef(t->name);
     return t->ty == TK_INT || t->ty == TK_CHAR || t->ty == TK_STRUCT
             || t->ty == TK_VOID || t->ty == TK_ENUM;
 }
@@ -141,6 +153,12 @@ static Type *type_specifier() {
             return char_ty();
         case TK_INT:
             return int_ty();
+        case TK_IDENT: {
+            Type *ret = find_typedef(t->name);
+            if (!ret)
+                error_at(t->input, "unknown type name");
+            return ret;
+        }
     }
 
     if (t->ty == TK_ENUM) {
@@ -387,6 +405,15 @@ Node *stmt() {
             expect(';');
         }
         return node;
+    }
+    else if (consume(TK_TYPEDEF)) {
+        Type *ty = type_specifier();
+        char *name = ident();
+        ty = arr_of(ty);
+        map_put(env->typedefs, name, ty);
+        expect(';');
+        // TODO: make void node
+        return new_node_num(0);
     }
     else if (consume(TK_IF)) {
         node = new_node(ND_IF);
@@ -962,6 +989,7 @@ void toplevel() {
     while (!peek(TK_EOF)) {
         int is_extern = consume(TK_EXTERN);
         int is_static = consume(TK_STATIC);
+        int is_typedef = consume(TK_TYPEDEF);
 
         Type *ty = type_specifier();
         // TODO: move pointer check to outside of this function
@@ -973,12 +1001,10 @@ void toplevel() {
         if (consume(';'))
             continue;
 
-        Token *t = tokens->data[pos];
-        expect(TK_IDENT);
-
+        char *name = ident();
         // Function
         if (peek('(')) {
-            Function *fn = function(ty, t->name);
+            Function *fn = function(ty, name);
             // fn == NULL means, fn is just prototype of the function
             // TODO: if fn is prototype, only save its name and parameters
             if (fn)
@@ -987,7 +1013,12 @@ void toplevel() {
         // Global variable
         else {
             ty = arr_of(ty);
-            Var *gv = add_gvar(ty, t->name, 0, is_extern);
+            if (is_typedef) {
+                map_put(env->typedefs, name, ty);
+                expect(';');
+                continue;
+            }
+            Var *gv = add_gvar(ty, name, 0, is_extern);
             gv->is_static = is_static;
             // TODO: initialize global variable
             expect(';');

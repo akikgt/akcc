@@ -19,6 +19,7 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
+try 100 'typedef int myint; int main() { typedef int my_int; my_int x = 100;}'
 try 2 'int main() { enum {A, B, C}; C;}'
 try 100 'int main() {
     struct A { int a; };
