@@ -20,6 +20,7 @@ static Env *new_env(Env *prev) {
     Env *ret = calloc(1, sizeof(Env));
     ret->vars = new_map();
     ret->tags = new_map();
+    ret->enums = new_map();
     ret->prev = prev;
     return ret;
 }
@@ -68,6 +69,14 @@ static Type *find_tag(char *name) {
     return NULL;
 }
 
+static Type *find_enum(char *name) {
+    for (Env *cur = env; cur; cur = cur->prev) {
+        Type *ty = map_get(cur->enums, name);
+        if (ty)
+            return ty;
+    }
+    return NULL;
+}
 
 int consume(int ty) {
     Token *t = tokens->data[pos];
@@ -91,7 +100,7 @@ static int peek(int ty) {
 static int is_typename() {
     Token *t = tokens->data[pos];
     return t->ty == TK_INT || t->ty == TK_CHAR || t->ty == TK_STRUCT
-            || t->ty == TK_VOID;
+            || t->ty == TK_VOID || t->ty == TK_ENUM;
 }
 
 int sizeof_types(int ty) {
@@ -118,10 +127,22 @@ static Type *type_specifier() {
             return int_ty();
     }
 
-    // if (t->ty == TK_ENUM) {
-    //     char *tag_name = NULL;
-    //     expect('{');
-    // }
+    if (t->ty == TK_ENUM) {
+        // char *tag_name = NULL;
+        int val = 0;
+        expect('{');
+        do {
+            if (consume('}'))
+                break;
+
+            Token *t = tokens->data[pos++];
+            if (t->ty != TK_IDENT)
+                error_at(t->input, "Identifier required");
+            Type *ty = enum_ty(val);
+            map_put(env->enums, t->name, ty);
+            val++;
+        } while (consume(',') || !consume('}'));
+    }
 
     if (t->ty == TK_STRUCT) {
         Token *t = tokens->data[pos];
@@ -292,6 +313,10 @@ Node *string_literal(Token *t) {
 }
 
 Node *local_variable(Token *t) {
+    Type *ty = find_enum(t->name);
+    if (ty)
+        return new_node_num(ty->val);
+
     Var *var = find_var(t->name);
     Node *node = new_node_varref(var);
     return node;
@@ -924,6 +949,7 @@ void toplevel() {
         else {
             ty = arr_of(ty);
             add_gvar(ty, t->name, 0, is_extern);
+            // TODO: initialize global variable
             expect(';');
         }
     }

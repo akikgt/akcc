@@ -48,6 +48,9 @@ typedef struct Type {
     // Struct
     Map *members;
     int offset;
+
+    // Enum
+    int val;
 } Type;
 
 /// variable
@@ -72,6 +75,7 @@ Type *new_ty(int ty, int size);
 Type *void_ty();
 Type *char_ty();
 Type *int_ty();
+Type *enum_ty(int val);
 Type *arr_ty(Type *base, int len);
 int roundup(int x, int align); 
 
@@ -217,6 +221,7 @@ typedef struct Node {
 typedef struct Env {
     Map *vars;
     Map *tags;
+    Map *enums;
     struct Env *prev;
 } Env;
 

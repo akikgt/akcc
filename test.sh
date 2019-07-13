@@ -19,13 +19,16 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
-# try 0 'int main() { enum {A}; A;}'
+try 2 'int main() { enum {A, B, C}; C;}'
 try 100 'int main() {
     struct A { int a; };
     struct A a;
     a.a = 100;
     struct A *b = &a;
-    (*b).a;}'
+    b->a;
+    // TODO: can use multiexprestio
+    // (1, *b).a;
+    }'
 try 25 'int main() {
     int x = 1;
     int result = (int **)x + x + 2;

@@ -1,8 +1,8 @@
 extern void *stderr;
 
-// int printf();
-// int fprintf();
-// int exit();
+int printf();
+int fprintf();
+int exit();
 
 #define EXPECT(expected, expr)                                  \
   do {                                                          \
@@ -288,6 +288,7 @@ int main() {
   EXPECT(16, ({struct Vector *v = new_vec(); v->capacity;}));
   EXPECT(2, ({char x = 1; x = (int)x + x;}));
   EXPECT(18, ({int x = 2; x = (void **)x + x;}));
+  EXPECT(2, ({ enum {A, B, C,}; C; }));
 
   printf("OK\n");
   return 0;

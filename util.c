@@ -101,6 +101,12 @@ Type *int_ty() {
     return ty;
 }
 
+Type *enum_ty(int val) {
+    Type *ty = new_ty(ENUM, 4);
+    ty->val = val;
+    ty->ptr_to = NULL;
+    return ty;
+}
 
 Type *arr_ty(Type *base, int len) {
     Type *ty = new_ty(ARRAY, base->size * len);
