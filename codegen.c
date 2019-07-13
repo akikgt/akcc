@@ -180,8 +180,9 @@ void gen_lval(Node *node) {
         return;
     }
 
-    if (node->op != ND_IDENT && node->op != ND_VARDEF) 
-        error("lval is not valid variable. op: %d", node->op);
+    // if (node->op != ND_IDENT && node->op != ND_VARDEF) 
+    if (!node->can_be_lval)
+        error("invalid lval. op: %d", node->op);
 
     Var *var = node->var;
     // Global variable
@@ -243,6 +244,7 @@ void gen(Node *node) {
             return;
 
         case ND_RETURN:
+            printf("# Return\n");
             if (node->expr) {
                 gen(node->expr);
                 printf("  pop rax\n");
@@ -364,8 +366,17 @@ void gen(Node *node) {
             return;
 
         case ND_DOT: {
-            gen_lval(node->expr);
-            printf("  pop rax\n");
+            printf("# Dot operator\n");
+            if (node->expr->op == ',' && node->expr->can_be_lval) {
+                printf("# ',' operator\n");
+                gen(node->expr);
+                // rsi has address of lval
+                printf("  mov rax, rsi\n");
+            }
+            else {
+                gen_lval(node->expr);
+                printf("  pop rax\n");
+            }
             printf("  add rax, %d\n", node->ty->offset);
             printf("  mov rsi, rax\n"); // save address of identifier for later use
             emit_load(node);
@@ -450,7 +461,7 @@ void gen(Node *node) {
             return;
 
         case '=':
-            printf("#Assignment\n");
+            printf("# Assignment\n");
             gen_lval(node->lhs);
             gen(node->rhs);
 

@@ -299,6 +299,7 @@ Node *new_node_num(int val) {
 Node *new_node_ident(char *name) {
     Node *node = new_node(ND_IDENT);
     node->name = name;
+    node->can_be_lval = 1;
     return node;
 }
 
@@ -307,6 +308,7 @@ Node *new_node_varref(Var *var) {
     node->name = var->name;
     node->var = var;
     node->ty = var->ty;
+    node->can_be_lval = 1;
     return node;
 }
 
@@ -315,6 +317,7 @@ Node *new_node_vardef(Var *var) {
     node->name = var->name;
     node->ty = var->ty;
     node->var = var;
+    node->can_be_lval = 1;
     return node;
 }
 

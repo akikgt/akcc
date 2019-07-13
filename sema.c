@@ -96,6 +96,7 @@ Node *do_walk(Node *node, int decay) {
         case ND_DEREF: // pointer dereference ('*')
             node->expr = walk(node->expr);
             node->ty = node->expr->ty->ptr_to;
+            node->can_be_lval = 1;
             return maybe_decay(node, decay);
         case ND_POST_INC: // post-increment/decrement
         case ND_POST_DEC:
@@ -177,6 +178,7 @@ Node *do_walk(Node *node, int decay) {
             node->lhs = walk(node->lhs);
             node->rhs = walk(node->rhs);
             node->ty = node->rhs->ty;
+            node->can_be_lval = node->rhs->can_be_lval;
             return node;
         case '+': {
             node->lhs = walk(node->lhs);

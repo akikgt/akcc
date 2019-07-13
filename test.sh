@@ -25,9 +25,7 @@ try 100 'int main() {
     struct A a;
     a.a = 100;
     struct A *b = &a;
-    b->a;
-    // TODO: can use multiexprestio
-    // (1, *b).a;
+    (1, 2, 3, 4, 5, *b).a;
     }'
 try 25 'int main() {
     int x = 1;

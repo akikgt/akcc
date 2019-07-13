@@ -185,6 +185,7 @@ typedef struct Node {
     int val;
     char *name;
     struct Node *expr;
+    int can_be_lval;
 
     // 'if' (cond) then 'else' body
     // 'for' (init; cond; inc) body
