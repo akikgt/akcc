@@ -885,7 +885,10 @@ Function *function(Type *ty, char *name) {
 
     env = new_env(env);
     node->args = params();
-    node->body = stmt();
+    if (!consume(';'))
+        node->body = stmt();
+    else
+        fn = NULL; // if there is no body, this function is just prototype.
     env = env->prev;
     return fn;
 }
@@ -910,8 +913,13 @@ void toplevel() {
         expect(TK_IDENT);
 
         // Function
-        if (peek('('))
-            vec_push(prog->fns, function(ty, t->name));
+        if (peek('(')) {
+            Function *fn = function(ty, t->name);
+            // fn == NULL means, fn is just prototype of the function
+            // TODO: if fn is prototype, only save its name and parameters
+            if (fn)
+                vec_push(prog->fns, fn);
+        }
         // Global variable
         else {
             ty = arr_of(ty);
