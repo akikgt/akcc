@@ -554,9 +554,9 @@ Node *stmt() {
 
 Node *expr() {
     Node *lhs = assign();
-    if (!consume(','))
-        return lhs;
-    return new_node_binop(',', lhs, expr());
+    while (consume(','))
+        lhs = new_node_binop(',', lhs, assign());
+    return lhs;
 }
 
 Node *assign() {
