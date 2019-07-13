@@ -115,6 +115,22 @@ int sizeof_types(int ty) {
     return 8;
 }
 
+static char *ident() {
+    Token *t = tokens->data[pos];
+    if (t->ty != TK_IDENT)
+        error_at(t->input, "Identifier expected");
+    pos++;
+    return t->name;
+}
+
+static int numeric() {
+    Token *t = tokens->data[pos];
+    if (t->ty != TK_NUM)
+        error_at(t->input, "Numeric value expected");
+    pos++;
+    return t->val;
+}
+
 static Type *type_specifier() {
 
     Token *t = tokens->data[pos++];
@@ -138,6 +154,7 @@ static Type *type_specifier() {
             ty = find_tag(tag_name);
         }
 
+        // tag is not defined yet
         if (ty)
             return ty;
 
@@ -150,18 +167,11 @@ static Type *type_specifier() {
         do {
             if (consume('}'))
                 break;
-            // TODO: ident() 
-            t = tokens->data[pos++];
-            if (t->ty != TK_IDENT)
-                error_at(t->input, "Identifier required");
-            
-            if (consume('=')) {
-                // TODO: number() or numeric()
-                Token *num_t = tokens->data[pos++];
-                val = num_t->val;
-            }
+            char *name = ident();
+            if (consume('='))
+                val = numeric();
             ty = enum_ty(val);
-            map_put(env->enums, t->name, ty);
+            map_put(env->enums, name, ty);
             val++;
         } while (consume(',') || !consume('}'));
 
