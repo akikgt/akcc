@@ -135,9 +135,16 @@ static Type *type_specifier() {
             if (consume('}'))
                 break;
 
+            // TODO: ident() 
             Token *t = tokens->data[pos++];
             if (t->ty != TK_IDENT)
                 error_at(t->input, "Identifier required");
+            
+            if (consume('=')) {
+                // TODO: number()
+                Token *num_t = tokens->data[pos++];
+                val = num_t->val;
+            }
             Type *ty = enum_ty(val);
             map_put(env->enums, t->name, ty);
             val++;

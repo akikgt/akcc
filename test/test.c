@@ -47,6 +47,13 @@ struct Vector *new_vec() {
   return v;
 }
 
+enum {
+  ND_A,
+  ND_B,
+  ND_C,
+  ND_D,
+};
+
 // variadic function test
 char *format(char *fmt, ...);
 
@@ -289,6 +296,8 @@ int main() {
   EXPECT(2, ({char x = 1; x = (int)x + x;}));
   EXPECT(18, ({int x = 2; x = (void **)x + x;}));
   EXPECT(2, ({ enum {A, B, C,}; C; }));
+  EXPECT(0, ({ enum {A, B = 256, C,}; A; }));
+  EXPECT(257, ({ enum {A, B = 256, C,}; C; }));
 
   printf("OK\n");
   return 0;
