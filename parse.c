@@ -128,27 +128,45 @@ static Type *type_specifier() {
     }
 
     if (t->ty == TK_ENUM) {
-        // char *tag_name = NULL;
+        Token *t = tokens->data[pos];
+        char *tag_name = NULL;
+        Type *ty = NULL;
+
+        if (t->ty == TK_IDENT) {
+            pos++;
+            tag_name = t->name;
+            ty = find_tag(tag_name);
+        }
+
+        if (ty)
+            return ty;
+
+        // consider enum as int
+        if (tag_name)
+            map_put(env->tags, t->name, int_ty());
+
         int val = 0;
         expect('{');
         do {
             if (consume('}'))
                 break;
-
             // TODO: ident() 
-            Token *t = tokens->data[pos++];
+            t = tokens->data[pos++];
             if (t->ty != TK_IDENT)
                 error_at(t->input, "Identifier required");
             
             if (consume('=')) {
-                // TODO: number()
+                // TODO: number() or numeric()
                 Token *num_t = tokens->data[pos++];
                 val = num_t->val;
             }
-            Type *ty = enum_ty(val);
+            ty = enum_ty(val);
             map_put(env->enums, t->name, ty);
             val++;
         } while (consume(',') || !consume('}'));
+
+        // consider enum as int
+        return int_ty();
     }
 
     if (t->ty == TK_STRUCT) {
