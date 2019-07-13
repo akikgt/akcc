@@ -57,6 +57,9 @@ enum {
 // variadic function test
 char *format(char *fmt, ...);
 
+// static test
+static int static_x;
+
 // Single-line comment test
 
 /***************************

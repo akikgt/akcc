@@ -961,6 +961,7 @@ void toplevel() {
 
     while (!peek(TK_EOF)) {
         int is_extern = consume(TK_EXTERN);
+        int is_static = consume(TK_STATIC);
 
         Type *ty = type_specifier();
         // TODO: move pointer check to outside of this function
@@ -986,7 +987,8 @@ void toplevel() {
         // Global variable
         else {
             ty = arr_of(ty);
-            add_gvar(ty, t->name, 0, is_extern);
+            Var *gv = add_gvar(ty, t->name, 0, is_extern);
+            gv->is_static = is_static;
             // TODO: initialize global variable
             expect(';');
         }
