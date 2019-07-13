@@ -261,6 +261,7 @@ int main() {
       }));
 
   EXPECT(3, ({ typedef int foo; foo x = 3; x; }));
+  EXPECT(8, ({ typedef int *foo; sizeof(foo); }));
   EXPECT(4, ({ myint foo = 3; sizeof(foo); }));
   EXPECT(1, ({ typedef struct foo_ {int x;} foo; 1; }));
 

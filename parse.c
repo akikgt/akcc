@@ -408,6 +408,8 @@ Node *stmt() {
     }
     else if (consume(TK_TYPEDEF)) {
         Type *ty = type_specifier();
+        while (consume('*'))
+            ty = ptr_to(ty);
         char *name = ident();
         ty = arr_of(ty);
         map_put(env->typedefs, name, ty);
