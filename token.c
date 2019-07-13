@@ -18,6 +18,7 @@ Map *set_keywords() {
     Map *keywords = new_map();
     map_put(keywords, "extern", (void *)TK_EXTERN);
     map_put(keywords, "static", (void *)TK_STATIC);
+    map_put(keywords, "const", (void *)TK_CONST);
     map_put(keywords, "struct", (void *)TK_STRUCT);
     map_put(keywords, "enum", (void *)TK_ENUM);
     map_put(keywords, "void", (void *)TK_VOID);

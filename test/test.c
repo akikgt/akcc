@@ -59,6 +59,8 @@ char *format(char *fmt, ...);
 
 // static test
 static int static_x;
+// const test
+const int const_x;
 
 // Single-line comment test
 

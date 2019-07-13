@@ -540,6 +540,10 @@ Node *stmt() {
         node = declaration();
         return node;
     }
+    else if (consume(TK_STATIC) || consume(TK_CONST)) {
+        // skip static or const
+        return stmt();
+    }
     else {
         /// default statement
         node = expr();
@@ -991,6 +995,7 @@ void toplevel() {
     while (!peek(TK_EOF)) {
         int is_extern = consume(TK_EXTERN);
         int is_static = consume(TK_STATIC);
+        int is_const = consume(TK_CONST);
         int is_typedef = consume(TK_TYPEDEF);
 
         Type *ty = type_specifier();
@@ -1022,6 +1027,7 @@ void toplevel() {
             }
             Var *gv = add_gvar(ty, name, 0, is_extern);
             gv->is_static = is_static;
+            gv->is_static = is_const;
             // TODO: initialize global variable
             expect(';');
         }

@@ -21,6 +21,7 @@ echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
 try 100 'typedef int myint; int main() { typedef int my_int; my_int x = 100;}'
 try 2 'int main() { enum {A, B, C}; C;}'
+try 5 'int main() { const int x = 5;}'
 try 100 'int main() {
     struct A { int a; };
     struct A a;

@@ -65,9 +65,10 @@ typedef struct Var {
 
     // extern
     int is_extern;
-
     // static
     int is_static;
+    // const
+    int is_const;
 
 } Var;
 
@@ -105,6 +106,7 @@ enum
     TK_CONTINUE,  // continue
     TK_EXTERN,    // extern
     TK_STATIC,    // static
+    TK_CONST,     // const
     TK_STRUCT,    // struct
     TK_ENUM,      // enum
     TK_VOID,      // void
