@@ -20,9 +20,15 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
 # try 0 'int main() { enum {A}; A;}'
-try 9 'int main() {
+try 100 'int main() {
+    struct A { int a; };
+    struct A a;
+    a.a = 100;
+    struct A *b = &a;
+    (*b).a;}'
+try 25 'int main() {
     int x = 1;
-    int result = (int **)x + x;
+    int result = (int **)x + x + 2;
     return result; }
 '
 try 8 'int main() { 1 << 0 << 1 >> 1 << 1 - 1 + 1 << 2 * 1;} '

@@ -118,6 +118,11 @@ static Type *type_specifier() {
             return int_ty();
     }
 
+    // if (t->ty == TK_ENUM) {
+    //     char *tag_name = NULL;
+    //     expect('{');
+    // }
+
     if (t->ty == TK_STRUCT) {
         Token *t = tokens->data[pos];
         char *tag_name = NULL;
@@ -780,8 +785,12 @@ Node *declaration() {
     }
 
     Token *t = tokens->data[pos];
-    if (!consume(TK_IDENT))
-
+    if (consume(';')) {
+        // when just declare tag like struct, do nothing
+        // TODO: make new_node_void or new_node_nop
+        return new_node_num(0);
+    }
+    else if (!consume(TK_IDENT))
         error_at(t->input, "not variable declaration");
 
     // array check
