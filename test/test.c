@@ -64,7 +64,7 @@ const int const_x;
 // global variable with initialization test
 int global_a = 256;
 char global_b = 256;
-char *global_str[2] = {"test_str"};
+char *global_str[2] = {"test_str1", "test_str2"};
 
 // Single-line comment test
 
@@ -322,7 +322,7 @@ int main() {
   
   EXPECT(256, ({ global_a; }));
   EXPECT(0, ({ global_b; }));
-  EXPECT(0, ({ printf("%s\n", global_str[0]); 0; }));
+  EXPECT(0, ({ printf("%s\n", global_str[1]); 0; }));
 
   printf("OK\n");
   return 0;

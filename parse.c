@@ -993,19 +993,22 @@ Function *function(Type *ty, char *name) {
 void gvar_init(Var *gv) {
     gv->has_init = 1;
     Type *ty = gv->ty;
-    if (ty->ty != PTR && ty->ty != ARRAY && ty->ty != STRUCT)
+    if (ty->ty != ARRAY && ty->ty != STRUCT)
         gv->init_val = numeric();
     else {
         expect('{');
         gv->arr_data = new_vector();
-        Token *t = tokens->data[pos];
-        if (t->ty == TK_STRING) {
-            pos++;
-            char *str_label = format(".LSTR%d", str_count++);
-            vec_push(gv->arr_data, str_label);
-            Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
-            Var *var = add_gvar(ty, str_label, t->name, 0);
-        }
+        do {
+            Token *t = tokens->data[pos];
+            if (t->ty == TK_STRING) {
+                pos++;
+                char *str_label = format(".LSTR%d", str_count++);
+                vec_push(gv->arr_data, str_label);
+                Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
+                Var *var = add_gvar(ty, str_label, t->name, 0);
+                var->has_init = 1;
+            }
+        } while (consume(','));
         expect('}');
     }
 }
