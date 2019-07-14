@@ -1,5 +1,12 @@
 #include "xcc.h"
 
+void append(Vector *v1, Vector *v2) {
+    for (int i = 0; i < v2->len - 1; i++) {
+        // v2->len - 1 means skipping TK_EOF
+        vec_push(v1, v2->data[i]);
+    }
+}
+
 Vector *preprocess(Vector *tokens) {
     Vector *v = new_vector();
 
@@ -21,10 +28,7 @@ Vector *preprocess(Vector *tokens) {
 
         char *path = t->name;
         Vector *nv = tokenize(read_file(path));
-        for (int j = 0; j < nv->len - 1; j++) {
-            // nv->len - 1 means skipping TK_EOF
-            vec_push(v, nv->data[j]);
-        }
+        append(v, nv);
         i++;
     }
 
