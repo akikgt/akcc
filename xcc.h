@@ -61,10 +61,10 @@ typedef struct Var {
     int is_local;
 
     // for global variable initial data
-    char *data;
     int has_init;
-    int init_val;
-    Vector *arr_data;
+    char *str_data; // string
+    int init_val; // numeric values
+    Vector *arr_data; // array
 
     // extern
     int is_extern;

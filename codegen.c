@@ -476,6 +476,20 @@ void gen(Node *node) {
     }
 }
 
+char *get_size_directive(Type *ty) {
+    switch (ty->ty) {
+        case CHAR:
+            return ".byte";
+        case INT:
+            return ".long";
+        case PTR:
+        case ARRAY:
+            return ".quad";
+        default:
+            error("cannot get size directive");
+    }
+}
+
 void gen_gvar(Var *v) {
     if (v->is_extern)
         return;
@@ -483,30 +497,26 @@ void gen_gvar(Var *v) {
     printf("%s: \n", v->name);
     // TODO: clean up
     if (v->has_init) {
-        switch (v->ty->ty) {
-            case CHAR:
-                printf("  .byte  %d\n", v->init_val);
-                break;
-            case INT:
-                printf("  .long  %d\n", v->init_val);
-                break;
-            case ARRAY:
-            case PTR: {
-                for (int i = 0; i < v->arr_data->len; i++) {
-                    char *name = v->arr_data->data[i];
-                    printf("  .quad  %s\n", name);
-                }
-                break;
-            }
+        if (v->str_data) {
+            printf(" .string \"%s\"\n", v->str_data);
+            return;
+        }
+        if (v->ty->ty != ARRAY) {
+            printf("  %s  %d\n", get_size_directive(v->ty), v->init_val);
+            return;
+        }
+
+        // array case 
+        for (int i = 0; i < v->arr_data->len; i++) {
+            char *name = v->arr_data->data[i];
+            printf("  .quad  %s\n", name);
         }
     }
-    else if (v->data == 0) {
+    else {
         printf("  .zero  %d\n", v->ty->size);
     }
-    else {
-        printf(" .string \"%s\"\n", v->data);
-    }
 
+    return;
 }
 
 

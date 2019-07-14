@@ -46,7 +46,7 @@ Var *add_lvar(Type *ty, char *name) {
 
 Var *add_gvar(Type *ty, char *name, char *data, int is_extern) {
     Var *v = new_var(ty, name, 0);
-    v->data = data;
+    v->str_data = data;
     v->is_extern = is_extern;
     map_put(prog->gvars, name, v);
 }
@@ -362,6 +362,7 @@ Node *string_literal(Token *t) {
 
     Type *ty = arr_ty(char_ty(), t->len + 1);    // +1 means null terminating character
     Var *var = add_gvar(ty, str_label, t->name, 0);
+    var->has_init = 1;
 
     node->var = var;
     node->ty = ty;
@@ -998,8 +999,7 @@ void gvar_init(Var *gv) {
         expect('{');
         gv->arr_data = new_vector();
         Token *t = tokens->data[pos];
-        if (t->ty == TK_STRING)
-        {
+        if (t->ty == TK_STRING) {
             pos++;
             char *str_label = format(".LSTR%d", str_count++);
             vec_push(gv->arr_data, str_label);

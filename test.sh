@@ -20,6 +20,7 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
 try 0 'char *x[1] = {"yattaze"}; int main() { printf("%s\n", x[0]); 0; }'
+try 0 'char *get_str() { return "yattaze";} int main() { printf("%s\n", get_str()); 0; }'
 try 100 'typedef int myint; int main() { typedef int my_int; my_int x = 100;}'
 try 2 'int main() { enum {A, B, C}; C;}'
 try 5 'int main() { const int x = 5;}'
