@@ -490,6 +490,14 @@ void gen_gvar(Var *v) {
             case INT:
                 printf("  .long  %d\n", v->init_val);
                 break;
+            case ARRAY:
+            case PTR: {
+                for (int i = 0; i < v->arr_data->len; i++) {
+                    char *name = v->arr_data->data[i];
+                    printf("  .quad  %s\n", name);
+                }
+                break;
+            }
         }
     }
     else if (v->data == 0) {

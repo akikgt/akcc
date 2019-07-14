@@ -64,6 +64,7 @@ typedef struct Var {
     char *data;
     int has_init;
     int init_val;
+    Vector *arr_data;
 
     // extern
     int is_extern;

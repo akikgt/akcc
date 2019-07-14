@@ -1031,8 +1031,21 @@ void toplevel() {
             // TODO: initialize global variable
             if (consume('=')) {
                 gv->has_init = 1;
-                if (ty->ty != PTR || ty->ty != ARRAY || ty->ty != STRUCT)
+                if (ty->ty != PTR && ty->ty != ARRAY && ty->ty != STRUCT)
                     gv->init_val = numeric();
+                else {
+                    expect('{');
+                    gv->arr_data = new_vector();
+                    Token *t = tokens->data[pos];
+                    if (t->ty == TK_STRING) {
+                        pos++;
+                        char *str_label = format(".LSTR%d", str_count++);
+                        vec_push(gv->arr_data, str_label);
+                        Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
+                        Var *var = add_gvar(ty, str_label, t->name, 0);
+                    }
+                    expect('}');
+                }
             }
             expect(';');
         }
