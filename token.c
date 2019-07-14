@@ -79,9 +79,10 @@ Vector *tokenize(char *p) {
         // Ascii character
         if (*p == '\'') {
             p++;
-            // escape char
-            if (*p == '\\')
+            if (*p == '\\') {
+                // TODO:escape char
                 p++;
+            }
 
             if (p[1] != '\'')
                 error_at(p, " ' is not closed");
