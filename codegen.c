@@ -368,14 +368,14 @@ void gen(Node *node) {
             printf("# Dot operator\n");
             if (node->expr->op == ',' && node->expr->can_be_lval) {
                 printf("# ',' operator\n");
-                gen(node->expr);
-                // rsi has address of lval
-                printf("  mov rax, rsi\n");
+                gen(node->expr->lhs);
+                printf("  pop rax\n");  // discard result from lhs
+                gen_lval(node->expr->rhs);
             }
             else {
                 gen_lval(node->expr);
-                printf("  pop rax\n");
             }
+            printf("  pop rax\n");
             printf("  add rax, %d\n", node->ty->offset);
             printf("  mov rsi, rax\n"); // save address of identifier for later use
             emit_load(node);
