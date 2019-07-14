@@ -989,9 +989,28 @@ Function *function(Type *ty, char *name) {
     return fn;
 }
 
+void gvar_init(Var *gv) {
+    gv->has_init = 1;
+    Type *ty = gv->ty;
+    if (ty->ty != PTR && ty->ty != ARRAY && ty->ty != STRUCT)
+        gv->init_val = numeric();
+    else {
+        expect('{');
+        gv->arr_data = new_vector();
+        Token *t = tokens->data[pos];
+        if (t->ty == TK_STRING)
+        {
+            pos++;
+            char *str_label = format(".LSTR%d", str_count++);
+            vec_push(gv->arr_data, str_label);
+            Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
+            Var *var = add_gvar(ty, str_label, t->name, 0);
+        }
+        expect('}');
+    }
+}
 
 void toplevel() {
-
     while (!peek(TK_EOF)) {
         int is_extern = consume(TK_EXTERN);
         int is_static = consume(TK_STATIC);
@@ -1030,22 +1049,7 @@ void toplevel() {
             gv->is_static = is_const;
             // TODO: initialize global variable
             if (consume('=')) {
-                gv->has_init = 1;
-                if (ty->ty != PTR && ty->ty != ARRAY && ty->ty != STRUCT)
-                    gv->init_val = numeric();
-                else {
-                    expect('{');
-                    gv->arr_data = new_vector();
-                    Token *t = tokens->data[pos];
-                    if (t->ty == TK_STRING) {
-                        pos++;
-                        char *str_label = format(".LSTR%d", str_count++);
-                        vec_push(gv->arr_data, str_label);
-                        Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
-                        Var *var = add_gvar(ty, str_label, t->name, 0);
-                    }
-                    expect('}');
-                }
+                gvar_init(gv);
             }
             expect(';');
         }
