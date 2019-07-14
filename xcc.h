@@ -62,6 +62,8 @@ typedef struct Var {
 
     // for global variable initial data
     char *data;
+    int has_init;
+    int init_val;
 
     // extern
     int is_extern;

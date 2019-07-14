@@ -1029,6 +1029,11 @@ void toplevel() {
             gv->is_static = is_static;
             gv->is_static = is_const;
             // TODO: initialize global variable
+            if (consume('=')) {
+                gv->has_init = 1;
+                if (ty->ty != PTR || ty->ty != ARRAY || ty->ty != STRUCT)
+                    gv->init_val = numeric();
+            }
             expect(';');
         }
     }

@@ -61,6 +61,9 @@ char *format(char *fmt, ...);
 static int static_x;
 // const test
 const int const_x;
+// global variable with initialization test
+int global_a = 256;
+char global_b = 256;
 
 // Single-line comment test
 
@@ -315,6 +318,9 @@ int main() {
   EXPECT(2, ({ enum X {A, B, C} x; x = C; }));
   EXPECT(1, ({ enum X {A, B, C,}; enum X x = B; 1;}));
   EXPECT(6, ({ int x=0; int y=2; switch(3) { case 2: x=5; case ND_B: x=6; break; case 4: x=7; } x; }));
+  
+  EXPECT(256, ({ global_a; }));
+  EXPECT(0, ({ global_b; }));
 
   printf("OK\n");
   return 0;

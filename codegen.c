@@ -481,7 +481,18 @@ void gen_gvar(Var *v) {
         return;
 
     printf("%s: \n", v->name);
-    if (v->data == 0) {
+    // TODO: clean up
+    if (v->has_init) {
+        switch (v->ty->ty) {
+            case CHAR:
+                printf("  .byte  %d\n", v->init_val);
+                break;
+            case INT:
+                printf("  .long  %d\n", v->init_val);
+                break;
+        }
+    }
+    else if (v->data == 0) {
         printf("  .zero  %d\n", v->ty->size);
     }
     else {
