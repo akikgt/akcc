@@ -501,6 +501,7 @@ void gen_gvar(Var *v) {
             printf(" .string \"%s\"\n", v->str_data);
             return;
         }
+
         if (v->ty->ty != ARRAY) {
             printf("  %s  %d\n", get_size_directive(v->ty), v->init_val);
             return;
@@ -508,8 +509,11 @@ void gen_gvar(Var *v) {
 
         // array case 
         for (int i = 0; i < v->arr_data->len; i++) {
-            char *name = v->arr_data->data[i];
-            printf("  .quad  %s\n", name);
+            Var *var = v->arr_data->data[i];
+            if (var->ty->ty == ARRAY)
+                printf("  .quad  %s\n", var->name);
+            else
+                printf("  %s  %d\n", get_size_directive(var->ty), var->init_val);
         }
     }
     else {

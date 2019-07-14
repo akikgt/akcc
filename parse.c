@@ -998,21 +998,30 @@ Function *function(Type *ty, char *name) {
 void gvar_init(Var *gv) {
     gv->has_init = 1;
     Type *ty = gv->ty;
-    if (ty->ty != ARRAY && ty->ty != STRUCT)
+    if (ty->ty != ARRAY && ty->ty != STRUCT) {
         gv->init_val = numeric();
-    else {
-        expect('{');
-        gv->arr_data = new_vector();
-        do {
-            Token *t = tokens->data[pos];
-            if (t->ty == TK_STRING) {
-                pos++;
-                Var *var = add_str(t);
-                vec_push(gv->arr_data, var->name);
-            }
-        } while (consume(','));
-        expect('}');
+        return;
     }
+
+    expect('{');
+    // array initialization
+    gv->arr_data = new_vector();
+    do {
+        Token *t = tokens->data[pos];
+        Var *var;
+        if (t->ty == TK_STRING) {
+            pos++;
+            var = add_str(t);
+        }
+        else if (t->ty == TK_NUM) {
+            var = calloc(1, sizeof(Var));
+            var->init_val = numeric();
+            var->ty = gv->ty->arr_of;
+        }
+        vec_push(gv->arr_data, var);
+    } while (consume(','));
+
+    expect('}');
 }
 
 void toplevel() {
@@ -1051,8 +1060,7 @@ void toplevel() {
             }
             Var *gv = add_gvar(ty, name, 0, is_extern);
             gv->is_static = is_static;
-            gv->is_static = is_const;
-            // TODO: initialize global variable
+            gv->is_const = is_const;
             if (consume('=')) {
                 gvar_init(gv);
             }

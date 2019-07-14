@@ -65,6 +65,7 @@ const int const_x;
 int global_a = 256;
 char global_b = 256;
 char *global_str[2] = {"test_str1", "test_str2"};
+int global_int_arr[5] = {1,2,3,4,5};
 
 // Single-line comment test
 
@@ -323,6 +324,7 @@ int main() {
   EXPECT(256, ({ global_a; }));
   EXPECT(0, ({ global_b; }));
   EXPECT(0, ({ printf("%s\n", global_str[1]); 0; }));
+  EXPECT(3, ({ global_int_arr[2]; }));
 
   printf("OK\n");
   return 0;
