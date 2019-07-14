@@ -20,7 +20,9 @@ echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
 # include test
-try 100 '#define DEMO 10 #include "test_include.h" int main() { a;}'
+try 160 '#define DEMO 2 * 5 + 20 + 30
+#include "test_include.h"
+int main() { a + DEMO;}'
 try 3 'char x[3] = {1,2,3}; int main() { x[2]; }'
 try 0 'char *x[1] = {"yattaze"}; int main() { printf("%s\n", x[0]); 0; }'
 try 0 'char *get_str() { return "yattaze";} int main() { printf("%s\n", get_str()); 0; }'

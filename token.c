@@ -54,6 +54,14 @@ Vector *tokenize(char *p) {
 
     int i = 0;
     while (*p) {
+        // for preprocesser. new line token
+        if (*p == '\n') {
+            add_token(v, '\n', p);
+            i++;
+            p++;
+            continue;
+        }
+
         // skip space characters
         if (isspace(*p)) {
             p++;

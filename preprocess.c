@@ -2,8 +2,12 @@
 
 
 void append(Vector *v1, Vector *v2) {
-    for (int i = 0; i < v2->len - 1; i++) {
-        // v2->len - 1 means skipping TK_EOF
+    for (int i = 0; i < v2->len; i++) {
+        Token *t = v2->data[i];
+        // skip EOF
+        // skip new line token
+        if (t->ty == '\n' || t->ty == TK_EOF)
+            continue;
         vec_push(v1, v2->data[i]);
     }
 }
@@ -16,14 +20,19 @@ Vector *preprocess(Vector *tokens) {
         Token *t = tokens->data[i];    
 
         if (t->ty == TK_IDENT) {
-            Token *nt = map_get(defined, t->name);
-            if (nt)
-                vec_push(v, nt);
+            Vector *expansion = map_get(defined, t->name);
+            if (expansion)
+                append(v, expansion);
             else
                 vec_push(v, t);
             i++;
             continue;
         }
+        if (t->ty == '\n') {
+            i++;
+            continue;
+        }
+
         if (t->ty != '#') {
             i++;
             vec_push(v, t);
@@ -38,15 +47,28 @@ Vector *preprocess(Vector *tokens) {
             t = tokens->data[++i];
             if (t->ty != TK_STRING)
                 error_at(t->input, "string expected");
+
             char *path = t->name;
+            t = tokens->data[++i];
+            if (t->ty != '\n')
+                error_at(t->input, "new line expected");
+
             Vector *nv = tokenize(read_file(path));
             append(v, nv);
         }
         else if (!strcmp(t->name, "define")) {
             t = tokens->data[++i];
+            if (t->ty != TK_IDENT)
+                error_at(t->input, "macro name expected");
             char *name = t->name;
+
+            Vector *expansion = new_vector();
             t = tokens->data[++i];
-            map_put(defined, name, t);
+            while (t->ty != '\n') {
+                vec_push(expansion, t);
+                t = tokens->data[++i];
+            }
+            map_put(defined, name, expansion);
         }
 
         i++;
