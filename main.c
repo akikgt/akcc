@@ -23,6 +23,8 @@ int main(int argc, char **argv) {
         tokens = tokenize(argv[1]);
     }
 
+    tokens = preprocess(tokens);
+
     Program *prog = parse(tokens);
     // traverse(prog); // Node test
     sema(prog);

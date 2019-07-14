@@ -254,6 +254,7 @@ Vector *tokenize(char *p) {
             || *p == '?' || *p == ':'    // ternary
             || *p == '|' || *p == '^'  || *p == '~'      // bit operations
             || *p == '.'        // dot operator for struct
+            || *p == '#'        // macro
             ) {
             add_token(v, *p, p);
             i++;

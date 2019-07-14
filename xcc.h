@@ -148,6 +148,8 @@ typedef struct {
 
 Vector *tokenize(char *p);
 
+/// preprocess.c
+Vector *preprocess(Vector *tokens);
 
 /// parse.c
 enum
