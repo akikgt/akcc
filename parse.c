@@ -51,6 +51,7 @@ Var *add_gvar(Type *ty, char *name, char *data, int is_extern) {
     map_put(prog->gvars, name, v);
 }
 
+
 static Var *find_var(char *name) {
     for (Env *cur = env; cur; cur = cur->prev) {
         Var *var = map_get(cur->vars, name);
@@ -356,16 +357,20 @@ Node *new_node_assign_eq(int op, Node *lhs, Node *rhs) {
     return node;
 }
 
-Node *string_literal(Token *t) {
+Var *add_str(Token *t) {
+    // add string to the .data section
     char *str_label = format(".LSTR%d", str_count++);
-    Node *node = new_node_ident(str_label);
-
-    Type *ty = arr_ty(char_ty(), t->len + 1);    // +1 means null terminating character
+    Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
     Var *var = add_gvar(ty, str_label, t->name, 0);
     var->has_init = 1;
+    return var;
+}
 
+Node *string_literal(Token *t) {
+    Var *var = add_str(t);
+    Node *node = new_node_ident(var->name);
     node->var = var;
-    node->ty = ty;
+    node->ty = var->ty;
     return node;
 }
 
@@ -1002,11 +1007,8 @@ void gvar_init(Var *gv) {
             Token *t = tokens->data[pos];
             if (t->ty == TK_STRING) {
                 pos++;
-                char *str_label = format(".LSTR%d", str_count++);
-                vec_push(gv->arr_data, str_label);
-                Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
-                Var *var = add_gvar(ty, str_label, t->name, 0);
-                var->has_init = 1;
+                Var *var = add_str(t);
+                vec_push(gv->arr_data, var->name);
             }
         } while (consume(','));
         expect('}');
