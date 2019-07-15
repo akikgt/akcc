@@ -48,15 +48,21 @@ char *read_file(char *path) {
     int errno = 1;
     // open file
     FILE *fp = fopen(path, "r");
-    if (!fp)
-        error("cannot open %s: %s", path, strerror(errno));
+    if (!fp) {
+        fprintf(stderr, "cannot open %s\n", path);
+        exit(1);
+    }
 
     // check file length
-    if (fseek(fp, 0, SEEK_END) == -1)
-        error("%s: fseek: %s", path, strerror(errno));
+    if (fseek(fp, 0, SEEK_END) == -1) {
+        fprintf(stderr, "%s: fseek error\n", path);
+        exit(1);
+    }
     size_t size = ftell(fp);
-    if (fseek(fp, 0, SEEK_SET) == -1)
-        error("%s: fseek: %s", path, strerror(errno));
+    if (fseek(fp, 0, SEEK_SET) == -1) {
+        fprintf(stderr, "%s: fseek error\n", path);
+        exit(1);
+    }
 
     // read file content
     char *buf = malloc(size + 2);

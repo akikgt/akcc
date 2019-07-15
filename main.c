@@ -17,6 +17,10 @@ int main(int argc, char **argv) {
 
     Vector *tokens;
     if (!strcmp(argv[1], "-file")) {
+        if (argc != 3) {
+            fprintf(stderr, "file name expected\n");
+            return 1;
+        }
         tokens = tokenize(read_file(argv[2]));
     }
     else {

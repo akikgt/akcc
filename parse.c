@@ -194,6 +194,7 @@ static Type *type_specifier() {
             val++;
         } while (consume(',') || !consume('}'));
 
+
         // consider enum as int
         return int_ty();
     }

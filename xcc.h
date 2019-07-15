@@ -1,10 +1,58 @@
-#define _GNU_SOURCE
-#include <ctype.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+// #define _GNU_SOURCE
+// #include <ctype.h>
+// #include <stdarg.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
 // #include <errno.h>
+
+#define va_start __builtin_va_start
+#define va_end __builtin_va_end
+#define va_arg __builtin_va_arg
+
+typedef struct {
+    int gp_offset;
+    int fp_offset;
+    void *overflow_arg_area;
+    void *reg_save_area;
+} va_list[1];
+
+typedef int size_t;
+// typedef struct _IO_FILE FILE;
+typedef void FILE;
+// #define FILE struct _IO_FILE
+extern FILE *stdin;
+extern FILE *stdout;
+extern FILE *stderr;
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
+int ftell(FILE *stream);
+int fseek(FILE *fp, int offset, int origin); 
+#define EOF (-1)
+FILE *fopen(const char *pathname, const char *mode);
+int fclose(FILE *stream);
+
+#define NULL ((void *)0)
+int printf(const char *format, ...);
+int fprintf(FILE *stream, const char *format, ...);
+int sprintf(char *str, const char *format, ...);
+void exit(int status);
+void *malloc(int size);
+void *realloc(void *ptr, int size);
+void *calloc(size_t n, size_t size);
+int strlen(const char *s);
+int strcmp(const char *s1, const char *s2);
+char *strcpy(char *dest, const char *src);
+char *strdup(const char *s);
+char *strndup(const char *s, size_t n);
+int vsprintf(char *str, const char *format, va_list ap);
+// void *memset(void *s, int c, int n);
+// int fgetc(FILE *stream);
+int isalpha(int c);
+int isdigit(int c);
+int isspace(int c);
+// void *memcpy(void *dest, const void *src, int n);
 
 extern char *user_input;
 
