@@ -29,6 +29,15 @@ Node *walk_nodecay(Node *node) {
 }
 
 Node *do_walk(Node *node, int decay) {
+    // /// test for nodes
+    // char *test_name = node->name;
+    // if (test_name)
+    //     printf("%d: %s\n", node->op, test_name);
+    // else 
+    //     printf("%d: \n", node->op);
+    // /// test for nodes end
+
+
     switch (node->op) {
         case ND_NUM:
             node->ty = int_ty();
