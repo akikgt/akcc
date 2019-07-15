@@ -937,6 +937,9 @@ Node *param()
         return new_node(ND_VARARGS);
     }
 
+    // just skip const. TODO...for later
+    consume(TK_CONST);
+
     Type *ty = type_specifier();
     // TODO: move pointer check to outside of this function
     while (consume('*')) {
