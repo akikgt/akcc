@@ -45,6 +45,7 @@ char *format(char *fmt, ...) {
 
 // return specified file content
 char *read_file(char *path) {
+    int errno = 1;
     // open file
     FILE *fp = fopen(path, "r");
     if (!fp)
