@@ -350,6 +350,7 @@ void error_at(char *loc, char *msg);
 
 
 
+///////////
 /// Error functions
 void error(char *fmt, ...) {
     va_list ap;
@@ -477,7 +478,7 @@ Type *arr_ty(Type *base, int len) {
 /// Vector
 Vector *new_vector() {
     Vector *vec = malloc(sizeof(Vector));
-    vec->data = malloc(sizeof(void *) * 16);
+    vec->data = malloc(8 * 16);
     vec->capacity = 16;
     vec->len = 0;
     return vec;
@@ -526,7 +527,7 @@ void test_vector() {
 
 /// Map
 Map *new_map() {
-    Map *map = malloc(sizeof(Map));
+    Map *map = calloc(1, sizeof(Map));
     map->keys = new_vector();
     map->vals = new_vector();
     return map;

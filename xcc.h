@@ -46,6 +46,7 @@ int strcmp(const char *s1, const char *s2);
 char *strcpy(char *dest, const char *src);
 char *strdup(const char *s);
 char *strndup(const char *s, size_t n);
+// char *strcat(char *s1, const char *s2);
 int vsprintf(char *str, const char *format, va_list ap);
 // void *memset(void *s, int c, int n);
 // int fgetc(FILE *stream);

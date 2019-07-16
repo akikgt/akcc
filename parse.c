@@ -39,6 +39,7 @@ Var *add_lvar(Type *ty, char *name) {
 
     offset += ty->size;
     v->offset = roundup(offset, ty->align);
+    offset = v->offset;
 
     map_put(env->vars, name, v);
     vec_push(lvars, v);

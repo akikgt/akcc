@@ -354,7 +354,7 @@ static int pos;
 static Program *prog;
 
 static Vector *lvars;
-static int off;
+static int my_off;
 static int str_count;
 
 static Vector *switches;
@@ -386,8 +386,8 @@ static Var *new_var(Type *ty, char *name, int is_local) {
 Var *add_lvar(Type *ty, char *name) {
     Var *v = new_var(ty, name, 1);
 
-    off += ty->size;
-    v->offset = roundup(off, ty->align);
+    my_off = my_off + ty->size;
+    v->offset = roundup(my_off, ty->align);
 
     map_put(env->vars, name, v);
     vec_push(lvars, v);
@@ -543,26 +543,37 @@ static Type *type_specifier() {
     if (t->ty == TK_STRUCT) {
         Token *t = tokens->data[pos];
         char *tag_name = NULL;
-        Type *ty = NULL;
+        Type *zty = 0;
+        // printf("%d\n", zty);
         if (t->ty == TK_IDENT) {
             pos++;
             tag_name = t->name;
-            ty = find_tag(tag_name);
+            zty = find_tag(tag_name);
         }
 
         // tag has already been defined
-        if (ty)
-            return ty;
+        if (zty) {
+            return zty;
+        }
 
-        ty = new_ty(STRUCT, 1);
-        ty->members = new_map();
+        Type *ty = new_ty(STRUCT, 1);
+        // printf("%d\n", ty);
+        // printf("aaa%p\n", ty->members);
 
         // For struct which has itself as member, save the tag_name and type first
-        if (tag_name)
+        if (tag_name) {
             map_put(env->tags, tag_name, ty);
+        }
 
+        // printf("aaa%p\n", ty->members);
         expect('{');
-        int off = 0;
+        // printf("aaa%p\n", ty->members);
+        // printf("bbb%d\n", ty->members->keys->len);
+        ty->members = new_map();
+        // printf("%d\n", zty);
+        // printf("%d\n", ty);
+        // printf("aaa%p\n", ty->members);
+        int base = 0;
         while (!consume('}'))
         {
             // TODO: make this block to the function
@@ -571,16 +582,16 @@ static Type *type_specifier() {
             Type *t = node->ty;
             map_put(ty->members, node->name, t);
 
-            off = roundup(off, t->align);
-            t->offset = off;
-            off += t->size;
+            base = roundup(base, t->align);
+            t->offset = base;
+            base = base + t->size;
 
             // struct alignment is the same as its largest member's align
             if (t->align > ty->align)
                 ty->align = t->align;
         }
 
-        ty->size = roundup(off, ty->align);
+        ty->size = roundup(base, ty->align);
 
         return ty;
     }
@@ -705,10 +716,21 @@ Node *new_node_assign_eq(int op, Node *lhs, Node *rhs) {
     return node;
 }
 
+Type *arr_ty2(Type *base, int len) {
+    Type *ty = new_ty(ARRAY, base->size * len);
+    ty->align = base->align;
+    ty->array_size = len;
+    ty->arr_of = base;
+    ty->ptr_to = base;
+    return ty;
+}
+
+
 Var *add_str(Token *t) {
     // add string to the .data section
+    // sprintf(buf, ".LSTR%d", str_count++);
     char *str_label = format(".LSTR%d", str_count++);
-    Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
+    Type *ty = arr_ty2(char_ty(), t->len + 1); // +1 means null terminating character
     Var *var = add_gvar(ty, str_label, t->name, 0);
     var->has_init = 1;
     return var;
@@ -742,6 +764,8 @@ Node *function_call(Token *t) {
         return node;
 
     do {
+        // printf("yattaze\n");
+        // printf("%p\n", node->args);
         vec_push(node->args, assign());
     } while (consume(','));
     expect(')');
@@ -1334,7 +1358,7 @@ Function *function(Type *ty, char *name) {
     fn->lvars = new_vector();
     lvars = fn->lvars;
     // reset offset
-    off = 0;
+    my_off = 0;
 
     env = new_env(env);
     node->args = params();

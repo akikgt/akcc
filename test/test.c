@@ -325,6 +325,7 @@ int main() {
   EXPECT(0, ({ global_b; }));
   EXPECT(0, ({ printf("%s\n", global_str[1]); 0; }));
   EXPECT(3, ({ global_int_arr[2]; }));
+  EXPECT(3, ({ struct A {int x;} a; struct A *p = 5; int q = 0; printf("%d\n", p); 3;}));
 
   printf("OK\n");
   return 0;
