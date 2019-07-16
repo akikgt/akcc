@@ -11,12 +11,14 @@ self: xcc
 		gcc -c -o util.o util.c $(LDFLAGS)
 		gcc -c -o token.o token.c $(LDFLAGS)
 		gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
-		gcc -c -o parse.o parse.c $(LDFLAGS)
+		# gcc -c -o parse.o parse.c $(LDFLAGS)
+		./xcc -file "sample/demo_parse.c" > tmp_parse.s
 		gcc -c -o sema.o sema.c $(LDFLAGS)
 		gcc -c -o codegen.o codegen.c $(LDFLAGS)
 		gcc -c -o main.o main.c $(LDFLAGS)
-		gcc -static -o self_xcc main.o util.o token.o preprocess.o tmp-paser.s sema.o codegen.o
+		gcc -static -o self_xcc main.o util.o token.o preprocess.o tmp_parse.s sema.o codegen.o
 
+		./self_xcc 'int main() { int x[1];}'
 test: xcc test/test.c
 		./xcc -test
 

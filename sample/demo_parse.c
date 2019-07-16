@@ -354,7 +354,7 @@ static int pos;
 static Program *prog;
 
 static Vector *lvars;
-static int offset;
+static int off;
 static int str_count;
 
 static Vector *switches;
@@ -386,8 +386,8 @@ static Var *new_var(Type *ty, char *name, int is_local) {
 Var *add_lvar(Type *ty, char *name) {
     Var *v = new_var(ty, name, 1);
 
-    offset += ty->size;
-    v->offset = roundup(offset, ty->align);
+    off += ty->size;
+    v->offset = roundup(off, ty->align);
 
     map_put(env->vars, name, v);
     vec_push(lvars, v);
@@ -407,8 +407,9 @@ static Var *find_var(char *name) {
         if (var)
             return var;
     }
-    printf("kokomade\n");
-    error("undefined variable, %s", name);
+    // error("undefined variable, %s", name);
+    printf("undefined variable, %s", name);
+    exit(1);
     return NULL;
 }
 
@@ -616,10 +617,15 @@ static Type *arr_of(Type *base) {
         expect(']');
     }
 
+    if (!stack->len)
+        return ret;
+
     for (int i = stack->len - 1; i >= 0; i--) {
         Type *new_ty = calloc(1, sizeof(Type));
         new_ty->ty = ARRAY;        
+    // printf("aaa\n");
         new_ty->array_size = stack->data[i];
+    // printf("aaa\n");
         new_ty->size = new_ty->array_size * ret->size;
         new_ty->align = base->align;
         new_ty->arr_of = ret;
@@ -1327,7 +1333,7 @@ Function *function(Type *ty, char *name) {
     fn->lvars = new_vector();
     lvars = fn->lvars;
     // reset offset
-    offset = 0;
+    off = 0;
 
     env = new_env(env);
     node->args = params();

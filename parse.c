@@ -58,7 +58,9 @@ static Var *find_var(char *name) {
         if (var)
             return var;
     }
-    error("undefined variable, %s", name);
+    // error("undefined variable, %s", name);
+    printf("undefined variable, %s", name);
+    exit(1);
     return NULL;
 }
 
@@ -115,18 +117,6 @@ static int is_typename() {
     return t->ty == TK_INT || t->ty == TK_CHAR || t->ty == TK_STRUCT
             || t->ty == TK_VOID || t->ty == TK_ENUM;
 }
-
-// int sizeof_types(int ty) {
-//     switch (ty) {
-//         case TK_VOID: return 1;  // sizeof(void) returns 1 (not 0)
-//         case TK_CHAR: return 1;
-//         case TK_INT: return 4;
-//         default:
-//             error("unknown type");
-//             break;
-//     }
-//     return 8;
-// }
 
 static char *ident() {
     Token *t = tokens->data[pos];
@@ -275,6 +265,9 @@ static Type *arr_of(Type *base) {
         vec_push(stack, (void *)const_expr());
         expect(']');
     }
+
+    if (!stack->len)
+        return ret;
 
     for (int i = stack->len - 1; i >= 0; i--) {
         Type *new_ty = calloc(1, sizeof(Type));
