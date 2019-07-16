@@ -116,17 +116,17 @@ static int is_typename() {
             || t->ty == TK_VOID || t->ty == TK_ENUM;
 }
 
-int sizeof_types(int ty) {
-    switch (ty) {
-        case TK_VOID: return 1;  // sizeof(void) returns 1 (not 0)
-        case TK_CHAR: return 1;
-        case TK_INT: return 4;
-        default:
-            error("unknown type");
-            break;
-    }
-    return 8;
-}
+// int sizeof_types(int ty) {
+//     switch (ty) {
+//         case TK_VOID: return 1;  // sizeof(void) returns 1 (not 0)
+//         case TK_CHAR: return 1;
+//         case TK_INT: return 4;
+//         default:
+//             error("unknown type");
+//             break;
+//     }
+//     return 8;
+// }
 
 static char *ident() {
     Token *t = tokens->data[pos];

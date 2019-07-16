@@ -7,6 +7,16 @@ xcc: $(OBJS)
 
 $(OBJS): xcc.h
 
+self: xcc
+		gcc -c -o util.o util.c $(LDFLAGS)
+		gcc -c -o token.o token.c $(LDFLAGS)
+		gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
+		gcc -c -o parse.o parse.c $(LDFLAGS)
+		gcc -c -o sema.o sema.c $(LDFLAGS)
+		gcc -c -o codegen.o codegen.c $(LDFLAGS)
+		gcc -c -o main.o main.c $(LDFLAGS)
+		gcc -static -o self_xcc main.o util.o token.o preprocess.o tmp-paser.s sema.o codegen.o
+
 test: xcc test/test.c
 		./xcc -test
 

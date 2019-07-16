@@ -407,6 +407,7 @@ static Var *find_var(char *name) {
         if (var)
             return var;
     }
+    printf("kokomade\n");
     error("undefined variable, %s", name);
     return NULL;
 }
@@ -465,18 +466,6 @@ static int is_typename() {
         return find_typedef(t->name);
     return t->ty == TK_INT || t->ty == TK_CHAR || t->ty == TK_STRUCT
             || t->ty == TK_VOID || t->ty == TK_ENUM;
-}
-
-int sizeof_types(int ty) {
-    switch (ty) {
-        case TK_VOID: return 1;  // sizeof(void) returns 1 (not 0)
-        case TK_CHAR: return 1;
-        case TK_INT: return 4;
-        // default:
-        //     error("unknown type");
-        //     break;
-    }
-    return 8;
 }
 
 static char *ident() {
