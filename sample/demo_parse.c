@@ -729,8 +729,10 @@ Type *arr_ty2(Type *base, int len) {
 Var *add_str(Token *t) {
     // add string to the .data section
     // sprintf(buf, ".LSTR%d", str_count++);
-    char *str_label = format(".LSTR%d", str_count++);
-    Type *ty = arr_ty2(char_ty(), t->len + 1); // +1 means null terminating character
+    char *str_label = format(".LSTRA%d", str_count++);
+
+    Type *ty = arr_ty(char_ty(), t->len + 1); // +1 means null terminating character
+    // Type *ty = ptr_to(char_ty());
     Var *var = add_gvar(ty, str_label, t->name, 0);
     var->has_init = 1;
     return var;
@@ -764,9 +766,8 @@ Node *function_call(Token *t) {
         return node;
 
     do {
-        // printf("yattaze\n");
-        // printf("%p\n", node->args);
         vec_push(node->args, assign());
+        // vec_push(node->args, log_or());
     } while (consume(','));
     expect(')');
 

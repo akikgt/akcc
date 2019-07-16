@@ -18,9 +18,10 @@ self: xcc
 		gcc -c -o main.o main.c $(LDFLAGS)
 		gcc -static -o self_xcc main.o util.o token.o preprocess.o tmp_parse.s sema.o codegen.o
 
-		# ./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
-		# ./self_xcc 'int main() { if (1) "aaaa";  }'
-		./self_xcc -file "sample/debug.c"
+		./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
+		# ./self_xcc 'int main() { if (1) {printf("yattaze%d", 1);} }'
+		# ./self_xcc 'int main() { "aaaa";  }'
+		# ./self_xcc -file "sample/debug.c"
 		# ./self_xcc -file "xcc.h"
 
 		#### n-queen self-compile test

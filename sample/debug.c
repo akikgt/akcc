@@ -710,6 +710,10 @@ Node *new_node_assign_eq(int op, Node *lhs, Node *rhs) {
     // char *name = "tmp";
     Var *var = add_lvar(ptr_to(lhs->ty), node->name);
     // Var *var;
+    // {
+    //   var = add_lvar(ptr_to(lhs->ty), "tmp");
+    // }
+
     vec_push(node->stmts, new_node_binop('=', new_node_varref(var), new_node_expr(ND_ADDR, lhs)));
 
     // // *z = *z op y;

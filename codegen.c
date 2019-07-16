@@ -26,12 +26,14 @@ static void emit_load(Node *node) {
         // TODO: consider movzx
         printf("  movsx eax, %s\n", get_reg(node->ty, 'a'));
     }
+    // TODO sign extended? like eax to rax
 }
 
 static void emit_binop(Node *node) {
     gen(node->lhs);
     gen(node->rhs);
 
+// TODO: sign extended
     printf("  pop rdi\n");
     printf("  pop rax\n");
 
@@ -186,7 +188,7 @@ void gen_lval(Node *node) {
     Var *var = node->var;
     // Global variable
     if (!var->is_local) {
-        printf("  lea eax, %s[rip]\n", node->name);
+        printf("  lea rax, %s[rip]\n", node->name);
         printf("  push rax\n");
         return;
     }
@@ -219,8 +221,15 @@ void gen(Node *node) {
                 gen(node->args->data[i]);
             }
 
-            for (int i = node->args->len - 1; i >= 0; i--)
-                printf("  pop %s\n", regs[i]);
+            // TODO: compiler friendly loop
+            // for (int i = node->args->len - 1; i >= 0; i--)
+            if (node->args->len >= 1) {
+                for (int i = node->args->len - 1;; i--) {
+                    printf("  pop %s\n", regs[i]);
+                    if (i == 0)
+                        break;
+                }
+            }
 
             printf("  mov rax, 0\n"); // AL must be 0 before call a variadic function
             printf("  call %s\n", node->name);
