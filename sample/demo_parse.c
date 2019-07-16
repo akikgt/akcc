@@ -620,17 +620,18 @@ static Type *arr_of(Type *base) {
     if (!stack->len)
         return ret;
 
-    for (int i = stack->len - 1; i >= 0; i--) {
+    for (int i = stack->len - 1;;i--) {
         Type *new_ty = calloc(1, sizeof(Type));
         new_ty->ty = ARRAY;        
-    // printf("aaa\n");
         new_ty->array_size = stack->data[i];
-    // printf("aaa\n");
         new_ty->size = new_ty->array_size * ret->size;
         new_ty->align = base->align;
         new_ty->arr_of = ret;
         new_ty->ptr_to = ret;
         ret = new_ty;
+
+        if (i == 0)
+            break;
     }
 
     return ret;
