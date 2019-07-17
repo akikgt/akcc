@@ -13,11 +13,20 @@ self: xcc
 		gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
 		# gcc -c -o parse.o parse.c $(LDFLAGS)
 		# ./xcc -file "sample/demo_parse.c" > tmp_parse.s
-		./xcc -file "parse.c" > tmp_parse.s
+		# ./xcc -file "parse.c" > tmp_self_parse.s
 		gcc -c -o sema.o sema.c $(LDFLAGS)
+		./xcc -file "sema.c" > tmp_self_sema.s
 		gcc -c -o codegen.o codegen.c $(LDFLAGS)
 		gcc -c -o main.o main.c $(LDFLAGS)
-		gcc -static -o self_xcc main.o util.o token.o preprocess.o tmp_parse.s sema.o codegen.o
+		gcc -static -o self_xcc \
+		main.o \
+		util.o \
+		token.o \
+		preprocess.o \
+		tmp_self_parse.s \
+		sema.o \
+		codegen.o
+		# gcc -static -o self_xcc main.o util.o token.o preprocess.o parse.o sema.o codegen.o
 
 		# ./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
 		# ./self_xcc 'int main() { if (1) {printf("yattaze%d", 1);} }'
