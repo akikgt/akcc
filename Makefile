@@ -9,16 +9,23 @@ $(OBJS): xcc.h
 
 self: xcc
 		gcc -c -o util.o util.c $(LDFLAGS)
+
 		# gcc -c -o token.o token.c $(LDFLAGS)
 		./xcc -file "token.c" > tmp_self_token.s
+
 		gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
+
 		gcc -c -o parse.o parse.c $(LDFLAGS)
 		# ./xcc -file "sample/demo_parse.c" > tmp_parse.s
 		# ./xcc -file "parse.c" > tmp_self_parse.s
+
 		# gcc -c -o sema.o sema.c $(LDFLAGS)
 		./xcc -file "sema.c" > tmp_self_sema.s
-		gcc -c -o codegen.o codegen.c $(LDFLAGS)
+
+		# gcc -c -o codegen.o codegen.c $(LDFLAGS)
+		./xcc -file "codegen.c" > tmp_self_codegen.s
 		gcc -c -o main.o main.c $(LDFLAGS)
+
 		gcc -static -o self_xcc \
 		main.o \
 		util.o \
@@ -26,19 +33,19 @@ self: xcc
 		preprocess.o \
 		parse.o \
 		tmp_self_sema.s \
-		codegen.o
+		tmp_self_codegen.s 
 		# gcc -static -o self_xcc main.o util.o token.o preprocess.o parse.o sema.o codegen.o
 
 		./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
 		./self_xcc 'int main() { if (1) {printf("yattaze%d", 1);} }'
 		# ./self_xcc 'int main() { "aaaa";  }'
-		./self_xcc -file "sample/debug.c"
+		# ./self_xcc -file "sample/debug.c"
 		# ./self_xcc -file "xcc.h"
 
 		#### n-queen self-compile test
-		# ./self_xcc -file "sample/sample.c" > tmp2.s
-		# gcc -static -o sample2 tmp2.s
-		# ./sample2
+		./self_xcc -file "sample/sample.c" > tmp2.s
+		gcc -static -o sample2 tmp2.s
+		./sample2
 		#### n-queen self-compile test
 
 		# ./self_xcc -file "token.c"

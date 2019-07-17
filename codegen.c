@@ -7,6 +7,7 @@ char *regs32[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
 
 static char *get_reg(Type *ty, char r) {
+    printf("# second parameter is %d\n", r);
     switch (ty->size) {
         case 1:  return (r == 'a') ? "al" : "dil";
         case 2:  return (r == 'a') ? "ax" : "di";
@@ -21,6 +22,7 @@ static char *get_reg(Type *ty, char r) {
 }
 
 static void emit_load(Node *node) {
+    printf("# load value\n");
     printf("  mov %s, [rax]\n", get_reg(node->ty, 'a'));
     if (node->ty->size == 1) {
         // TODO: consider movzx
