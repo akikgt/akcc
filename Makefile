@@ -10,7 +10,7 @@ $(OBJS): xcc.h
 self: xcc
 		gcc -c -o util.o util.c $(LDFLAGS)
 		./xcc -file "util.c" > tmp_self_util.s
-		# gcc -c tmp_self_util.s -o tmp_self_util.o
+		gcc -o tmp_self_util.o -c tmp_self_util.s 
 
 		# gcc -c -o token.o token.c $(LDFLAGS)
 		./xcc -file "token.c" > tmp_self_token.s
@@ -32,8 +32,8 @@ self: xcc
 		./xcc -file "main.c" > tmp_self_main.s
 
 		gcc -static -o self_xcc \
-		main.o \
 		util.o \
+		main.o \
 		tmp_self_token.s \
 		tmp_self_cpp.s \
 		parse.o \
@@ -55,7 +55,7 @@ self: xcc
 
 		# ./self_xcc -file "token.c"
 
-self_test: self_xcc test/test.c
+self_test: self test/test.c
 		@./self_xcc "$$(gcc -E -P test/test.c)" > tmp_self_test.s
 		@echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test3.o -
 		@gcc -static -o tmp_self_test tmp_self_test.s tmp-test3.o -g
