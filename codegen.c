@@ -3,11 +3,13 @@
 static int label_count;
 
 char *regs[6] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+char *regs8[6] = {"dil", "sil", "dl", "cl", "r8b", "r9b"};
 char *regs32[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
 
 static char *get_reg(Type *ty, char r) {
-    printf("# second parameter is %d\n", r);
+    printf("# get_reg: first parameter is %d\n", ty->ty);
+    printf("# get_reg: second parameter is %d\n", r);
     switch (ty->size) {
         case 1:  return (r == 'a') ? "al" : "dil";
         case 2:  return (r == 'a') ? "ax" : "di";
@@ -145,7 +147,7 @@ void gen_func(Function *fn) {
         switch (param->ty->size) {
             case 1:
             // TODO: make regs8 array and modify dil -> regs8[i]
-                printf("  mov [rax], %s\n", "dil");
+                printf("  mov [rax], %s\n", regs8[i]);
                 break;
             case 2:
             case 4:
@@ -219,7 +221,9 @@ void gen(Node *node) {
             return;
 
         case ND_CALL:
+            printf("# function call: %s\n", node->name);
             for (int i = 0; i < node->args->len; i++) {
+                printf("# function parameters\n");
                 gen(node->args->data[i]);
             }
 
