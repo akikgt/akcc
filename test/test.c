@@ -328,6 +328,8 @@ int main() {
   EXPECT(3, ({ global_int_arr[2]; }));
   EXPECT(3, ({ struct A {int x;} a; struct A *p = 5; int q = 0; printf("%d\n", p); 3;}));
 
+  EXPECT(8, ({ typedef struct { int a;} x[2]; x a; sizeof(a);}));
+
   printf("OK\n");
   return 0;
 }
