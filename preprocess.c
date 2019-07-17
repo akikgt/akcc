@@ -12,15 +12,18 @@ void append(Vector *v1, Vector *v2) {
     }
 }
 
+Map *macro;
 Vector *preprocess(Vector *tokens) {
-    Map *defined = new_map();
+    if (!macro)
+        macro = new_map();
+
     Vector *v = new_vector();
 
     for (int i = 0; i < tokens->len;) {
         Token *t = tokens->data[i];    
 
         if (t->ty == TK_IDENT) {
-            Vector *expansion = map_get(defined, t->name);
+            Vector *expansion = map_get(macro, t->name);
             if (expansion)
                 append(v, expansion);
             else
@@ -54,6 +57,7 @@ Vector *preprocess(Vector *tokens) {
                 error_at(t->input, "new line expected");
 
             Vector *nv = tokenize(read_file(path));
+            nv = preprocess(nv);
             append(v, nv);
         }
         else if (!strcmp(t->name, "define")) {
@@ -68,7 +72,7 @@ Vector *preprocess(Vector *tokens) {
                 vec_push(expansion, t);
                 t = tokens->data[++i];
             }
-            map_put(defined, name, expansion);
+            map_put(macro, name, expansion);
         }
 
         i++;

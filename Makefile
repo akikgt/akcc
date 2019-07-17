@@ -12,7 +12,8 @@ self: xcc
 		gcc -c -o token.o token.c $(LDFLAGS)
 		gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
 		# gcc -c -o parse.o parse.c $(LDFLAGS)
-		./xcc -file "sample/demo_parse.c" > tmp_parse.s
+		# ./xcc -file "sample/demo_parse.c" > tmp_parse.s
+		./xcc -file "parse.c" > tmp_parse.s
 		gcc -c -o sema.o sema.c $(LDFLAGS)
 		gcc -c -o codegen.o codegen.c $(LDFLAGS)
 		gcc -c -o main.o main.c $(LDFLAGS)
@@ -20,14 +21,14 @@ self: xcc
 
 		# ./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
 		# ./self_xcc 'int main() { if (1) {printf("yattaze%d", 1);} }'
-		./self_xcc 'int main() { "aaaa";  }'
+		# ./self_xcc 'int main() { "aaaa";  }'
 		# ./self_xcc -file "sample/debug.c"
 		# ./self_xcc -file "xcc.h"
 
 		#### n-queen self-compile test
-		# ./self_xcc -file "sample/sample.c" > tmp2.s
-		# gcc -static -o sample2 tmp2.s
-		# ./sample2
+		./self_xcc -file "sample/sample.c" > tmp2.s
+		gcc -static -o sample2 tmp2.s
+		./sample2
 		#### n-queen self-compile test
 
 		#  ./self_xcc -file "sample/demo_parse.c"

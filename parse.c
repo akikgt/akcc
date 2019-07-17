@@ -5,7 +5,7 @@ static int pos;
 static Program *prog;
 
 static Vector *lvars;
-static int offset;
+static int g_offset;
 static int str_count;
 
 static Vector *switches;
@@ -37,9 +37,9 @@ static Var *new_var(Type *ty, char *name, int is_local) {
 Var *add_lvar(Type *ty, char *name) {
     Var *v = new_var(ty, name, 1);
 
-    offset += ty->size;
-    v->offset = roundup(offset, ty->align);
-    offset = v->offset;
+    g_offset += ty->size;
+    v->offset = roundup(g_offset, ty->align);
+    g_offset = v->offset;
 
     map_put(env->vars, name, v);
     vec_push(lvars, v);
@@ -984,7 +984,7 @@ Function *function(Type *ty, char *name) {
     fn->lvars = new_vector();
     lvars = fn->lvars;
     // reset offset
-    offset = 0;
+    g_offset = 0;
 
     env = new_env(env);
     node->args = params();
