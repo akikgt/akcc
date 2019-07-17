@@ -9,6 +9,8 @@ $(OBJS): xcc.h
 
 self: xcc
 		gcc -c -o util.o util.c $(LDFLAGS)
+		./xcc -file "util.c" > tmp_self_util.s
+		# gcc -c tmp_self_util.s -o tmp_self_util.o
 
 		# gcc -c -o token.o token.c $(LDFLAGS)
 		./xcc -file "token.c" > tmp_self_token.s
@@ -46,12 +48,18 @@ self: xcc
 		# ./self_xcc -file "xcc.h"
 
 		#### n-queen self-compile test
-		./self_xcc -file "sample/sample.c" > tmp2.s
-		gcc -static -o sample2 tmp2.s
-		./sample2
+		# ./self_xcc -file "sample/sample.c" > tmp2.s
+		# gcc -static -o sample2 tmp2.s
+		# ./sample2
 		#### n-queen self-compile test
 
 		# ./self_xcc -file "token.c"
+
+self_test: self_xcc test/test.c
+		@./self_xcc "$$(gcc -E -P test/test.c)" > tmp_self_test.s
+		@echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test3.o -
+		@gcc -static -o tmp_self_test tmp_self_test.s tmp-test3.o -g
+		@./tmp_self_test
 
 test: xcc test/test.c
 		./xcc -test
@@ -62,5 +70,7 @@ test: xcc test/test.c
 		@echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 		@gcc -static -o tmp-test tmp-test.s tmp-test2.o -g
 		@./tmp-test
+
+
 clean:
 		rm -f xcc *.o *~ tmp* test/*~
