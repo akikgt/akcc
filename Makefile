@@ -9,7 +9,8 @@ $(OBJS): xcc.h
 
 self: xcc
 		gcc -c -o util.o util.c $(LDFLAGS)
-		gcc -c -o token.o token.c $(LDFLAGS)
+		# gcc -c -o token.o token.c $(LDFLAGS)
+		./xcc -file "token.c" > tmp_self_token.s
 		gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
 		gcc -c -o parse.o parse.c $(LDFLAGS)
 		# ./xcc -file "sample/demo_parse.c" > tmp_parse.s
@@ -21,7 +22,7 @@ self: xcc
 		gcc -static -o self_xcc \
 		main.o \
 		util.o \
-		token.o \
+		tmp_self_token.s \
 		preprocess.o \
 		parse.o \
 		tmp_self_sema.s \
@@ -31,7 +32,7 @@ self: xcc
 		./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
 		./self_xcc 'int main() { if (1) {printf("yattaze%d", 1);} }'
 		# ./self_xcc 'int main() { "aaaa";  }'
-		# ./self_xcc -file "sample/debug.c"
+		./self_xcc -file "sample/debug.c"
 		# ./self_xcc -file "xcc.h"
 
 		#### n-queen self-compile test
@@ -40,7 +41,8 @@ self: xcc
 		# ./sample2
 		#### n-queen self-compile test
 
-		#  ./self_xcc -file "sample/demo_parse.c"
+		# ./self_xcc -file "token.c"
+
 test: xcc test/test.c
 		./xcc -test
 
