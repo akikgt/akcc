@@ -18,8 +18,9 @@ typedef struct {
 } va_list[1];
 
 typedef int size_t;
+typedef struct _IO_FILE { int x;} FILE;
 // typedef struct _IO_FILE FILE;
-typedef void FILE;
+// typedef void FILE;
 // #define FILE struct _IO_FILE
 extern FILE *stdin;
 extern FILE *stdout;
@@ -55,7 +56,8 @@ int isdigit(int c);
 int isspace(int c);
 // void *memcpy(void *dest, const void *src, int n);
 
-extern char *user_input;
+// for saving original input
+char *user_input;
 
 // vector
 typedef struct {

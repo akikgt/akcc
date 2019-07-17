@@ -1,7 +1,7 @@
 #include "xcc.h"
 
 // ---------------------------------------
-char *user_input;
+// char *user_input;
 // ---------------------------------------
 
 int main(int argc, char **argv) {

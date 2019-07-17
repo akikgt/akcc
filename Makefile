@@ -25,7 +25,9 @@ self: xcc
 
 		gcc -c -o codegen.o codegen.c $(LDFLAGS)
 		./xcc -file "codegen.c" > tmp_self_codegen.s
+
 		gcc -c -o main.o main.c $(LDFLAGS)
+		./xcc -file "main.c" > tmp_self_main.s
 
 		gcc -static -o self_xcc \
 		main.o \
