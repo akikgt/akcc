@@ -8,8 +8,6 @@ char *regs32[6] = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
 
 
 static char *get_reg(Type *ty, char r) {
-    printf("# get_reg: first parameter is %d\n", ty->ty);
-    printf("# get_reg: second parameter is %d\n", r);
     switch (ty->size) {
         case 1:  return (r == 'a') ? "al" : "dil";
         case 2:  return (r == 'a') ? "ax" : "di";

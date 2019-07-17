@@ -13,7 +13,8 @@ self: xcc
 		# gcc -c -o token.o token.c $(LDFLAGS)
 		./xcc -file "token.c" > tmp_self_token.s
 
-		gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
+		# gcc -c -o preprocess.o preprocess.c $(LDFLAGS)
+		./xcc -file "preprocess.c" > tmp_self_cpp.s
 
 		gcc -c -o parse.o parse.c $(LDFLAGS)
 		# ./xcc -file "sample/demo_parse.c" > tmp_parse.s
@@ -22,7 +23,7 @@ self: xcc
 		# gcc -c -o sema.o sema.c $(LDFLAGS)
 		./xcc -file "sema.c" > tmp_self_sema.s
 
-		# gcc -c -o codegen.o codegen.c $(LDFLAGS)
+		gcc -c -o codegen.o codegen.c $(LDFLAGS)
 		./xcc -file "codegen.c" > tmp_self_codegen.s
 		gcc -c -o main.o main.c $(LDFLAGS)
 
@@ -30,7 +31,7 @@ self: xcc
 		main.o \
 		util.o \
 		tmp_self_token.s \
-		preprocess.o \
+		tmp_self_cpp.s \
 		parse.o \
 		tmp_self_sema.s \
 		tmp_self_codegen.s 
