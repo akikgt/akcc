@@ -154,6 +154,7 @@ enum
     TK_FOR,       // for
     TK_SWITCH,    // switch
     TK_CASE,      // case
+    TK_DEFAULT,   // default
     TK_BREAK,     // break
     TK_CONTINUE,  // continue
     TK_EXTERN,    // extern
@@ -213,6 +214,7 @@ enum
     ND_FOR,       // for
     ND_SWITCH,    // switch
     ND_CASE,      // case
+    ND_DEFAULT,   // default
     ND_BREAK,     // break
     ND_CONTINUE,  // continue
     ND_BLOCK,     // block

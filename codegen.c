@@ -335,6 +335,10 @@ void gen(Node *node) {
             for (int i = 0; i < node->cases->len; i++) {
                 Node *c = node->cases->data[i];
                 c->switch_num = label_num;
+                if (c->op == ND_DEFAULT) {
+                    printf("  jmp .Lcase_default_%d\n", label_num);
+                    continue;
+                }
                 printf("  cmp rax, %d\n", c->val);
                 printf("  je .Lcase%d_%d\n", c->val, label_num);
             }
@@ -350,6 +354,11 @@ void gen(Node *node) {
 
         case ND_CASE:
             printf(".Lcase%d_%d:\n", node->val, node->switch_num);
+            gen(node->body);
+            return;
+
+        case ND_DEFAULT:
+            printf(".Lcase_default_%d:\n", node->switch_num);
             gen(node->body);
             return;
 

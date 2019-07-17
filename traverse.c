@@ -47,6 +47,10 @@ void traverse_and_print(Node *node, int depth) {
             printf("%*s ND_CASE: %d\n", depth, "", node->val);
             traverse_and_print(node->body, depth + 1);
             return;
+        case ND_DEFAULT: // default
+            printf("%*s ND_DEFAULT: \n", depth, "");
+            traverse_and_print(node->body, depth + 1);
+            return;
         case ND_FOR: // for
             printf("%*s ND_FOR\n", depth, "");
             if (node->init)

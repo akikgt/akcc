@@ -516,6 +516,15 @@ Node *stmt() {
         vec_push(n->cases, node);
         return node;
     }
+    else if (consume(TK_DEFAULT)) {
+        node = new_node(ND_DEFAULT);
+        expect(':');
+        node->body = stmt();
+
+        Node *n = vec_top(switches);
+        vec_push(n->cases, node);
+        return node;
+    }
     else if (consume('{')) {
         node = new_node(ND_BLOCK);
         node->stmts = new_vector();

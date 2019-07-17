@@ -178,6 +178,7 @@ int main() {
 
   EXPECT(6, ({ int x=0; switch(3) { case 2: x=5; break; case 3: x=6; break; case 4: x=7; break; } x; }));
   EXPECT(7, ({ int x=0; switch(3) { case 2: x=5; case 3: x=6; case 4: x=7; } x; }));
+  EXPECT(7, ({ int x=0; switch(5) { case 2: x=5; case 3: x=6; break; default: x=7; } x; }));
   EXPECT(0, ({ int x=0; switch(3) case 1: x=5; x; }));
 
   EXPECT(3, ({ int ary[2]; *ary=1; *(ary+1)=2; *ary + *(ary+1);}));

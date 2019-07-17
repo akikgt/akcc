@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     tokens = preprocess(tokens);
 
     Program *prog = parse(tokens);
-    // // traverse(prog); // Node test
+    // traverse(prog); // Node test
     sema(prog);
     gen_x86(prog);
 
