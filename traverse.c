@@ -67,6 +67,11 @@ void traverse_and_print(Node *node, int depth) {
         case ND_CONTINUE: // continue
             printf("%*s ND_CONTINUE:\n", depth, "");
             return;
+        case ND_VA_START: // va_start
+            printf("%*s ND_VA_START\n", depth, "");
+            for (int i = 0; i < node->stmts->len; i++)
+                traverse_and_print(node->stmts->data[i], depth + 1); 
+            return;
         case ND_BLOCK: // block
             printf("%*s ND_BLOCK\n", depth, "");
             for (int i = 0; i < node->stmts->len; i++)
@@ -129,7 +134,7 @@ void traverse_and_print(Node *node, int depth) {
             traverse_and_print(node->rhs, depth + 1);
             return;
         case ND_DOT:
-            printf("%*s ND_DOT\n", depth, "");
+            printf("%*s ND_DOT: %s\n", depth, "", node->name);
             traverse_and_print(node->expr, depth + 1);
             return;
         case ',':

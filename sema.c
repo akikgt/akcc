@@ -82,6 +82,7 @@ Node *do_walk(Node *node, int decay) {
                 node->inc = walk(node->inc);
             node->body = walk(node->body);
             return node;
+        case ND_VA_START: // va_start
         case ND_BLOCK: // block
             for (int i = 0; i < node->stmts->len; i++) {
                 Node *stmt = node->stmts->data[i];

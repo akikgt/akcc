@@ -19,6 +19,18 @@ try() {
 echo 'int plus(int a, int b) { printf("Function call test: %d\n", a + b); return a + b; }' | gcc -xc -c -o tmp-plus.o - 
 echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
 
+try 0 'int main(int x, int y) {
+   char buf[20];
+   struct {
+    int gp_offset;
+    int fp_offset;
+    void *overflow_arg_area;
+    void *reg_save_area;
+    } a[1]; 
+    char fmt;  
+    __builtin_va_start(a, fmt); 
+    5;}'
+
 # include test
 try 160 '#define DEMO 2 * 5 + 20 + 30
 #include "test_include.h"

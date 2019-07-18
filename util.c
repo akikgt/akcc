@@ -6,6 +6,7 @@ void error(char *fmt, ...) {
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
+    va_end(ap);
     exit(1);
 }
 
@@ -39,7 +40,7 @@ char *format(char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
     vsnprintf(buf, sizeof(buf), fmt, ap);
-    va_end(ap);
+    // va_end(ap);
     return strdup(buf);
 }
 

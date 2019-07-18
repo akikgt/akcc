@@ -131,7 +131,20 @@ void gen_func(Function *fn) {
 
     // Alignment RSP
     // For x86-64 ABI, roundup RSP to multiplies of 16
-    printf("  sub rsp, %d\n", roundup(var_size, 16));  // make local variables
+    int rsp = roundup(var_size, 16);
+    if (fn->is_variadic) {
+        printf("# set up for variadic function\n");
+        printf("  sub rsp, %d\n", rsp + 48); 
+        // 8byte general purpose register * 6
+        for (int i = 0; i < 6; i++) {
+            rsp += 8;
+            printf("  mov QWORD PTR [rbp - %d], %s\n", rsp, regs[i]);
+        }
+        fn->reg_save_area = rsp;
+        printf("# set up for variadic function end\n");
+    }
+    else
+        printf("  sub rsp, %d\n", rsp); 
 
     // set parameters
     for (int i = 0; i < node->args->len; i++) {
@@ -144,7 +157,6 @@ void gen_func(Function *fn) {
         printf("  pop rax\n");
         switch (param->ty->size) {
             case 1:
-            // TODO: make regs8 array and modify dil -> regs8[i]
                 printf("  mov [rax], %s\n", regs8[i]);
                 break;
             case 2:
@@ -176,10 +188,12 @@ void gen_lval(Node *node) {
     }
 
     if (node->op == ND_DOT) {
+        printf("#Get addressof Dot operator begin\n");
         gen_lval(node->expr);
         printf("  pop rax\n");
         printf("  add rax, %d\n", node->ty->offset);
         printf("  push rax\n");
+        printf("#Get addressof Dot operator end\n");
         return;
     }
 
@@ -240,6 +254,31 @@ void gen(Node *node) {
             printf("  push rax\n");
             return;
 
+        case ND_VA_START: {
+            printf("# Emit va_start\n");
+            for (int i = 0; i < node->stmts->len; i++) {
+                Node *stmt = node->stmts->data[i];
+                gen(stmt);
+                if (i == 2) {
+                    printf("#overflow area\n");
+                    printf("  lea rdi, [rbp + 8]\n");
+                    printf("  pop rax\n");
+                    printf("  mov QWORD PTR [rax], rdi\n");
+                }
+                else if (i == 3) {
+                    Function * fn = node->fn;
+                    printf("#reg_save_area\n");
+                    printf("  lea rdi, [rbp - %d]\n", fn->reg_save_area);
+                    printf("  pop rax\n");
+                    printf("  mov QWORD PTR [rax], rdi\n");
+                }
+                else
+                    printf("  pop rax\n");
+            }
+
+            printf("  push rax\n");
+            return;
+        }
         case ND_BLOCK:
             if (node->stmts->len == 0) {
                 printf("  push 0\n");
@@ -414,6 +453,7 @@ void gen(Node *node) {
             return;
 
         case ND_ADDR:
+            printf("#ADDR: \n");
             gen_lval(node->expr); // RAX = address of IDENT
             return;
 

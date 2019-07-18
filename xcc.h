@@ -240,6 +240,7 @@ enum
     ND_SHL,       // <<
     ND_SHR,       // >>
     ND_VARARGS,   // ...
+    ND_VA_START,  // va_start
 };
 
 /// AST Node
@@ -283,6 +284,9 @@ typedef struct Node {
     // Variable reference
     Var *var;
 
+    // function which node belongs to
+    void *fn;
+
 } Node;
 
 typedef struct Env {
@@ -300,6 +304,7 @@ typedef struct Function {
     Vector *lvars;
     int arity;
     int is_variadic;
+    int reg_save_area;
 } Function;
 
 typedef struct Program {

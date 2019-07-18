@@ -400,6 +400,44 @@ Node *function_call(Token *t) {
     return node;
 }
 
+Node *variadic_function() {
+    // for va_start
+    Node *node = new_node(ND_VA_START);
+    node->stmts = new_vector();
+    node->fn = cur_fn;
+    char *ap = ident();
+
+    Var *var = find_var(ap);
+    if (var->ty->ty != ARRAY || var->ty->arr_of->ty != STRUCT)
+        error("va_start requires array of struct");
+
+    Node *gp_offset = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, new_node_varref(var)));
+    gp_offset->name = "gp_offset";
+    gp_offset = new_node_binop('=', gp_offset, new_node_num(cur_fn->arity * 8));
+    vec_push(node->stmts, gp_offset);
+
+    Node *fp_offset = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, new_node_varref(var)));
+    fp_offset->name = "fp_offset";
+    fp_offset = new_node_binop('=', fp_offset, new_node_num(48));
+    vec_push(node->stmts, fp_offset);
+
+    Node *overflow_area = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, new_node_varref(var)));
+    overflow_area->name = "overflow_arg_area";
+    overflow_area = new_node_expr(ND_ADDR, overflow_area);
+    vec_push(node->stmts, overflow_area);
+
+    Node *reg_save_area = new_node_expr(ND_DOT, new_node_expr(ND_DEREF, new_node_varref(var)));
+    reg_save_area->name = "reg_save_area";
+    reg_save_area = new_node_expr(ND_ADDR, reg_save_area);
+    vec_push(node->stmts, reg_save_area);
+
+
+    consume(',');
+    consume(TK_IDENT);
+    expect(')');
+    return node;
+}
+
 Node *stmt() {
     Node *node;
 
@@ -879,7 +917,11 @@ Node *term() {
         if (!consume('(')) {
             return local_variable(t);
         }
-        return function_call(t);
+        else if (!strcmp(t->name, "__builtin_va_start")) {
+            return variadic_function();
+        }
+        else
+            return function_call(t);
     }
 
     error_at(t->input, "non-number or opening parentheses Token found");
