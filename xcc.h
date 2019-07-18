@@ -7,7 +7,7 @@
 // #include <errno.h>
 
 
-typedef struct {
+typedef struct __va_list_tag {
     int gp_offset;
     int fp_offset;
     void *overflow_arg_area;

@@ -159,13 +159,13 @@ void *vec_pop(Vector *vec) {
     return vec->data[vec->len];
 }
 
-static int expect(int line, int expected, int actual) {
-    if (expected == actual) 
-        return 1;
-    fprintf(stderr, "%d: %d expected, but got %d\n",
-            line, expected, actual);
-    exit(1);
-}
+// static int expect(int line, int expected, int actual) {
+//     if (expected == actual) 
+//         return 1;
+//     fprintf(stderr, "%d: %d expected, but got %d\n",
+//             line, expected, actual);
+//     exit(1);
+// }
 
 void test_vector() {
     printf("Run vector test\n");
