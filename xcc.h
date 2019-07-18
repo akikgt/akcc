@@ -52,6 +52,7 @@ char *strdup(const char *s);
 char *strndup(const char *s, size_t n);
 // char *strcat(char *s1, const char *s2);
 int vsprintf(char *str, const char *format, va_list ap);
+int vsnprintf(char *str, size_t n, const char *format, va_list ap);
 // void *memset(void *s, int c, int n);
 // int fgetc(FILE *stream);
 int isalpha(int c);

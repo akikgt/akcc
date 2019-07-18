@@ -40,9 +40,15 @@ void error_at(char *loc, char *msg) {
 
 /// General
 char *format(char *fmt, ...) {
-    char buf[2048];
+    printf("# fmt is %s \n", fmt);
+    char buf[1024];
     va_list ap;
     va_start(ap, fmt);
+    printf("#gp is %d\n", ap->gp_offset);
+    printf("#fp is  %d\n", ap->fp_offset);
+    printf("#overflow is  %p\n", ap->overflow_arg_area);
+    printf("#reg_save_area is  %p\n", ap->reg_save_area);
+    printf("# fmt is %s \n", fmt);
     vsnprintf(buf, sizeof(buf), fmt, ap);
     va_end(ap);
     return strdup(buf);

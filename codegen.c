@@ -138,7 +138,7 @@ void gen_func(Function *fn) {
         // 8byte general purpose register * 6
         for (int i = 0; i < 6; i++) {
             rsp += 8;
-            printf("  mov QWORD PTR [rbp - %d], %s\n", rsp, regs[i]);
+            printf("  mov QWORD PTR [rbp - %d], %s\n", rsp, regs[5 - i]);
         }
         fn->reg_save_area = rsp;
         printf("# set up for variadic function end\n");
@@ -149,7 +149,6 @@ void gen_func(Function *fn) {
     // set parameters
     for (int i = 0; i < node->args->len; i++) {
         Node *param = node->args->data[i];
-        // ignore varargs. TODO: some processing for variadic function
         if (param->op == ND_VARARGS)
             continue;
         gen_lval(param);
@@ -261,12 +260,13 @@ void gen(Node *node) {
                 gen(stmt);
                 if (i == 2) {
                     printf("#overflow area\n");
-                    printf("  lea rdi, [rbp + 8]\n");
+                    printf("  lea rdi, [rbp + 16]\n");
                     printf("  pop rax\n");
                     printf("  mov QWORD PTR [rax], rdi\n");
                 }
                 else if (i == 3) {
                     Function * fn = node->fn;
+                    printf("# %d\n", fn->reg_save_area);
                     printf("#reg_save_area\n");
                     printf("  lea rdi, [rbp - %d]\n", fn->reg_save_area);
                     printf("  pop rax\n");

@@ -1134,6 +1134,7 @@ void toplevel() {
 Program *parse(Vector *v) {
     tokens = v;
     pos = 0;
+    str_count = 0;
     switches = new_vector();
     breaks = new_vector();
     continues = new_vector();

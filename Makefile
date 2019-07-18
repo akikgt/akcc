@@ -35,7 +35,7 @@ self: xcc
 		main.o \
 		tmp_self_token.s \
 		tmp_self_cpp.s \
-		parse.o \
+		tmp_self_parse.s \
 		tmp_self_sema.s \
 		tmp_self_codegen.s 
 
