@@ -298,6 +298,8 @@ typedef struct Function {
     char *name;
     Node *node;
     Vector *lvars;
+    int arity;
+    int is_variadic;
 } Function;
 
 typedef struct Program {

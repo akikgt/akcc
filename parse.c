@@ -4,6 +4,7 @@ static Vector *tokens;
 static int pos;
 static Program *prog;
 
+static Function *cur_fn;
 static Vector *lvars;
 static int g_offset;
 static int str_count;
@@ -940,10 +941,11 @@ Node *declaration_type() {
 Node *param()
 {
     if (consume(TK_VARARGS)) {
+        cur_fn->is_variadic = 1;
         return new_node(ND_VARARGS);
     }
 
-    // just skip const. TODO...for later
+    // just skip const. TODO for later
     consume(TK_CONST);
 
     Type *ty = type_specifier();
@@ -965,6 +967,7 @@ Node *param()
     Var *var = add_lvar(ty, t->name);
 
     Node *node = new_node_vardef(var);
+    cur_fn->arity++;
     return node;
 }
 
@@ -988,6 +991,7 @@ Function *function(Type *ty, char *name) {
     node->name = name;
 
     Function *fn = calloc(1, sizeof(Function));
+    cur_fn = fn;
     fn->node = node;
     fn->ty = ty;
     fn->lvars = new_vector();
