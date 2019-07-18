@@ -69,6 +69,12 @@ self_test: self test/test.c
 		@gcc -static -o tmp_self_test tmp_self_test.s tmp-test3.o -g
 		@./tmp_self_test
 
+var_test: xcc sample/variadic_test.c
+		@./xcc -file "sample/variadic_test.c" > sample/variadic_test.s
+		@gcc -S sample/variadic_test.c -o sample/gcc_variadic_test.s
+		@gcc -static -o sample/variadic_test sample/variadic_test.s
+		@./sample/variadic_test
+
 test: xcc test/test.c
 		./xcc -test
 

@@ -67,6 +67,26 @@ char global_b = 256;
 char *global_str[2] = {"test_str1", "test_str2"};
 int global_int_arr[5] = {1,2,3,4,5};
 
+
+typedef struct {
+  int gp_offset;
+  int fp_offset;
+  void *overflow_arg_area;
+  void *reg_save_area;
+} va_list[1];
+
+#define va_start __builtin_va_start
+#define va_end __builtin_va_end
+
+int vsprintf(char *str, const char *format, va_list ap);
+// variadic test
+void my_vsprintf(char *p, char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  vsprintf(p, fmt, ap);
+  va_end(ap);
+}
+
 // Single-line comment test
 
 /***************************
@@ -329,6 +349,14 @@ int main() {
   EXPECT(3, ({ struct A {int x;} a; struct A *p = 5; int q = 0; printf("%d\n", p); 3;}));
 
   EXPECT(8, ({ typedef struct { int a;} x[2]; x a; sizeof(a);}));
+
+  EXPECT(1, ({ 0; 
+  char buf[128];
+  my_vsprintf(buf, "test%d %d %d %d", 1, 2, 3, 4);
+  printf("%s\n", buf);
+  1;
+  }));
+
 
   printf("OK\n");
   return 0;
