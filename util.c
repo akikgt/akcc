@@ -20,15 +20,19 @@ void error_at(char *loc, char *msg) {
     while (*end && *end != '\n')
         end++;
 
-    int line_num = 1;
-    for (char *p = user_input; p < line; p++)
-        if (*p == '\n')
-            line_num++;
+    // int line_num = 1;
+    // for (char *p = user_input; p < line; p++) {
+    //     if (*p == '\n') {
+    //         printf("ccc\n");
+    //         line_num++;
+    //     }
+    // }
 
-    int indent = fprintf(stderr, "%d: ", line_num);
+    // int indent = fprintf(stderr, "%d: ", line_num);
     fprintf(stderr, "%.*s\n", (int)(end - line), line); // %.1s is print the first character
 
-    int pos = loc - line + indent;
+    // int pos = loc - line + indent;
+    int pos = loc - line;
     fprintf(stderr, "%*s", pos, "");
     fprintf(stderr, "^ %s\n", msg);
     exit(1);

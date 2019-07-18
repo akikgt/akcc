@@ -96,6 +96,8 @@ Vector *tokenize(char *p) {
                 // new line
                 if (*p == 'n')
                     val = 10;
+                else if (*p == '0')
+                    val = 0;
                 else
                     val = *p;
             }

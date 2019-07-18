@@ -6,11 +6,13 @@
 // // #include <string.h>
 // // #include <errno.h>
 
+int main() {
+    return 1;
+}
 
-
-#define va_start __builtin_va_start
-#define va_end __builtin_va_end
-#define va_arg __builtin_va_arg
+// #define va_start __builtin_va_start
+// #define va_end __builtin_va_end
+// #define va_arg __builtin_va_arg
 
 // typedef struct {
 //     int gp_offset;
@@ -18,6 +20,8 @@
 //     void *overflow_arg_area;
 //     void *reg_save_area;
 // } va_list[1];
+
+// mistake
 
 // typedef int size_t;
 // // typedef struct _IO_FILE FILE;

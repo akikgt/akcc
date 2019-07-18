@@ -31,13 +31,23 @@ self: xcc
 		./xcc -file "main.c" > tmp_self_main.s
 
 		gcc -static -o self_xcc \
-		util.o \
+		tmp_self_util.s \
 		main.o \
 		tmp_self_token.s \
 		tmp_self_cpp.s \
-		tmp_self_parse.s \
+		parse.o \
 		tmp_self_sema.s \
 		tmp_self_codegen.s 
+
+
+		# gcc -static -o self_xcc \
+		# util.o \
+		# main.o \
+		# tmp_self_token.s \
+		# tmp_self_cpp.s \
+		# parse.o \
+		# tmp_self_sema.s \
+		# tmp_self_codegen.
 		# gcc -static -o self_xcc main.o util.o token.o preprocess.o parse.o sema.o codegen.o
 
 		./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'

@@ -33,7 +33,9 @@ int ftell(FILE *stream);
 int fseek(FILE *fp, int offset, int origin); 
 #define EOF (-1)
 FILE *fopen(const char *pathname, const char *mode);
+size_t fread(void *buf, size_t size, size_t n, FILE *fp);
 int fclose(FILE *stream);
+
 
 #define NULL ((void *)0)
 int printf(const char *format, ...);
