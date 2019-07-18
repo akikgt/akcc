@@ -247,9 +247,22 @@ void gen(Node *node) {
                         break;
                 }
             }
-
-            printf("  mov rax, 0\n"); // AL must be 0 before call a variadic function
+            
+            printf("  mov eax, 0\n"); // AL must be 0 before call a variadic function
+            // rsp alignment
+            printf("  test rsp, 0x8\n");
+            printf("  je .Lcall%d\n", label_count);
+            // align
+            printf("# not align on 16\n");
+            printf("  sub rsp, 8\n");
             printf("  call %s\n", node->name);
+            printf("  add rsp, 8\n");
+            printf("  jmp .Lcall_end%d\n", label_count);
+
+            printf(".Lcall%d:\n", label_count);
+            // already aligned
+            printf("  call %s\n", node->name);
+            printf(".Lcall_end%d:\n", label_count++);
             printf("  push rax\n");
             return;
 
@@ -276,7 +289,7 @@ void gen(Node *node) {
                     printf("  pop rax\n");
             }
 
-            printf("  push rax\n");
+            printf("  push 0\n");
             return;
         }
         case ND_BLOCK:

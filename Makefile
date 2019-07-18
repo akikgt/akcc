@@ -32,7 +32,7 @@ self: xcc
 
 		gcc -static -o self_xcc \
 		tmp_self_util.s \
-		main.o \
+		tmp_self_main.s \
 		tmp_self_token.s \
 		tmp_self_cpp.s \
 		tmp_self_parse.s \
@@ -72,8 +72,30 @@ self_test: self test/test.c
 var_test: xcc sample/variadic_test.c
 		@./xcc -file "sample/variadic_test.c" > sample/variadic_test.s
 		@gcc -S sample/variadic_test.c -o sample/gcc_variadic_test.s
-		@gcc -static -o sample/variadic_test sample/variadic_test.s
+		@gcc -static -o sample/variadic_test sample/variadic_test.s -g
 		@./sample/variadic_test
+
+self_self: xcc self
+		./self_xcc -file "util.c" > tmp_self_util2.s
+		./self_xcc -file "token.c" > tmp_self_token2.s
+		./self_xcc -file "preprocess.c" > tmp_self_cpp2.s
+		./self_xcc -file "parse.c" > tmp_self_parse2.s
+		./self_xcc -file "sema.c" > tmp_self_sema2.s
+		./self_xcc -file "codegen.c" > tmp_self_codegen2.s
+		./self_xcc -file "main.c" > tmp_self_main2.s
+
+		gcc -static -o self_xcc2 \
+		tmp_self_util2.s \
+		tmp_self_main2.s \
+		tmp_self_token2.s \
+		tmp_self_cpp2.s \
+		tmp_self_parse2.s \
+		tmp_self_sema2.s \
+		tmp_self_codegen2.s
+
+		./self_xcc2 -file "sample/sample.c" > tmp3.s
+		gcc -static -o sample3 tmp3.s
+		./sample3
 
 test: xcc test/test.c
 		./xcc -test

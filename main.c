@@ -27,11 +27,15 @@ int main(int argc, char **argv) {
         tokens = tokenize(argv[1]);
     }
 
+    printf("# %d\n", 1);
     tokens = preprocess(tokens);
 
+    printf("# %d\n", 2);
     Program *prog = parse(tokens);
     // traverse(prog); // Node test
+    printf("# %d\n", 3);
     sema(prog);
+    printf("# %d\n", 4);
     gen_x86(prog);
 
     return 0;

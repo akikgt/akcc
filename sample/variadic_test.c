@@ -18,10 +18,13 @@ void my_vsprintf(char *p, char *fmt, ...) {
 } 
 
 int main() {
+  printf("test\n");
     int e1 = ({
+  printf("test\n");
     char buf[128];
     my_vsprintf(buf, "test%d %d %d %d", 1, 2, 3, 4);
 
     printf("%s\n", buf);
     });
+    return 0;
 }

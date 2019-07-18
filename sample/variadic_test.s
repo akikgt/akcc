@@ -1,20 +1,40 @@
+# 1
+# 2
 # fmt is .LSTR%d 
 #gp is 8
 #fp is  48
-#overflow is  0x7ffee6adea80
-#reg_save_area is  0x7ffee6ade9c0
+#overflow is  0x7ffe30821830
+#reg_save_area is  0x7ffe30821770
 # fmt is .LSTR%d 
 # fmt is .LSTR%d 
 #gp is 8
 #fp is  48
-#overflow is  0x7ffee6adea80
-#reg_save_area is  0x7ffee6ade9c0
+#overflow is  0x7ffe30821520
+#reg_save_area is  0x7ffe30821460
 # fmt is .LSTR%d 
+# fmt is .LSTR%d 
+#gp is 8
+#fp is  48
+#overflow is  0x7ffe30821520
+#reg_save_area is  0x7ffe30821460
+# fmt is .LSTR%d 
+# fmt is .LSTR%d 
+#gp is 8
+#fp is  48
+#overflow is  0x7ffe30821520
+#reg_save_area is  0x7ffe30821460
+# fmt is .LSTR%d 
+# 3
+# 4
 .intel_syntax noprefix
 .data
 .LSTR0: 
- .string "test%d %d %d %d"
+ .string "test\n"
 .LSTR1: 
+ .string "test\n"
+.LSTR2: 
+ .string "test%d %d %d %d"
+.LSTR3: 
  .string "%s\n"
 .text
 .global my_vsprintf
@@ -106,7 +126,7 @@ my_vsprintf:
   lea rdi, [rbp - 96]
   pop rax
   mov QWORD PTR [rax], rdi
-  push rax
+  push 0
   pop rax
 # function call: vsprintf
 # function parameters
@@ -135,8 +155,17 @@ my_vsprintf:
   pop rdx
   pop rsi
   pop rdi
-  mov rax, 0
+  mov eax, 0
+  test rsp, 0x8
+  je .Lcall0
+# not align on 16
+  sub rsp, 8
   call vsprintf
+  add rsp, 8
+  jmp .Lcall_end0
+.Lcall0:
+  call vsprintf
+.Lcall_end0:
   push rax
   pop rax
   push 0
@@ -151,9 +180,47 @@ main:
   push rbp
   mov rbp, rsp
   sub rsp, 144
+# function call: printf
+# function parameters
+#ADDR: 
+  lea rax, .LSTR0[rip]
+  push rax
+  pop rdi
+  mov eax, 0
+  test rsp, 0x8
+  je .Lcall1
+# not align on 16
+  sub rsp, 8
+  call printf
+  add rsp, 8
+  jmp .Lcall_end1
+.Lcall1:
+  call printf
+.Lcall_end1:
+  push rax
+  pop rax
   mov rax, rbp
   sub rax, 4
   push rax
+# function call: printf
+# function parameters
+#ADDR: 
+  lea rax, .LSTR1[rip]
+  push rax
+  pop rdi
+  mov eax, 0
+  test rsp, 0x8
+  je .Lcall2
+# not align on 16
+  sub rsp, 8
+  call printf
+  add rsp, 8
+  jmp .Lcall_end2
+.Lcall2:
+  call printf
+.Lcall_end2:
+  push rax
+  pop rax
   mov rax, rbp
   sub rax, 132
   push rax
@@ -166,7 +233,7 @@ main:
   push rax
 # function parameters
 #ADDR: 
-  lea rax, .LSTR0[rip]
+  lea rax, .LSTR2[rip]
   push rax
 # function parameters
   push 1
@@ -182,14 +249,23 @@ main:
   pop rdx
   pop rsi
   pop rdi
-  mov rax, 0
+  mov eax, 0
+  test rsp, 0x8
+  je .Lcall3
+# not align on 16
+  sub rsp, 8
   call my_vsprintf
+  add rsp, 8
+  jmp .Lcall_end3
+.Lcall3:
+  call my_vsprintf
+.Lcall_end3:
   push rax
   pop rax
 # function call: printf
 # function parameters
 #ADDR: 
-  lea rax, .LSTR1[rip]
+  lea rax, .LSTR3[rip]
   push rax
 # function parameters
 #ADDR: 
@@ -198,8 +274,17 @@ main:
   push rax
   pop rsi
   pop rdi
-  mov rax, 0
+  mov eax, 0
+  test rsp, 0x8
+  je .Lcall4
+# not align on 16
+  sub rsp, 8
   call printf
+  add rsp, 8
+  jmp .Lcall_end4
+.Lcall4:
+  call printf
+.Lcall_end4:
   push rax
   pop rax
   push rax
@@ -207,6 +292,13 @@ main:
   pop rax
   mov [rax], edi
   push rdi
+  pop rax
+# Return
+  push 0
+  pop rax
+  mov rsp, rbp
+  pop rbp
+  ret
   pop rax
   push rax
   pop rax

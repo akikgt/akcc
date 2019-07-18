@@ -57,8 +57,10 @@ my_vsprintf:
 	.size	my_vsprintf, .-my_vsprintf
 	.section	.rodata
 .LC0:
-	.string	"test%d %d %d %d"
+	.string	"test"
 .LC1:
+	.string	"test%d %d %d %d"
+.LC2:
 	.string	"%s\n"
 	.text
 	.globl	main
@@ -75,18 +77,22 @@ main:
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
+	leaq	.LC0(%rip), %rdi
+	call	puts@PLT
+	leaq	.LC0(%rip), %rdi
+	call	puts@PLT
 	leaq	-144(%rbp), %rax
 	movl	$4, %r9d
 	movl	$3, %r8d
 	movl	$2, %ecx
 	movl	$1, %edx
-	leaq	.LC0(%rip), %rsi
+	leaq	.LC1(%rip), %rsi
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	my_vsprintf
 	leaq	-144(%rbp), %rax
 	movq	%rax, %rsi
-	leaq	.LC1(%rip), %rdi
+	leaq	.LC2(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	movl	%eax, -148(%rbp)
