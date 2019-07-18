@@ -43,12 +43,11 @@ self: xcc
 		# gcc -static -o self_xcc \
 		# util.o \
 		# main.o \
-		# tmp_self_token.s \
-		# tmp_self_cpp.s \
+		# token.o \
+		# preprocess.o \
 		# parse.o \
-		# tmp_self_sema.s \
-		# tmp_self_codegen.
-		# gcc -static -o self_xcc main.o util.o token.o preprocess.o parse.o sema.o codegen.o
+		# sema.o \
+		# codegen.o.
 
 		./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
 		./self_xcc 'int main() { if (1) {printf("yattaze%d", 1);} }'
