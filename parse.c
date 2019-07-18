@@ -400,7 +400,12 @@ Node *function_call(Token *t) {
     return node;
 }
 
-Node *variadic_function() {
+Node *variadic_function(Token *t) {
+    if (!strcmp(t->name, "__builtin_va_end")) {
+        consume(TK_IDENT);
+        consume(')');
+        return new_node_num(0);
+    }
     // for va_start
     Node *node = new_node(ND_VA_START);
     node->stmts = new_vector();
@@ -917,8 +922,8 @@ Node *term() {
         if (!consume('(')) {
             return local_variable(t);
         }
-        else if (!strcmp(t->name, "__builtin_va_start")) {
-            return variadic_function();
+        else if (!strcmp(t->name, "__builtin_va_start") || !strcmp(t->name, "__builtin_va_end")) {
+            return variadic_function(t);
         }
         else
             return function_call(t);
