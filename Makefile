@@ -8,9 +8,8 @@ xcc: $(OBJS)
 $(OBJS): xcc.h
 
 self: xcc
-		gcc -c -o util.o util.c $(LDFLAGS)
+		# gcc -c -o util.o util.c $(LDFLAGS)
 		./xcc -file "util.c" > tmp_self_util.s
-		# gcc -o tmp_self_util.o -c tmp_self_util.s 
 
 		# gcc -c -o token.o token.c $(LDFLAGS)
 		./xcc -file "token.c" > tmp_self_token.s
@@ -24,10 +23,10 @@ self: xcc
 		# gcc -c -o sema.o sema.c $(LDFLAGS)
 		./xcc -file "sema.c" > tmp_self_sema.s
 
-		gcc -c -o codegen.o codegen.c $(LDFLAGS)
+		# gcc -c -o codegen.o codegen.c $(LDFLAGS)
 		./xcc -file "codegen.c" > tmp_self_codegen.s
 
-		gcc -c -o main.o main.c $(LDFLAGS)
+		# gcc -c -o main.o main.c $(LDFLAGS)
 		./xcc -file "main.c" > tmp_self_main.s
 
 		gcc -static -o self_xcc \
@@ -39,29 +38,8 @@ self: xcc
 		tmp_self_sema.s \
 		tmp_self_codegen.s 
 
-
-		# gcc -static -o self_xcc \
-		# util.o \
-		# main.o \
-		# token.o \
-		# preprocess.o \
-		# parse.o \
-		# sema.o \
-		# codegen.o.
-
 		./self_xcc 'int main() { if (1) printf("yattaze%d", 1); }'
 		./self_xcc 'int main() { if (1) {printf("yattaze%d", 1);} }'
-		# ./self_xcc 'int main() { "aaaa";  }'
-		# ./self_xcc -file "sample/debug.c"
-		# ./self_xcc -file "xcc.h"
-
-		#### n-queen self-compile test
-		# ./self_xcc -file "sample/sample.c" > tmp2.s
-		# gcc -static -o sample2 tmp2.s
-		# ./sample2
-		#### n-queen self-compile test
-
-		# ./self_xcc -file "token.c"
 
 self_test: self test/test.c
 		@./self_xcc "$$(gcc -E -P test/test.c)" > tmp_self_test.s
