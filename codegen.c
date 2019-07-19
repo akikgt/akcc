@@ -28,7 +28,10 @@ static void emit_load(Node *node) {
         // TODO: consider movzx
         printf("  movsx eax, %s\n", get_reg(node->ty, 'a'));
     }
-    // TODO sign extended? like eax to rax
+    else if (node->ty->size == 4) {
+        printf("# sign extend for INT\n");
+        printf("  movsxd rax, eax\n");
+    }
 }
 
 static void emit_binop(Node *node) {
@@ -79,6 +82,7 @@ static void emit_binop(Node *node) {
         printf("  movzb rax, al\n");
         break;
     case ND_LE:
+        printf("# Less than\n");
         printf("  cmp rax, rdi\n");
         printf("  setle al\n");
         printf("  movzb rax, al\n");

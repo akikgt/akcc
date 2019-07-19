@@ -132,6 +132,7 @@ int main() {
 
   EXPECT(0, 0 < 0);
   EXPECT(0, 1 < 0);
+  EXPECT(1, -1 <= 0);
   EXPECT(1, 0 < 1);
   EXPECT(0, 0 > 0);
   EXPECT(0, 0 > 1);
@@ -355,6 +356,17 @@ int main() {
   my_vsprintf(buf, "test%d %d %d %d", 1, 2, 3, 4);
   printf("%s\n", buf);
   1;
+  }));
+
+  // reverse 'for' test
+  EXPECT(0, ({
+    printf("reverse 'for'. test for sign-extension\n");
+  for (int i = 5; i >= 0; i--) {
+    printf("%d ", i);
+    i;
+  }
+    printf("\n");
+    0;
   }));
 
 
