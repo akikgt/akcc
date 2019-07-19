@@ -3,3 +3,5 @@
 tmp*
 xcc
 foo.c
+self_xcc*
+sample

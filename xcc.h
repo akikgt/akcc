@@ -60,8 +60,6 @@ int isdigit(int c);
 int isspace(int c);
 // void *memcpy(void *dest, const void *src, int n);
 
-// for saving original input
-char *user_input;
 
 // vector
 typedef struct {
@@ -200,6 +198,7 @@ typedef struct {
     int len;
 
     char *input;    // token strings for error message
+    char *user_input;
 } Token;
 
 Vector *tokenize(char *p);
@@ -360,6 +359,6 @@ void gen_x86(Program *prog);
 
 /// error functions
 void error(char *fmt, ...);
-void error_at(char *loc, char *msg);
+void error_at(Token *t, char *msg);
 
 

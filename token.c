@@ -40,10 +40,17 @@ Map *set_keywords() {
     return keywords;
 }
 
-Token *add_token(Vector *vec, int ty, char *input) {
+char *user_input;
+Token *make_token(int ty, char *input) {
     Token *token = calloc(1, sizeof(Token));
     token->ty = ty;
     token->input = input;
+    token->user_input = user_input;
+    return token;
+}
+
+Token *add_token(Vector *vec, int ty, char *input) {
+    Token *token = make_token(ty, input);
     vec_push(vec, token);
     return token;
 }
@@ -80,7 +87,7 @@ Vector *tokenize(char *p) {
         if (strncmp(p, "/*", 2) == 0) {
             char *q = strstr(p + 2, "*/");
             if (!q)
-                error_at(p, "comment is not closed");
+                error_at(make_token(NULL, p), "comment is not closed");
             p = q + 2;
             continue;
         }
@@ -106,7 +113,7 @@ Vector *tokenize(char *p) {
             }
 
             if (p[1] != '\'')
-                error_at(p, " ' is not closed");
+                error_at(make_token(NULL, p), " ' is not closed");
 
             Token *t = add_token(v, TK_ASCII, p);
             t->val = val;
@@ -291,7 +298,7 @@ Vector *tokenize(char *p) {
             continue;
         }
 
-        error_at(p, "Cannot tokenize");
+        error_at(make_token(NULL, p), "Cannot tokenize");
     }
 
     add_token(v, TK_EOF, p);

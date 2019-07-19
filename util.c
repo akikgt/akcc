@@ -1,5 +1,6 @@
 #include "xcc.h"
 
+
 /// Error functions
 void error(char *fmt, ...) {
     va_list ap;
@@ -10,29 +11,28 @@ void error(char *fmt, ...) {
     exit(1);
 }
 
-void error_at(char *loc, char *msg) {
-    char *line = loc;
-    while (user_input < line && line[-1] != '\n')
+void error_at(Token *t, char *msg) {
+    char *line = t->input;
+    while (t->user_input < line && line[-1] != '\n')
         line--;
 
-
-    char *end = loc;
+    char *end = t->input;
     while (*end && *end != '\n')
         end++;
 
-    // int line_num = 1;
-    // for (char *p = user_input; p < line; p++) {
-    //     if (*p == '\n') {
-    //         printf("ccc\n");
-    //         line_num++;
-    //     }
-    // }
+    int line_num = 1;
+    for (char *p = t->user_input; p < line; p++) {
+        if (*p == '\n') {
+            printf("ccc\n");
+            line_num++;
+        }
+    }
 
-    // int indent = fprintf(stderr, "%d: ", line_num);
+    int indent = fprintf(stderr, "%d: ", line_num);
     fprintf(stderr, "%.*s\n", (int)(end - line), line); // %.1s is print the first character
 
-    // int pos = loc - line + indent;
-    int pos = loc - line;
+    int pos = t->input - line + indent;
+    // int pos = loc - line;
     fprintf(stderr, "%*s", pos, "");
     fprintf(stderr, "^ %s\n", msg);
     exit(1);

@@ -6,9 +6,10 @@
 // // #include <string.h>
 // // #include <errno.h>
 
-int main() {
+int () {
     return 1;
 }
+int  sfa yattaze;
 
 // #define va_start __builtin_va_start
 // #define va_end __builtin_va_end

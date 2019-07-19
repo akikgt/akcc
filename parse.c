@@ -60,8 +60,7 @@ static Var *find_var(char *name) {
         if (var)
             return var;
     }
-    // error("undefined variable, %s", name);
-    printf("undefined variable, %s", name);
+    error("undefined variable, %s", name);
     exit(1);
     return NULL;
 }
@@ -104,7 +103,7 @@ int consume(int ty) {
 static void expect(int ty) {
     Token *t = tokens->data[pos];
     if (!consume(ty))
-        error_at(t->input, format("Not '%c'", ty));
+        error_at(t, format("Not '%c'", ty));
 }
 
 static int peek(int ty) {
@@ -123,7 +122,7 @@ static int is_typename() {
 static char *ident() {
     Token *t = tokens->data[pos];
     if (t->ty != TK_IDENT)
-        error_at(t->input, "Identifier expected");
+        error_at(t, "Identifier expected");
     pos++;
     return t->name;
 }
@@ -131,7 +130,7 @@ static char *ident() {
 static int numeric() {
     Token *t = tokens->data[pos];
     if (t->ty != TK_NUM)
-        error_at(t->input, "Numeric value expected");
+        error_at(t, "Numeric value expected");
     pos++;
     return t->val;
 }
@@ -149,7 +148,7 @@ static Type *type_specifier() {
         case TK_IDENT: {
             Type *ret = find_typedef(t->name);
             if (!ret)
-                error_at(t->input, "unknown type name");
+                error_at(t, "unknown type name");
             return ret;
         }
     }
@@ -929,7 +928,7 @@ Node *term() {
             return function_call(t);
     }
 
-    error_at(t->input, "non-number or opening parentheses Token found");
+    error_at(t, "non-number or opening parentheses Token found");
 
     return NULL;
 }
@@ -948,7 +947,7 @@ Node *declaration() {
         return new_node_num(0);
     }
     else if (!consume(TK_IDENT))
-        error_at(t->input, "not variable declaration");
+        error_at(t, "not variable declaration");
 
     // array check
     ty = arr_of(ty);
@@ -1003,7 +1002,7 @@ Node *param()
 
     Token *t = tokens->data[pos];
     if (!consume(TK_IDENT))
-        error_at(t->input, "not variable declaration");
+        error_at(t, "not variable declaration");
 
     // array check
     ty = arr_of(ty);

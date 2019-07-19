@@ -53,7 +53,7 @@ var_test: xcc sample/variadic_test.c
 		@gcc -static -o sample/variadic_test sample/variadic_test.s -g
 		@./sample/variadic_test
 
-self_self: xcc self
+self2: xcc self
 		./self_xcc -file "util.c" > tmp_self_util2.s
 		./self_xcc -file "token.c" > tmp_self_token2.s
 		./self_xcc -file "preprocess.c" > tmp_self_cpp2.s
@@ -73,7 +73,29 @@ self_self: xcc self
 
 		./self_xcc2 -file "sample/sample.c" > tmp3.s
 		gcc -static -o sample3 tmp3.s
+
 		./sample3
+self3: xcc self self2
+		./self_xcc2 -file "util.c" > tmp_self_util3.s
+		./self_xcc2 -file "token.c" > tmp_self_token3.s
+		./self_xcc2 -file "preprocess.c" > tmp_self_cpp3.s
+		./self_xcc2 -file "parse.c" > tmp_self_parse3.s
+		./self_xcc2 -file "sema.c" > tmp_self_sema3.s
+		./self_xcc2 -file "codegen.c" > tmp_self_codegen3.s
+		./self_xcc2 -file "main.c" > tmp_self_main3.s
+
+		gcc -static -o self_xcc3 \
+		tmp_self_util3.s \
+		tmp_self_main3.s \
+		tmp_self_token3.s \
+		tmp_self_cpp3.s \
+		tmp_self_parse3.s \
+		tmp_self_sema3.s \
+		tmp_self_codegen3.s
+
+		./self_xcc3 -file "sample/sample.c" > tmp4.s
+		gcc -static -o sample4 tmp4.s
+		./sample4
 
 test: xcc test/test.c
 		./xcc -test
@@ -87,4 +109,4 @@ test: xcc test/test.c
 
 
 clean:
-		rm -f xcc *.o *~ tmp* test/*~
+		rm -f xcc *.o *~ tmp* test/*~ self_xcc*

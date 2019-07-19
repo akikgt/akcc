@@ -44,17 +44,17 @@ Vector *preprocess(Vector *tokens) {
 
         t = tokens->data[++i];
         if (t->ty != TK_IDENT)
-            error_at(t->input, "identifier expected");
+            error_at(t, "identifier expected");
 
         if (!strcmp(t->name, "include")) {
             t = tokens->data[++i];
             if (t->ty != TK_STRING)
-                error_at(t->input, "string expected");
+                error_at(t, "string expected");
 
             char *path = t->name;
             t = tokens->data[++i];
             if (t->ty != '\n')
-                error_at(t->input, "new line expected");
+                error_at(t, "new line expected");
 
             Vector *nv = tokenize(read_file(path));
             nv = preprocess(nv);
@@ -63,7 +63,7 @@ Vector *preprocess(Vector *tokens) {
         else if (!strcmp(t->name, "define")) {
             t = tokens->data[++i];
             if (t->ty != TK_IDENT)
-                error_at(t->input, "macro name expected");
+                error_at(t, "macro name expected");
             char *name = t->name;
 
             Vector *expansion = new_vector();
