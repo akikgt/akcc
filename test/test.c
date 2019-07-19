@@ -30,6 +30,7 @@ void nop() {}
 int var1;
 int var2[5];
 extern int global_arr[1];
+extern int global_int;
 typedef int myint;
 
 struct global_struct { int a; };
@@ -369,6 +370,7 @@ int main() {
     0;
   }));
 
+  EXPECT(100, ({ global_int; }));
 
   printf("OK\n");
   return 0;

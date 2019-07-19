@@ -1,0 +1,1 @@
+int global_int = 100;

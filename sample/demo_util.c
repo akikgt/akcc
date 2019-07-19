@@ -6,10 +6,15 @@
 // // #include <string.h>
 // // #include <errno.h>
 
-int () {
-    return 1;
+extern int global_int;
+int main() {
+    printf("extern test: %d\n", global_int);
 }
-int  sfa yattaze;
+
+// int () {
+//     return 1;
+// }
+// int  sfa yattaze;
 
 // #define va_start __builtin_va_start
 // #define va_end __builtin_va_end

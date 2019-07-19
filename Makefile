@@ -43,8 +43,9 @@ self: xcc
 
 self_test: self test/test.c
 		@./self_xcc "$$(gcc -E -P test/test.c)" > tmp_self_test.s
+		@./self_xcc -file "test/global_var_test.c" > tmp_self_gv_test.s
 		@echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test3.o -
-		@gcc -static -o tmp_self_test tmp_self_test.s tmp-test3.o -g
+		@gcc -static -o tmp_self_test tmp_self_test.s tmp-test3.o tmp_self_gv_test.s -g
 		@./tmp_self_test
 
 var_test: xcc sample/variadic_test.c
@@ -103,8 +104,9 @@ test: xcc test/test.c
 		# ./test.sh
 
 		@./xcc "$$(gcc -E -P test/test.c)" > tmp-test.s
+		@./xcc -file "test/global_var_test.c" > tmp-test3.s
 		@echo 'int global_arr[1] = {5};' | gcc -xc -c -o tmp-test2.o -
-		@gcc -static -o tmp-test tmp-test.s tmp-test2.o -g
+		@gcc -static -o tmp-test tmp-test.s tmp-test2.o tmp-test3.s -g
 		@./tmp-test
 
 

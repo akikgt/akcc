@@ -573,6 +573,10 @@ void gen_gvar(Var *v) {
     if (v->is_extern)
         return;
 
+    if (!v->str_data) {
+        printf("  .global %s\n", v->name);
+    }
+
     printf("%s: \n", v->name);
     // TODO: clean up
     if (v->has_init) {
@@ -601,7 +605,6 @@ void gen_gvar(Var *v) {
 
     return;
 }
-
 
 void gen_x86(Program *prog) {
     printf(".intel_syntax noprefix\n");
