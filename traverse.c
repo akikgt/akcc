@@ -1,4 +1,4 @@
-#include "xcc.h"
+#include "akcc.h"
 
 void traverse_and_print(Node *node, int depth) {
     switch (node->op) {

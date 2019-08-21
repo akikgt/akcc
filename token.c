@@ -1,4 +1,4 @@
-#include "xcc.h"
+#include "akcc.h"
 
 // #define _GNU_SOURCEを書かないと使えない？ strdup is not included in standard C
 // char *strndup(const char *s, size_t n) {

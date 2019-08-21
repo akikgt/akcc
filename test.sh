@@ -3,7 +3,7 @@ try() {
     expected="$1"
     input="$2"
 
-    ./xcc "$input" > tmp.s
+    ./akcc "$input" > tmp.s
     gcc -o tmp tmp.s tmp-plus.o test-alloc.o tmp-test2.o -no-pie -g
     ./tmp
     actual="$?"

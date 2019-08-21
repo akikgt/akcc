@@ -1,4 +1,4 @@
-#include "xcc.h"
+#include "akcc.h"
 
 static Node *maybe_decay(Node *base, int decay) {
     if (!(decay == 1 && base->ty->ty == ARRAY))
